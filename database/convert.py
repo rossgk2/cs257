@@ -10,13 +10,13 @@ OUTLINE OF DATABASE DESIGN
 ====================================================
 
 FIELDS WITH TABLES
-- athlete: SERIAL, name, sex, age, height, weight, team
-- team: SERIAL, team_name, NOC
+- athletes: SERIAL, name, sex, age, height, weight, team
+- teams: SERIAL, team_name, NOC
 - games: SERIAL, year, season 
-- NOC: SERIAL, region, notes (use noc_regions.csv)
-- city: SERIAL, city
-- sport: SERIAL, sport
-- event: SERIAL, event
+- NOCs: SERIAL, region, notes (use noc_regions.csv)
+- cities: SERIAL, city
+- sports: SERIAL, sport
+- events: SERIAL, event
 
 FIELDS WITHOUT TABLES
 - height, weight, sex, age, year, medal
