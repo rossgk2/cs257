@@ -31,14 +31,14 @@ def main():
     athlete_frame = sub_dataframe_from_cols(athlete_events, ["Name", "Sex", "Age", "Height", "Weight", "Team"])
     team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["Team-name", "NOC"])
     game_frame = sub_dataframe_from_cols(athlete_events, ["Year", "Season"])
-    NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"], ["NOC", "Region", "Notes"])
-    city_frame = sub_dataframe_from_cols(athlete_events, ["City"])
-    sport_frame = sub_dataframe_from_cols(athlete_events, ["Sport"])
-    event_frame = sub_dataframe_from_cols(athlete_events, ["Event"])
+    NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"], new_headers = ["NOC", "Region", "Notes"])
+    city_frame = sub_dataframe_from_cols(athlete_events, ["City"], drop_duplicates = True)
+    sport_frame = sub_dataframe_from_cols(athlete_events, ["Sport"], drop_duplicates = True)
+    event_frame = sub_dataframe_from_cols(athlete_events, ["Event"], drop_duplicates = True)
 
     # Write each pandas dataframe to a .csv file.
     dataframes = [athlete_frame, team_frame, game_frame, NOC_frame, city_frame, sport_frame, event_frame]
-    file_prefixes = ["athlete", "team", "game", "NOC", "city", "sport", "event"]
+    file_prefixes = ["athletes", "teams", "games", "NOCs", "cities", "sports", "events"]
 
     for df, fp in zip(dataframes, file_prefixes):
         df.to_csv(fp + ".csv", index = False)
@@ -46,11 +46,15 @@ def main():
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
 # The header titles in "new_headers" are the titles (in order) that are used in for the new dataframe.
 # By default, new_headers = header_list.
-def sub_dataframe_from_cols(dataframe, header_list, new_headers = None):
+def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False, new_headers = None):
     if new_headers is None:
         new_headers = header_list
 
-    cols_list = [dataframe[h].drop_duplicates() for h in header_list]
+    if drop_duplicates:
+        cols_list = [dataframe[h].drop_duplicates() for h in header_list]
+    else:
+        cols_list = [dataframe[h] for h in header_list]
+
     return pandas.concat(cols_list, axis = 1, keys = new_headers)
     # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-python
 
