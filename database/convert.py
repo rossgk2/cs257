@@ -29,7 +29,7 @@ def main():
 
     # Set up pandas dataframes for each table.
     athlete_frame = sub_dataframe_from_cols(athlete_events, ["Name", "Sex", "Age", "Height", "Weight", "Team"])
-    team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["Team-name", "NOC"])
+    team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["TeamName", "NOC"])
     game_frame = sub_dataframe_from_cols(athlete_events, ["Year", "Season"])
     NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"], new_headers = ["NOC", "Region", "Notes"])
     city_frame = sub_dataframe_from_cols(athlete_events, ["City"], drop_duplicates = True)
