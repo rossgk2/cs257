@@ -22,8 +22,8 @@ CREATE TABLE games (
 
 CREATE TABLE NOCs (
     id SERIAL,
-    region text,
-    notes text
+    Region text,
+    Notes text
 );
 
 CREATE TABLE cities (
