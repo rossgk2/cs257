@@ -27,6 +27,13 @@ def main():
     athlete_events = pandas.read_csv(open("athlete_events.csv", "r"))
     noc_regions = pandas.read_csv(open("noc_regions.csv", "r"))
 
+    # Preprocess .csv files.
+    athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of commas
+    athlete_events = athlete_events.replace(r'^\s*$', "NULL", regex = True) # Replace empty cells with "NULL"
+
+    athlete_events[athlete_events.columns] = athlete_events[athlete_events.columns].replace(to_replace = ",", value = "") # Remove commas from .csv files.
+    # athlete_events[athlete_events.columns] = athlete_events[athlete_events.columns].replace(to_replace = "", value = "NULL") # Replace empty string entries with "NULL".
+
     # Set up pandas dataframes for each table.
     athlete_frame = sub_dataframe_from_cols(athlete_events, ["Name", "Sex", "Age", "Height", "Weight", "Team"])
     team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["TeamName", "NOC"])
