@@ -33,12 +33,9 @@ def main():
 
     # Set up pandas dataframes for each table.
     athlete_frame = sub_dataframe_from_cols(athlete_events, ["Name", "Sex", "Age", "Height", "Weight", "Team"])
-    athlete_frame = athlete_frame.replace(r"^\s+$", "NULL", regex = True) # Replace empty cells with "NULL"
-
-
     team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["TeamName", "NOC"])
     game_frame = sub_dataframe_from_cols(athlete_events, ["Year", "Season"])
-    NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"], new_headers = ["NOC", "Region", "Notes"])
+    NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"])
     city_frame = sub_dataframe_from_cols(athlete_events, ["City"], drop_duplicates = True)
     sport_frame = sub_dataframe_from_cols(athlete_events, ["Sport"], drop_duplicates = True)
     event_frame = sub_dataframe_from_cols(athlete_events, ["Event"], drop_duplicates = True)
@@ -48,21 +45,16 @@ def main():
     file_prefixes = ["athletes", "teams", "games", "NOCs", "cities", "sports", "events"]
 
     for df, fp in zip(dataframes, file_prefixes):
-        df.to_csv(fp + ".csv", index = False)
+        df.to_csv(fp + ".csv", index = False, header = False)
 
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
-# The header titles in "new_headers" are the titles (in order) that are used in for the new dataframe.
-# By default, new_headers = header_list.
-def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False, new_headers = None):
-    if new_headers is None:
-        new_headers = header_list
-
+def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False):
     if drop_duplicates:
         cols_list = [dataframe[h].drop_duplicates() for h in header_list]
     else:
         cols_list = [dataframe[h] for h in header_list]
 
-    return pandas.concat(cols_list, axis = 1, keys = new_headers)
-    # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-python
+    return pandas.concat(cols_list, axis = 1, keys = header_list)
+    # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-pythonom-columns-in-other-dataframes-in-python
 
 main()
