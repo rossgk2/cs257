@@ -41,7 +41,7 @@ def main():
     file_prefixes = ["athlete", "team", "game", "NOC", "city", "sport", "event"]
 
     for df, fp in zip(dataframes, file_prefixes):
-        df.to_csv(fp + ".csv")
+        df.to_csv(fp + ".csv", index = False)
 
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
 # The header titles in "new_headers" are the titles (in order) that are used in for the new dataframe.
@@ -53,9 +53,5 @@ def sub_dataframe_from_cols(dataframe, header_list, new_headers = None):
     cols_list = [dataframe[h].drop_duplicates() for h in header_list]
     return pandas.concat(cols_list, axis = 1, keys = new_headers)
     # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-python
-
-#athlete_list = [athlete_events["Name"], athlete_events["Sex"], athlete_events["Age"], athlete_events["Height"], athlete_events["Weight"], athlete_events["Team"]]
-#athlete_headers = ["Name", "Sex", "Age", "Height", "Weight", "Team"]
-#athlete_frame = pandas.concat(athlete_list, axis=1, keys=athlete_headers)
 
 main()
