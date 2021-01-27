@@ -2,7 +2,7 @@ CREATE TABLE athletes (
     id SERIAL,
     Name text,
     Sex text,
-    Age integer,
+    Age float,
     Height float,
     Weight float,
     Team text
