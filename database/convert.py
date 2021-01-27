@@ -22,6 +22,19 @@ FIELDS WITHOUT TABLES
 - height, weight, sex, age, year, medal
 '''
 
+'''
+After this program runs, must use syntax such as
+
+\COPY athletes (Name, Sex, Age, Height, Weight, Team) FROM 'athletes.csv' DELIMITER ',' CSV NULL AS 'NULL';
+
+to load .csv files into psql. Simply using 
+
+\COPY athletes FROM 'athletes.csv' DELIMITER ',' CSV NULL AS 'NULL';
+
+does not work, because the psql attempt to read in a string value for the SERIAL id field.
+
+'''
+
 def main():
     # Read from .csv files.
     athlete_events = pandas.read_csv(open("athlete_events.csv", "r"))
