@@ -3,14 +3,14 @@ CREATE TABLE athletes (
     Name text,
     Sex text,
     Age integer,
-    Height double,
-    Weight double,
+    Height float,
+    Weight float,
     Team text
 );
 
 CREATE TABLE teams (
     id SERIAL,
-    Team-name text,
+    TeamName text,
     NOC text
 );
 
