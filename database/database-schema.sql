@@ -28,12 +28,12 @@ CREATE TABLE NOCs (
 
 CREATE TABLE cities (
     id SERIAL,
-    City text,
+    City text
 );
 
 CREATE TABLE sports (
     id SERIAL,
-    Sport text,
+    Sport text
 );
 
 CREATE TABLE events (
