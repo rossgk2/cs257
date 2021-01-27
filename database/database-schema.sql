@@ -1,23 +1,23 @@
 CREATE TABLE athletes (
     id SERIAL,
-    name text,
-    sex text,
-    age integer,
-    height double,
-    weight double,
-    team integer
+    Name text,
+    Sex text,
+    Age integer,
+    Height double,
+    Weight double,
+    Team text
 );
 
 CREATE TABLE teams (
     id SERIAL,
-    team_name text,
+    Team-name text,
     NOC text
 );
 
 CREATE TABLE games (
     id SERIAL,
-    year integer,
-    season text
+    Year integer,
+    Season text
 );
 
 CREATE TABLE NOCs (
@@ -28,15 +28,15 @@ CREATE TABLE NOCs (
 
 CREATE TABLE cities (
     id SERIAL,
-    city text,
+    City text,
 );
 
 CREATE TABLE sports (
     id SERIAL,
-    sport text,
+    Sport text,
 );
 
 CREATE TABLE events (
     id SERIAL,
-    event text,
+    Event text
 );
