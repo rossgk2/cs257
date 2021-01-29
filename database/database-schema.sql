@@ -15,8 +15,8 @@ CREATE TABLE athletes (
 
 CREATE TABLE teams (
     id SERIAL,
-    TeamName text,
-    NOC_id integer,
+    Name text,
+    NOC text,
     Region text,
     Notes text
 );
