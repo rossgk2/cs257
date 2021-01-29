@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Large .csv files
+athlete_events.csv
+noc_regions.csv
