@@ -2,10 +2,7 @@
 Written by Ross Grogan-Kaylor and Sam Gloss.
 '''
 
-# https://stackoverflow.com/questions/21800169/python-pandas-get-index-of-rows-which-column-matches-certain-value
-
-import pandas as pd
-import numpy as np
+import pandas
 
 '''
 ====================================================
@@ -40,64 +37,37 @@ does not work, because the psql attempt to read in a string value for the SERIAL
 
 def main():
     # Read from .csv files.
-    athlete_events = pd.read_csv(open("athlete_events.csv", "r"))
-    noc_regions = pd.read_csv(open("noc_regions.csv", "r"))
+    athlete_events = pandas.read_csv(open("athlete_events.csv", "r"))
+    noc_regions = pandas.read_csv(open("noc_regions.csv", "r"))
 
     # Preprocess .csv files.
     athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of commas
     athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL". (https://code.likeagirl.io/how-to-use-python-to-remove-or-modify-empty-values-in-a-csv-dataset-34426c816347)
 
-    # ae_to_noc_rows[i] will be the row in noc_regions that corresponds (via NOC names) to the ith row in athlete_events.
-    #
-    # We can imagine ae_to_noc_rows being constructed as follows: for each NOC name in athlete_events, find the row in
-    # noc_regions that contains that NOC name and add it to ae_to_noc_rows. After sort ae_to_noc_rows after is filled,
-    # do NOT sort it.
-    #
-    # See # https://stackoverflow.com/questions/56658723/how-to-maintain-order-when-selecting-rows-in-pandas-dataframe.
-    idx = pd.Index(noc_regions["NOC"])
-    NOCindexer = idx.get_indexer(athlete_events["NOC"])
-    ae_to_noc_rows = noc_regions.index[NOCindexer]
-
-    NOCs = noc_regions.iloc[ae_to_noc_rows, :]
-    NOCs = NOCs.reset_index() # See https://stackoverflow.com/a/45056184.
-    teams_frame = athlete_events[["Team"]].join(NOCs, how = "outer") # When we use ["Team"] inside the indexing operation instead of "Team", the result returns a DataFrame instead of a Series
-    add_ids(teams_frame)
+    # Set up pandas dataframes for each table.
+    athlete_frame = sub_dataframe_from_cols(athlete_events, ["Name", "Sex", "Age", "Height", "Weight", "Team"])
+    team_frame = sub_dataframe_from_cols(athlete_events, ["Team", "NOC"], ["TeamName", "NOC"])
+    game_frame = sub_dataframe_from_cols(athlete_events, ["Year", "Season"])
+    NOC_frame = sub_dataframe_from_cols(noc_regions, ["NOC", "region", "notes"])
+    city_frame = sub_dataframe_from_cols(athlete_events, ["City"], drop_duplicates = True)
+    sport_frame = sub_dataframe_from_cols(athlete_events, ["Sport"], drop_duplicates = True)
+    event_frame = sub_dataframe_from_cols(athlete_events, ["Event"], drop_duplicates = True)
 
     # Write each pandas dataframe to a .csv file.
-    #dataframes = [None, None, None, team_frame, None, None, None]
-    #file_prefixes = ["athletes", "teams", "games", "teams", "cities", "sports", "events"]
+    dataframes = [athlete_frame, team_frame, game_frame, NOC_frame, city_frame, sport_frame, event_frame]
+    file_prefixes = ["athletes", "teams", "games", "NOCs", "cities", "sports", "events"]
 
-    #for df, fp in zip(dataframes, file_prefixes):
-    #    if df is not None:
-    #        df.to_csv(fp + ".csv", index = False, header = False)
-
-    teams_frame.to_csv("teams" + ".csv", index = False, header = False)
+    for df, fp in zip(dataframes, file_prefixes):
+        df.to_csv(fp + ".csv", index = False, header = False)
 
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
-def cols_from_dataframe(dataframe, header_list, drop_duplicates = False):
+def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False):
     cols_list = [dataframe[h] for h in header_list]
     if drop_duplicates:
         cols_list = [c.drop_duplicates() for c in cols_list]
 
-    return cols_list
 
-def add_ids(dataframe):
-    dataframe.insert(loc = 0, column = "NOC_id", value = np.linspace(start = 0, stop = dataframe.shape[0] - 1, num = dataframe.shape[0]))
-
-# Find the row in noc_regions["NOC"] that each NOC name occupies; if the row does not exist, store -1.
-# NOCs = athlete_events["NOC"]
-# rows = []
-# i = 0
-# for n in NOCs:
-#     row = noc_regions.index[noc_regions["NOC"] == n]
-#     if len(row) == 0:
-#         row = pd.Int64Index([-1])  # If no rows were found, store -1 in the list as a placeholder.
-#     elif len(row) > 1:
-#     print("Uh oh. Multiple rows were selected: {}".format(row))
-#
-#     rows.append(row)
-#     if i == 4:
-#         break
-#     i += 1
+    return pandas.concat(cols_list, axis = 1, keys = header_list)
+    # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-pythonom-columns-in-other-dataframes-in-python
 
 main()
