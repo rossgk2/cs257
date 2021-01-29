@@ -62,10 +62,10 @@ def main():
 
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
 def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False):
+    cols_list = [dataframe[h] for h in header_list]
     if drop_duplicates:
-        cols_list = [dataframe[h].drop_duplicates() for h in header_list]
-    else:
-        cols_list = [dataframe[h] for h in header_list]
+        cols_list = [c.drop_duplicates() for c in cols_list]
+
 
     return pandas.concat(cols_list, axis = 1, keys = header_list)
     # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-pythonom-columns-in-other-dataframes-in-python
