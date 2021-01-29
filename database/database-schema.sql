@@ -15,14 +15,14 @@ CREATE TABLE athletes (
 
 CREATE TABLE teams (
     id SERIAL,
-    Name text,
-    NOC text,
-    Region text,
-    Notes text
+    name text,
+    noc text,
+    region text,
+    notes text
 );
 
 CREATE TABLE games (
     id SERIAL,
-    Year integer,
-    Season text
+    year integer,
+    season text
 );
