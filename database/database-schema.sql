@@ -1,16 +1,16 @@
 CREATE TABLE athletes (
     id SERIAL,
-    Name text,
-    Sex text,
-    Age float,
-    Height float,
-    Weight float,
-    Team_id integer,
-    Game_id integer,
-    City_id integer,
-    Sport_id integer,
-    Event_id integer,
-    Medal text
+    name text,
+    sex text,
+    age float,
+    height float,
+    weight float,
+    team_id integer,
+    game_id integer,
+    city text,
+    sport text
+    event text
+    medal text
 );
 
 CREATE TABLE teams (
@@ -25,19 +25,4 @@ CREATE TABLE games (
     id SERIAL,
     Year integer,
     Season text
-);
-
-CREATE TABLE cities (
-    id SERIAL,
-    City text
-);
-
-CREATE TABLE sports (
-    id SERIAL,
-    Sport text
-);
-
-CREATE TABLE events (
-    id SERIAL,
-    Event text
 );
