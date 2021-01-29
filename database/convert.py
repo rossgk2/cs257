@@ -50,19 +50,18 @@ def main():
     # ae_to_noc_rows[i] will be the row in noc_regions that corresponds (via NOC names) to the ith row in athlete_events.
     #
     # We can imagine ae_to_noc_rows being constructed as follows: for each NOC name in athlete_events, find the row in
-    # noc_regions that contains that NOC name. Store the list of these rows in the order that they are discovered in ae_to_noc_rows.
+    # noc_regions that contains that NOC name and add it to ae_to_noc_rows. After sort ae_to_noc_rows after is filled,
+    # do NOT sort it.
+    #
     # See # https://stackoverflow.com/questions/56658723/how-to-maintain-order-when-selecting-rows-in-pandas-dataframe.
     idx = pd.Index(noc_regions["NOC"])
     NOCindexer = idx.get_indexer(athlete_events["NOC"])
     ae_to_noc_rows = noc_regions.index[NOCindexer]
 
-
-
-    #NOC_cols = [noc_regions[c] for c in NOCs]
-    #team_cols = [athlete_events[c] for c in ["Team", "NOC"]]
-
-    #team_frame = pandas.concat(team_cols + NOC_cols, axis = 1)
-    #add_ids(team_frame)
+    NOCs = noc_regions.iloc[ae_to_noc_rows, :]
+    NOCs = NOCs.reset_index() # See https://stackoverflow.com/a/45056184.
+    teams_frame = athlete_events[["Team"]].join(NOCs, how = "outer") # When we use ["Team"] inside the indexing operation instead of "Team", the result returns a DataFrame instead of a Series
+    add_ids(teams_frame)
 
     # Write each pandas dataframe to a .csv file.
     #dataframes = [None, None, None, team_frame, None, None, None]
@@ -72,7 +71,7 @@ def main():
     #    if df is not None:
     #        df.to_csv(fp + ".csv", index = False, header = False)
 
-    #team_frame.to_csv("teams" + ".csv", index=False, header=False)
+    teams_frame.to_csv("teams" + ".csv", index = False, header = False)
 
 # Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
 def cols_from_dataframe(dataframe, header_list, drop_duplicates = False):
