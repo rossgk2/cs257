@@ -1,0 +1,5 @@
+In the future, convert.py should be outlined as:
+- read in a big .csv
+- create pandas dataframe for a part of this csv
+- reindex that pandas dataframe if necessary
+- use convert_rows() on the big dataframe and on the reindex pandas dataframe
