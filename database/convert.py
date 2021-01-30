@@ -41,7 +41,7 @@ def main():
 
     # Write each pandas dataframe to a .csv file.
     athletes_frame.to_csv("athletes.csv", header = False)
-    teams_frame.to_csv("teams.csv", header = True)
+    teams_frame.to_csv("teams.csv", header = False)
 
 # Returns (teams_frame, teams_index).
 # - teams_frame is a DataFrame consisting of the rows of noc_regions that match up (in terms of the "Team" column)
