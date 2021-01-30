@@ -16,7 +16,7 @@ def main():
     # Get the teams frame, reset its index to be 0, 1, 2... and keep track of the old index for later.
     teams_frame = get_teams_frame()
     teams_index = teams_frame.index
-    teams_frame = teams_frame.reset_index()
+    teams_frame = teams_frame.reset_index(drop = True)
 
     # Initialize athletes_frame with all of its columns except for the Team_ID column.
     cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
