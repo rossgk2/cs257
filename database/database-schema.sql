@@ -15,7 +15,6 @@ CREATE TABLE athletes (
 
 CREATE TABLE teams (
     id SERIAL,
-    name text,
     noc text,
     region text,
     notes text
