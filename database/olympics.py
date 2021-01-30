@@ -1,3 +1,5 @@
+# Written by Ross Grogan-Kaylor and Sam Gloss
+
 import psycopg2
 import argparse
 
