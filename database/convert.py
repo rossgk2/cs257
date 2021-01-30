@@ -15,16 +15,27 @@ athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL"
 def main():
     teams_frame = get_teams_frame()
 
+    # Initialize athletes_frame with all of its columns except for the Team_ID column.
     cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
     athletes_cols_list = [athlete_events[c] for c in cols]
     athletes_frame = pd.concat(athletes_cols_list, axis = 1)
 
+    # Prepare to insert the Team_ID column right before the Games column.
+    teams_frame = teams_frame.drop_duplicates(subset = "NOC") # Each row should have a unique entry in the "NOC" column
+
+    # all_team_ids[i] will be the team_id for the ith row of athletes_events, or, equivalently, for the ith athlete.
+    all_team_ids = []
+    unique_team_ids = teams_frame["index"]
+    for i in range(len(unique_team_ids) - 1):
+        n = (unique_team_ids.index[i + 1] - 1) - unique_team_ids.index[i] + 1
+        all_team_ids += (n * [unique_team_ids.iloc[i]])
+
+    # Fill the rest of all_team_ids with the last entry in unique_team_ids.
+    n = athletes_frame.shape[0] - len(all_team_ids) # this is >= 0
+    all_team_ids += (n * [unique_team_ids.iloc[-1]])
+
     # Insert the Team_ID column right before the Games column.
-    # possibly: teams_frame.drop_duplicates(subset = "Team")
-    # bogus line so I can commit to Git
-    ae_to_t_rows = df1_rows_to_df2(athlete_events, teams_frame, "Team")
-    print(ae_to_t_rows)
-    athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = ae_to_t_rows)
+    athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = all_team_ids)
 
     # Write each pandas dataframe to a .csv file.
     dataframes = [athletes_frame, teams_frame]
