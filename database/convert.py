@@ -11,6 +11,7 @@ noc_regions = pd.read_csv(open("noc_regions.csv", "r"))
 # Preprocess .csv files.
 athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of commas
 athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL". (https://code.likeagirl.io/how-to-use-python-to-remove-or-modify-empty-values-in-a-csv-dataset-34426c816347)
+athlete_events = athlete_events.sort_values(by = "NOC")
 
 def main():
     # Get the teams frame, reset its index to be 0, 1, 2... and keep track of the old index for later.
