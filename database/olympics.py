@@ -45,7 +45,7 @@ print()
 def get_medal_count(noc, medal):
 	# Do query2.
 	try:
-		cursor.execute(get_query2(noc, medal), (noc, ))
+		cursor.execute(get_query2("%s", medal), (noc, ))
 	except Exception as e:
 		print(e)
 		exit()
@@ -56,26 +56,17 @@ def get_medal_count(noc, medal):
 
 	return n
 
-# # Get list of NOCs.
-# try:
-#     cursor.execute(query, (search_string,))
-# except Exception as e:
-#     print(e)
-#     exit()
+# Get list of NOCs.
+try:
+    cursor.execute("SELECT teams.noc FROM teams")
+except Exception as e:
+    print(e)
+    exit()
 
-
-# try:
-# 	cursor = connection.cursor()
-# 	cursor.execute("SELECT teams.noc FROM teams")
-# except Exception as e:
-# 	print(e)
-# 	exit()
-
-# noc_list = [n for n in cursor]
-# print("noc list!!!!")
-# print(noc_list)
-
-# print("Number of gold medals won by {} is {}.".format(noc, get_medal_count(noc, "Gold"))
+noc_list = [n[0] for n in cursor]
+print(noc_list)
+for noc in noc_list:
+ 	print("Number of gold medals won by {} is {}.".format(noc.upper(), get_medal_count(noc, "Gold")))
 
 # Now do query3.
 try:
