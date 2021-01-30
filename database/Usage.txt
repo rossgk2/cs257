@@ -1,0 +1,12 @@
+python3 olympics.py 
+--athletesfrom (-a) takes a NOC and returns every athlete from the region (takes one argument)
+--nocbymedals (-n) lists the NOCs by gold medals (takes one argument to run although the argument doesn't matter)
+--events (-e) lists every olympian to compete in a certain event (one argument)
+--help (h) (gives you list of commands if needed)
+
+Guide:
+In order to print a list of all athletes who are from a certain NOC contain, use python3  --athletesfrom USA or -a USA
+In order to print a list of all NOCs by medal count (descending) use python3  --nocbymedals S or -n S
+In order to print a list of all athletes who competed in an event use python3 --events Wrestling or -e Wrestling
+If several tags are the program will print a list that meet the requirements of one of the tags conditions. It will print each list one at a time. So single argument only will effect it only. (think of it as an "Or" instead of an "And"). 
+
