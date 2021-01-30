@@ -101,6 +101,7 @@ def query2():
 	except Exception as e:
 		print(e)
 		exit()
+	noc_list = [n[0] for n in cursor]
 
 	def get_medal_count(noc, medal):
 		# Do query2.
@@ -116,10 +117,30 @@ def query2():
 
 		return n
 
-	noc_list = [n[0] for n in cursor]
-	print(noc_list)
-	for noc in noc_list:
-		print("Number of gold medals won by {} is {}.".format(noc.upper(), get_medal_count(noc, "Gold")))
+	def order_nocs_by_medal_count():
+		result = []
+		for noc in noc_list:
+			team_medals = []
+			team_medals.append(noc)
+			team_medals.append(get_medal_count(noc, "Gold"))
+			if len(result) > 0:
+				index = 0
+				for medals in result:
+					if medals[1] < team_medals[1]:
+						result.insert(index, team_medals)
+						break
+					elif team_medals[1] == 0:
+						result.append(team_medals)
+						break
+					else:
+						index += 1
+			else:
+				result.append(team_medals)
+
+		return result
+
+	for (noc, count) in order_nocs_by_medal_count():
+		print("Number of gold medals won by {} is {}.".format(noc, count))
 
 def query3():
 	# Now do query3.
