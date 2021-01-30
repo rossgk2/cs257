@@ -9,8 +9,5 @@ ORDER BY COUNT(athletes.medal) DESC;
 
 
 
-SELECT noc,COUNT(medal) 
-FROM results 
-JOIN nocs ON results.noc_id = nocs.id WHERE medal = 'Gold' 
-GROUP BY nocs.noc 
-ORDER BY COUNT(MEDAL) DESC;
+SELECT DISTINCT athletes.name, teams.id FROM athletes, teams 
+WHERE teams.noc = 'USA' AND athletes.medal = 'Gold' AND athletes.team_id = teams.id;
