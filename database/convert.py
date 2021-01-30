@@ -13,6 +13,8 @@ athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of comm
 athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL". (https://code.likeagirl.io/how-to-use-python-to-remove-or-modify-empty-values-in-a-csv-dataset-34426c816347)
 
 def main():
+    # Get the teams frame and the teams_index, which will describe how the rows in athletes_frame
+    # correspond to those in teams_frame.
     (teams_frame, teams_index) = get_teams_frame_and_index()
 
     # Initialize athletes_frame with all of its columns except for the Team_ID column.
@@ -24,13 +26,12 @@ def main():
     teams_frame = teams_frame.drop_duplicates(subset = "NOC") # Each row should have a unique entry in the "NOC" column
     athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = teams_index)
 
-    # Write each pandas dataframe to a .csv file.
-    dataframes = [athletes_frame, teams_frame]
-    file_prefixes = ["athletes", "teams"]
+    # Decrement 1 from the "ID" column to use 0-based indexing.
+    athletes_frame["ID"] -= 1
 
-    for df, fp in zip(dataframes, file_prefixes):
-        if df is not None:
-            df.to_csv(fp + ".csv", header = False)
+    # Write each pandas dataframe to a .csv file.
+    athletes_frame.to_csv("athletes.csv", index = False, header = False)
+    teams_frame.to_csv("teams.csv", index = True, header = False)
 
 # Returns (teams_frame, teams_index).
 # - teams_frame is a DataFrame consisting of the rows of noc_regions that match up (in terms of the "Team" column)
