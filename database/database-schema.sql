@@ -8,8 +8,8 @@ CREATE TABLE athletes (
     team_id integer,
     games text,
     city text,
-    sport text
-    event text
+    sport text,
+    event text,
     medal text
 );
 
