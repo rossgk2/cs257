@@ -89,7 +89,6 @@ def query1(noc):
 
 	print(1)
 	# We have a cursor now. Iterate over its rows to print the results.
-	print('===== Names of all the athletes from the USA =====')
 	for row in cursor:
 		print(row[0], row[1])
 	print()
