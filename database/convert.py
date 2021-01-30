@@ -21,6 +21,7 @@ def main():
 
     # Insert the Team_ID column right before the Games column.
     # possibly: teams_frame.drop_duplicates(subset = "Team")
+    # bogus line so I can commit to Git
     ae_to_t_rows = df1_rows_to_df2(athlete_events, teams_frame, "Team")
     print(ae_to_t_rows)
     athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = ae_to_t_rows)
