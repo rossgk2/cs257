@@ -45,17 +45,17 @@ athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL"
 
 def main():
     teams_frame = get_teams_frame_with_repeats()
-    add_ids(teams_frame)
+
+    games_cols_list = [athlete_events[c] for c in ["Year", "Season"]]
+    games_frame = pd.concat(games_cols_list, axis = 1)
 
     # Write each pandas dataframe to a .csv file.
-    #dataframes = [None, None, None, team_frame, None, None, None]
-    #file_prefixes = ["athletes", "teams", "games", "teams", "cities", "sports", "events"]
+    dataframes = [teams_frame, games_frame]
+    file_prefixes = ["teams", "games"]
 
-    #for df, fp in zip(dataframes, file_prefixes):
-    #    if df is not None:
-    #        df.to_csv(fp + ".csv", index = False, header = False)
-
-    teams_frame.to_csv("teams" + ".csv", index = False, header = False)
+    for df, fp in zip(dataframes, file_prefixes):
+        if df is not None:
+            df.to_csv(fp + ".csv", header = False)
 
 def get_teams_frame_with_repeats():
     # ae_to_noc_rows[i] will be the row in noc_regions that corresponds (via NOC names) to the ith row in athlete_events.
@@ -72,20 +72,7 @@ def get_teams_frame_with_repeats():
     NOCs = noc_regions.iloc[ae_to_noc_rows, :]
     NOCs = NOCs.reset_index()  # See https://stackoverflow.com/a/45056184.
 
-    # When we use ["Team"] inside the indexing operation instead of "Team", the result returns a DataFrame instead of a Series.
-    teams_frame = athlete_events[["Team"]].join(NOCs, how = "outer")
-
-# Returns a pandas dataframe consisting of the columns from "dataframe" whose titles are listed in "header_list".
-def sub_dataframe_from_cols(dataframe, header_list, drop_duplicates = False):
-    cols_list = [dataframe[h] for h in header_list]
-    if drop_duplicates:
-        cols_list = [c.drop_duplicates() for c in cols_list]
-
-    return pd.concat(cols_list, axis = 1, keys = header_list)
-    # The idea to use pandas.concat comes from https://www.kite.com/python/answers/how-to-create-a-pandas-dataframe-from-columns-in-other-dataframes-in-pythonom-columns-in-other-dataframes-in-python
-
-def add_ids(dataframe):
-    ids = np.linspace(start = 0, stop = dataframe.shape[0] - 1, num = dataframe.shape[0])
-    dataframe.insert(loc = 0, column = "ids", value = ids)
+    # When we use ["Team"] inside the indexing operation instead of "Team", the result is a DataFrame instead of a Series.
+    return athlete_events[["Team"]].join(NOCs, how = "outer")
 
 main()
