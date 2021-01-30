@@ -46,12 +46,14 @@ athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL"
 def main():
     teams_frame = get_teams_frame_with_repeats()
 
-    games_cols_list = [athlete_events[c] for c in ["Year", "Season"]]
-    games_frame = pd.concat(games_cols_list, axis = 1)
+    cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
+    athletes_cols_list = [athlete_events[c] for c in cols]
+    athletes_frame = pd.concat(athletes_cols_list, axis = 1)
+    athletes_frame.insert(loc = cols.index("Games"), column = "team_id", value = athletes_frame.index)
 
     # Write each pandas dataframe to a .csv file.
-    dataframes = [teams_frame, games_frame]
-    file_prefixes = ["teams", "games"]
+    dataframes = [athletes_frame, teams_frame]
+    file_prefixes = ["athletes", "teams"]
 
     for df, fp in zip(dataframes, file_prefixes):
         if df is not None:

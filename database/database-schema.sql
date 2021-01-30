@@ -6,7 +6,7 @@ CREATE TABLE athletes (
     height float,
     weight float,
     team_id integer,
-    game_id integer,
+    games text,
     city text,
     sport text
     event text
@@ -19,10 +19,4 @@ CREATE TABLE teams (
     noc text,
     region text,
     notes text
-);
-
-CREATE TABLE games (
-    id SERIAL,
-    year integer,
-    season text
 );
