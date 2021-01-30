@@ -13,17 +13,15 @@ athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of comm
 athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL". (https://code.likeagirl.io/how-to-use-python-to-remove-or-modify-empty-values-in-a-csv-dataset-34426c816347)
 
 def main():
-    (teams_frame, teams_index) = get_teams_frame()
+    (teams_frame, teams_index) = get_teams_frame_and_index()
 
     # Initialize athletes_frame with all of its columns except for the Team_ID column.
     cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
     athletes_cols_list = [athlete_events[c] for c in cols]
     athletes_frame = pd.concat(athletes_cols_list, axis = 1)
 
-    # Prepare to insert the Team_ID column right before the Games column.
-    teams_frame = teams_frame.drop_duplicates(subset = "NOC") # Each row should have a unique entry in the "NOC" column
-
     # Insert the Team_ID column right before the Games column.
+    teams_frame = teams_frame.drop_duplicates(subset = "NOC") # Each row should have a unique entry in the "NOC" column
     athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = teams_index)
 
     # Write each pandas dataframe to a .csv file.
@@ -34,16 +32,23 @@ def main():
         if df is not None:
             df.to_csv(fp + ".csv", header = False)
 
-def get_teams_frame():
+# Returns (teams_frame, teams_index).
+# - teams_frame is a DataFrame consisting of the rows of noc_regions that match up (in terms of the "Team" column)
+# to the rows of athlete_events.
+# - teams_index is an Index (essentially a sequence of integers) whose ith entry is the index of the row in teams_frame
+# that corresponds to the ith row in teams_frame
+#
+def get_teams_frame_and_index():
     # ae_to_noc_rows[i] will be the row in noc_regions that corresponds (via NOC names) to the ith row in athlete_events.
     ae_to_noc_rows = df1_rows_to_df2(athlete_events, noc_regions, "NOC")
 
     # Now use ae_to_noc_rows to grab the rows from noc_regions that we want.
     NOCs = noc_regions.iloc[ae_to_noc_rows, :]
 
-    # See https://stackoverflow.com/a/45056184.
+    # Since the above has selected some particular rows from NOCs, the indices of the rows in NOCs may now be something
+    # like 5, 7, 10, ... We now reset these indices to be 1, 2, 3...
     teams_index = NOCs.index
-    NOCs = NOCs.reset_index(drop = False)
+    NOCs = NOCs.reset_index(drop = False) # Use drop = False so that the old indices aren't stored as a column in the returned DataFrame.
 
     # Join the team names from athlete_events with the team NOC information. (Note: when we use ["Team"] inside the
     # indexing operation instead of "Team", the result is a DataFrame instead of a Series).
