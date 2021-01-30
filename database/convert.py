@@ -13,25 +13,35 @@ athlete_events = athlete_events.replace(",", "", regex = True) # Get rid of comm
 athlete_events = athlete_events.fillna("NULL") # Replace empty cells with "NULL". (https://code.likeagirl.io/how-to-use-python-to-remove-or-modify-empty-values-in-a-csv-dataset-34426c816347)
 
 def main():
-    # Get the teams frame and the teams_index, which will describe how the rows in athletes_frame
-    # correspond to those in teams_frame.
-    (teams_frame, teams_index) = get_teams_frame_and_index()
+    # Get the teams frame, reset its index to be 0, 1, 2... and keep track of the old index for later.
+    teams_frame = get_teams_frame()
+    teams_index = teams_frame.index
+    teams_frame = teams_frame.reset_index()
 
     # Initialize athletes_frame with all of its columns except for the Team_ID column.
     cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
     athletes_cols_list = [athlete_events[c] for c in cols]
     athletes_frame = pd.concat(athletes_cols_list, axis = 1)
 
+    # Set up the Team_ID column.
+    team_ids = []
+    for i in range(len(teams_index) - 1):
+        n = (teams_index[i + 1] - teams_index[i] + 1) - 1
+        team_ids += (n * [i])
+
+    # The last entry in teams_index fills the remainder of team_ids.
+    n = athlete_events.shape[0] - len(team_ids)
+    team_ids += (n * [teams_index[-1]])
+
     # Insert the Team_ID column right before the Games column.
-    teams_frame = teams_frame.drop_duplicates(subset = "NOC") # Each row should have a unique entry in the "NOC" column
-    athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = teams_index)
+    athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = team_ids)
 
     # Decrement 1 from the "ID" column to use 0-based indexing.
     athletes_frame["ID"] -= 1
 
     # Write each pandas dataframe to a .csv file.
     athletes_frame.to_csv("athletes.csv", index = False, header = False)
-    teams_frame.to_csv("teams.csv", index = True, header = False)
+    teams_frame.to_csv("teams.csv", index = True, header = True)
 
 # Returns (teams_frame, teams_index).
 # - teams_frame is a DataFrame consisting of the rows of noc_regions that match up (in terms of the "Team" column)
@@ -39,7 +49,7 @@ def main():
 # - teams_index is an Index (essentially a sequence of integers) whose ith entry is the index of the row in teams_frame
 # that corresponds to the ith row in teams_frame
 #
-def get_teams_frame_and_index():
+def get_teams_frame():
     # ae_to_noc_rows[i] will be the row in noc_regions that corresponds (via NOC names) to the ith row in athlete_events.
     ae_to_noc_rows = df1_rows_to_df2(athlete_events, noc_regions, "NOC")
 
@@ -47,19 +57,17 @@ def get_teams_frame_and_index():
     NOCs = noc_regions.iloc[ae_to_noc_rows, :]
 
     # Since the above has selected some particular rows from NOCs, the indices of the rows in NOCs may now be something
-    # like 5, 7, 10, ... We now reset these indices to be 1, 2, 3...
-    teams_index = NOCs.index
-    NOCs = NOCs.reset_index(drop = False) # Use drop = False so that the old indices aren't stored as a column in the returned DataFrame.
+    # like 5, 7, 10, ... We now reset these indices to be 0, 1, 2...
+    NOCs = NOCs.reset_index(drop = True) # Use drop = True so that the old indices aren't stored as a column in the returned DataFrame.
 
     # Join the team names from athlete_events with the team NOC information. (Note: when we use ["Team"] inside the
     # indexing operation instead of "Team", the result is a DataFrame instead of a Series).
     teams_frame = athlete_events[["Team"]].join(NOCs, how = "outer")
 
-    # Remove rows that have the same team name. Note, the id's/indices of each row do not get reset, which is what we want.
-    # (No index resetting means that the id of the ith row in teams_frame is still equal to the id of the corresponding row
-    # in athlete_events).
-    teams_frame.drop_duplicates(subset = "Team")
-    return (teams_frame, teams_index)
+    # Remove rows that have the same NOC. (It's easier for NOC's to match than for team names to match).
+    # Note, the id's/indices of each row do not get reset, which is what we want.
+    teams_frame = teams_frame.drop_duplicates(subset = "NOC")
+    return teams_frame
 
 # df1_rows_to_df2(df1, df2, col_name)[i] is the row in df2 that corresponds (via col_name) to the ith row in df1.
 def df1_rows_to_df2(df1, df2, col_name):
