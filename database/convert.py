@@ -36,12 +36,12 @@ def main():
     # Insert the Team_ID column right before the Games column.
     athletes_frame.insert(loc = cols.index("Games"), column = "Team_ID", value = team_ids)
 
-    # Decrement 1 from the "ID" column to use 0-based indexing.
-    athletes_frame["ID"] -= 1
+    # Remove the preexisting ID column, as we won't need it.
+    athletes_frame = athletes_frame.drop(columns = "ID")
 
     # Write each pandas dataframe to a .csv file.
-    athletes_frame.to_csv("athletes.csv", index = False, header = False)
-    teams_frame.to_csv("teams.csv", index = True, header = True)
+    athletes_frame.to_csv("athletes.csv", header = False)
+    teams_frame.to_csv("teams.csv", header = True)
 
 # Returns (teams_frame, teams_index).
 # - teams_frame is a DataFrame consisting of the rows of noc_regions that match up (in terms of the "Team" column)
