@@ -16,7 +16,7 @@ def get_query2(noc, medal):
 		   " AND athletes.medal = '{}' AND athletes.team_id = teams.id".format(noc, medal)
 
 # SQL command to list the names of all the athletes that competed in wrestling
-query3 = "SELECT DISTINCT athletes.name, athletes.event, WHERE event = 'Wrestling' and athletes.event = event"
+query3 = "SELECT DISTINCT athletes.name, athletes.event FROM athletes WHERE event = 'Wrestling' and athletes.event = event"
 
 # Connect to the database
 try:
@@ -56,23 +56,30 @@ def get_medal_count(noc, medal):
 
 	return n
 
-# Get list of NOCs.
-try:
-	cursor = connection.cursor()
-	cursor.execute("SELECT teams.noc FROM teams")
-except Exception as e:
-	print(e)
-	exit()
-
-#noc_list = [n for n in cursor]
-#print("noc list!!!!")
-#print(noc_list)
-
-print("Number of gold medals won by {} is {}.".format(noc, get_medal_count(noc, "Gold"))
-
-# # Now do query3.
+# # Get list of NOCs.
 # try:
-#     cursor.execute(query3)
+#     cursor.execute(query, (search_string,))
 # except Exception as e:
 #     print(e)
 #     exit()
+
+
+# try:
+# 	cursor = connection.cursor()
+# 	cursor.execute("SELECT teams.noc FROM teams")
+# except Exception as e:
+# 	print(e)
+# 	exit()
+
+# noc_list = [n for n in cursor]
+# print("noc list!!!!")
+# print(noc_list)
+
+# print("Number of gold medals won by {} is {}.".format(noc, get_medal_count(noc, "Gold"))
+
+# Now do query3.
+try:
+    cursor.execute(query3)
+except Exception as e:
+    print(e)
+    exit()
