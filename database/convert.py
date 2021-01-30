@@ -16,10 +16,11 @@ def main():
 
     # Get teams_frame.
     teams_frame = get_teams_frame(athlete_events, noc_regions, "NOC")
+    teams_frame = teams_frame.fillna("NULL")
     team_ids = convert_row_indices(athlete_events, teams_frame, "NOC")
 
     # Initialize athletes_frame with all of its columns except for the Team_ID column.
-    cols = ["ID", "Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
+    cols = ["Name", "Sex", "Age", "Height", "Weight", "Games", "City", "Sport", "Event", "Medal"]
     athletes_cols_list = [athlete_events[c] for c in cols]
     athletes_frame = pd.concat(athletes_cols_list, axis=1)
 
