@@ -1,1 +1,39 @@
 See https://docs.google.com/presentation/d/1Fy2Fu_bJDysrM-77jQhldp48PijYkCJQgq2kwzciQF0/edit?usp=sharing.
+User stories and wireframes
+By Ross Grogan-Kaylor and Jimmy Zhong at Carleton College under Prof Jeff Ondich
+
+The databases we will use are found at the following links. A Kaggle account is required to for the downloads. Kaggle accounts are free to create.
+pokemon1.csv : https://www.kaggle.com/rounakbanik/pokemon
+pokemon2.csv : https://www.kaggle.com/mrdew25/pokemon-database 
+
+User stories
+
+Story:
+Gamers can look up the ability, type and other information about a Pokemon, given that they know the name of the Pokemon.
+Possible implementation:
+The gamer enters the name of the Pokemon into the search bar.
+
+Story:
+A Pokemon enthusiast can organize Pokemon by type so that they can decide which “Water” type Pokemon are their favorite.
+Possible implementation:
+The enthusiast can select “Water” out of a drop down menu of all possible types.
+
+Story:
+A Pokemon enthusiast can use the website as a tool to remember which types are “supereffective” against which other types.
+Possible implementation:
+The website automatically displays the types that each Pokemon is strong/weak against. It also contains a link to a table that summarizes which types beat/lose to which other types.
+
+Story:
+A Pokemon enthusiast can easily “thumb through” the Pokemon in sequential order of their Pokedex ID’s.
+Possible implementation:
+Users keep scrolling down the starting page (that way they can see from biggest ID to the smallest ID). If they want to see from smallest to largest ID, they go to the advance searching bar and use “sort ascending” on “ID”. 
+
+Story:
+A Pokemon enthusiast can determine the strengths and weaknesses of any Pokemon.
+Possible implementation:
+Once a particular Pokemon has been selected after a search, a radar diagram displays the stats of that Pokemon.
+
+Story:
+Users can do mutli-filter searches => like Carleton directory, and get a list of pokemons that satisfy all the criteria. 
+Possible implementation:
+In the advanced search page, there will be a lot of fields that allow user to input their search criteria, then we pipe the input into a database search program
