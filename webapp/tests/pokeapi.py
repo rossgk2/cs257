@@ -1,0 +1,2 @@
+class pokeapi():
+	pass

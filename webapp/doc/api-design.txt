@@ -1,22 +1,25 @@
 Ross Grogan-Kaylor and Jimmy Zhong
 ====================================================
 
-REQUEST: /pokemon/types
+REQUEST: /types
 RESPONSE: an 18-element JSON list of strings representing all the types that Pokemon can have (e.g. "fire", "water", "electric", etc.)
 
 
-REQUEST: /pokemon/abilities
+REQUEST: /abilities
 RESPONSE: a JSON list of strings representing all the abilities that Pokemon can have (e.g. "berserk", "electric surge", etc.)
 
 
-REQUEST: /pokemon/region
+REQUEST: /regions
 RESPONSE: a JSON list of strings representing regions that Pokemon can live in.
 
-REQUEST: /pokemon/growth_type
+
+REQUEST: /growth_types
 RESPONSE: a JSON list of strings representing "growth types" that Pokemon can conform to (e.g. "Medium Slow").
 
-REQUEST: /pokemon/egg_groups
+
+REQUEST: /egg_groups
 RESPONSE: a JSON list of strings representing egg groups that Pokemon can belong to (e.g. "Water1", "Water2", "Grass")
+
 
 REQUEST: /pokemon/[_pokemon]
 RESPONSE: a JSON list corresponding to the string _pokemon containing 
@@ -24,7 +27,9 @@ RESPONSE: a JSON list corresponding to the string _pokemon containing
 - a list of strings called "types" of 0 to 2 elements
 - a list of strings called "abilities" of 0 to 2 elements
 
+
 REQUEST: /pokemon/?[id_range=_id_range]&[name_contains=_name_contains]&[legendary=_leg]&[type1=_type1]&[type2=_type2]&[ability1=_ability1]&[ability2=_ability2]&[hidden_ability=_hidden_ability]&[health_range=_health_range]&[attack_range=_attack_range]&[defense_range=_defense_range]&[special_attack_range=_special_attack_range]&[special_defense_range=_special_defense_range]&[speed_range=_speed_range]&[region=_region]&[catch_rate_range=_catch_rate_range]&[growth_type=&growth_type]&[male_percent_range=_male_percent_range]&[game=_game]&[egg_group1=_egg_group_1]&[egg_group2=_egg_group2]&[sort_field=_sort_field]&[sort_type=_sort_type]
+
 
 RESPONSE: a JSON list of Pokemon names of Pokemon such that the filters are satisfied. The arguments sort_field and sort_type determine how the returned JSON list is sorted.
 
