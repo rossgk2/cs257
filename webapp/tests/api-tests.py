@@ -16,13 +16,19 @@ class APICheckerTester(unittest.TestCase):
     	'''
    		Tests the API endpoint /types
    		'''
-    	pass
+   		expected_types = ["normal", "water", "electric", "fighting", "ground", "psychic", "rock", "dark", "steel",
+   		"fire", "grass", "ice", "poison", "flying", "bug", "ghost", "dragon", "fairy"]
+   		self.assertCountEqual(expected_types, self.pokeapi.get_types()) # assertCountEqual() is misleadingly named- it checks if two lists are equal (ignoring order)
 
    	def test_abilities(self):
    		'''
    		Tests the API endpoint /abilities
    		'''
-   		self.assertTrue(self.pokeapi.get_)
+   		# There are 100+ abilitites. We will check for a couple.
+   		required_abilities = ["adaptability", "chlorophyll", "hydration", "normalize", "sand veil", "super luck", "water bubble"]
+   		abilities = self.pokeapi.get_abilities()
+   		for a in required_abilities:
+   			self.assertIn(a, abilities) # asserts that a must be in abilities
 
    	def test_region(self):
    		'''
@@ -59,6 +65,8 @@ class APICheckerTester(unittest.TestCase):
    		'''
    		pass
 
+   	# For reference:
+   	#
    	# self.assertRaises(ValueError, self.prime_checker.is_prime, -5)
    	# self.assertTrue(self.prime_checker.is_prime(2))
    	# self.assertFalse(self.prime_checker.is_prime(96))
