@@ -1,17 +1,17 @@
 ID,egg_group
-1,Monster
-2,Undiscovered
-3,Human-Like
-4,Field
-5,Bug
-6,Mineral
-7,Ditto
-8,Water 1
-9,Fairy
-10,Flying
-11,Grass
-12,Amorphous
-13,Water 2
-14,Water 3
-15,Dragon
-52,NULL
+1,monster
+2,undiscovered
+3,human-like
+4,field
+5,bug
+6,mineral
+7,ditto
+8,water 1
+9,fairy
+10,flying
+11,grass
+12,amorphous
+13,water 2
+14,water 3
+15,dragon
+52,null

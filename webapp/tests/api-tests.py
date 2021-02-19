@@ -3,6 +3,24 @@ Ross Grogan-Kaylor and Jimmy Zhong
 '''
 import pokeapi
 import unittest
+import csv
+import json
+
+def parse_csv_to_json(csv_file):
+	with open(csv_file) as file:
+		read_in_file = list((csv.reader(file, skipinitialspace=True)))
+	csv_built_dict = {}
+	for each_row in read_in_file[1:]:
+		if len(each_row) > 1:
+			ID = each_row[0]
+			ability = each_row[1]
+			csv_built_dict[ability] = ID
+	return json.dumps(csv_built_dict)
+
+region_csv_file = "../region_table.csv"
+ability_csv_file = "../ability_table.csv"
+print(parse_csv_to_json(region_csv_file))
+print(parse_csv_to_json(ability_csv_file))
 
 class APICheckerTester(unittest.TestCase):
 	def setUp(self):
@@ -31,10 +49,9 @@ class APICheckerTester(unittest.TestCase):
 			self.assertIn(a, abilities) # asserts that a must be in abilities
 
 	def test_region(self):
-		'''
-		Tests the API endpoint /regions
-		'''
-		pass
+		required_regions = parse_csv_to_json(region_csv_file)
+		program_output_region = self.pokeapi.get_regions()
+		self.assertAlmostEqual(required_regions, program_output_region)
 
 	def test_growth_type(self):
 		'''

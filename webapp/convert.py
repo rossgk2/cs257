@@ -65,8 +65,8 @@ def create_one_map_one_table(all_rows, option):
 			index = index + 1
 	
 	if option == "egg_group1" or option == "type1":
-		table.append([52, "NULL"])
-		dictionary["NULL"] = 52
+		table.append([52, "null"])
+		dictionary["null"] = 52
 	return table, dictionary
 
 class ability:
@@ -158,7 +158,7 @@ def main():
 		read_in_file = list((csv.reader(file, skipinitialspace=True)))[2:]
 	for i in range(len(read_in_file)):
 		for j in range(len(read_in_file[i])):
-			read_in_file[i][j] = read_in_file[i][j].replace('"', '')
+			read_in_file[i][j] = read_in_file[i][j].replace('"', '').lower()
 	for row in read_in_file:
 		if len(row) > 1:
 			# read in pokemon_id, pokedex_number, pokemon_name, legendary_type, type1, type2, primary_ability, 
