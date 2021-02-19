@@ -1,11 +1,13 @@
 CREATE TABLE pokemon(
     id SERIAL,
-    pokemon_id integer,
+    pokedex_number integer,
+    name text,
+    legendary_id integer,
     type1_id integer,
     type2_id integer,
     ability1_id integer,
     ability2_id integer,
-    hidden_ability text,
+    hidden_ability integer,
     health integer,
     attack integer,
     defense integer,
@@ -13,12 +15,12 @@ CREATE TABLE pokemon(
     special_defense integer,
     speed integer,
     region_id integer,
-    catch_rate integer,
+    catch_rate numeric,
     growth_type_id integer,
-    male_percent integer,
+    male_percent numeric,
     game_id integer,
     egg_group1_id integer,
-    egg_group2_id integer	
+    egg_group2_id integer
 );
 
 create TABLE types (
