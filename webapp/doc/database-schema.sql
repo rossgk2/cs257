@@ -1,7 +1,7 @@
 CREATE TABLE pokemon(
     id SERIAL,
     pokedex_number integer,
-    name text,
+    pokemon_name text,
     legendary_id integer,
     type1_id integer,
     type2_id integer,
@@ -25,7 +25,7 @@ CREATE TABLE pokemon(
 
 create TABLE types (
     id SERIAL,
-    type text
+    pokemon_type text
 );
 
 create TABLE abilities (
