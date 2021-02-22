@@ -37,27 +37,19 @@ def connect_database():
         print(e)
         exit()
 
-@api.route('/cats/') 
-def get_cats():
-    # Of course, your API will be extracting data from your postgresql database.
-    # To keep the structure of this tiny API crystal-clear, I'm just hard-coding data here.
-    cats = [{'name':'Emma', 'birth_year':1983, 'death_year':2003, 'description':'the boss'},
-            {'name':'Aleph', 'birth_year':1984, 'death_year':2002, 'description':'sweet and cranky'},
-            {'name':'Curby', 'birth_year':1999, 'death_year':2000, 'description':'gone too soon'},
-            {'name':'Digby', 'birth_year':2000, 'death_year':2018, 'description':'the epitome of Cat'},
-            {'name':'Max', 'birth_year':1998, 'death_year':2009, 'description':'seismic'},
-            {'name':'Scout', 'birth_year':2007, 'death_year':None, 'description':'accident-prone'}]
-    return json.dumps(cats)
+@api.route('/abilities') 
+def get_abilities():
+    query = "SELECT * FROM abilities;"
+    cursor = connect_database().cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        index, ability, ability_description = row
+        output_list.append({'abilities': ability})
+    return json.dumps(output_list)
 
-@api.route('/dogs/') 
-def get_dogs():
-    dogs = [{'name':'Ruby', 'birth_year':2003, 'death_year':2016, 'description':'a very good dog'},
-            {'name':'Maisie', 'birth_year':2017, 'death_year':None, 'description':'a very good dog'}]
-    return json.dumps(dogs)
-
-@api.route('/types/')
+@api.route('/types')
 def get_types():
-    ''' Return all nocs and the fully spelled out nation/region names'''
     query = "SELECT * FROM types;"
     db_connection = connect_database()
     cursor = db_connection.cursor()
@@ -65,6 +57,17 @@ def get_types():
     output_list = []
     for row in cursor:
         index, type_name = row
-        output_list.append({'index':index, 'type_name': type_name})
+        output_list.append({'types': type_name})
     return json.dumps(output_list)
 
+@api.route('/regions')
+def get_regions():
+    query = "SELECT * FROM regions;"
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        index, region = row
+        output_list.append({'regions': region})
+    return json.dumps(output_list)

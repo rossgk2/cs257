@@ -5,18 +5,34 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='webapp.css') }}" />
     <script type="text/javascript" src="{{ url_for('static', filename='webapp.js') }}"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" />
-    <title>CS 257: Software Design</title>
+    <title>Pokemon Home</title>
 </head>
 
 <body>
-    <h3>Tiny Web App Home Page</h3>
+    <h3>All Single Types and abilities</h3>
+    <select id = "type1_list_selection">
+        <option value = " 1 ">if you see this, it's an error</option>
+    </select>
+    <button id = "type1_button">find_type1</button>
 
-    <p><button id="cats_button">Cats</button></p>
-    <p><button id="dogs_button">Dogs</button></p>
+    <select id = "type2_list_selection">
+        <option value = " 1 "></option>
+    </select>
+    <button id = "type2_button">find_type2</button>
 
-    <ul id="animal_list"></ul>
+    <select id = "ability_list_selection">
+        <option value = " 1 "></option>
+    </select>
+    <button id = "ability_button">find_ability</button>(ability1, ability2, or hidden ability) 
 
-    <h3>One other page</h3>
-    <p>You can go to <a href="other.html">this other page</a>.</p>
+    <p><button id="click_and_change_button">all pokemon regions</button></p>
+    <ul id="regions_list"> try click the button </ul>
+
 </body>
 </html>
+
+    <!--
+    attempting to use jQuery
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    -->
