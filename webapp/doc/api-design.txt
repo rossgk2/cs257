@@ -22,17 +22,37 @@ RESPONSE: a JSON list of strings representing egg groups that Pokemon can belong
 
 
 REQUEST: /pokemon/[_pokemon]
-RESPONSE: a JSON list corresponding to the string _pokemon containing 
-- a dictionary called "stats" whose keys are "health", "attack", "defense", "special_attack", "special_defense", "speed", and whose values are nonnegative integers
-- a list of strings called "types" of 0 to 2 elements
-- a list of strings called "abilities" of 0 to 2 elements
+RESPONSE: a JSON dictionary with the following key, value pairs:
+"stats" : a JSON dictionary whose keys are "health", "attack", "defense", "special_attack", "special_defense", "speed", and whose values are nonnegative integers
+"types" : a JSON list of 0 to 2 strings
+"abilities" : a JSON list of 0 to 2 strings
 
 
-REQUEST: /pokemon/?[id_range=_id_range]&[name_contains=_name_contains]&[legendary=_leg]&[type1=_type1]&[type2=_type2]&[ability1=_ability1]&[ability2=_ability2]&[hidden_ability=_hidden_ability]&[health_range=_health_range]&[attack_range=_attack_range]&[defense_range=_defense_range]&[special_attack_range=_special_attack_range]&[special_defense_range=_special_defense_range]&[speed_range=_speed_range]&[region=_region]&[catch_rate_range=_catch_rate_range]&[growth_type=&growth_type]&[male_percent_range=_male_percent_range]&[game=_game]&[egg_group1=_egg_group_1]&[egg_group2=_egg_group2]&[sort_field=_sort_field]&[sort_type=_sort_type]
+REQUEST: /pokemon/
 
+GET parameters (for this request, all GET parameters are treated as optional arguments):
+id_range - 
+name_contains - string
+legendary - boolean
+type1 - string
+type2 - string
+ability1 - string
+ability2 - string
+hidden_ability - string
+health_range
+attack_range
+defense_range
+special_attack_range
+special_defense_range
+speed_range
+region - string
+catch_rate_range
+growth_type - string
+male_percent_range
+game - string
+egg_group_1 - string
+egg_group_2 - string
+sort_field - one of the following strings: "id", "name", "type1", "type2", "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", "special_defense", "speed", "region", "catch_rate", "growth_type", "male_percent", "game", "egg_group1", "egg_group2"
+sort_type - either "ascending" or "descending"
 
-RESPONSE: a JSON list of Pokemon names of Pokemon such that the filters are satisfied. The arguments sort_field and sort_type determine how the returned JSON list is sorted.
-
-sort_field may be: "id", "name", "type1", "type2", "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", "special_defense", "speed", "region", "catch_rate", "growth_type", "male_percent", "game", "egg_group1", "egg_group2".
-
-sort_type may be "ascending" or "descending". (If the variable represented by sort_field is a string, sorting is done alphabetically/reverse-alphabetically, and if the variable represented by sort_field is a number, sorting is done in increasing/decreasing order).
+RESPONSE: a JSON list of Pokemon names of Pokemon such that the filters are satisfied. The arguments sort_field and sort_type determine how the returned JSON list is sorted. That is, if the variable represented by sort_field is a string, sorting is done alphabetically/reverse-alphabetically, and if the variable represented by sort_field is a number, sorting is done in increasing/decreasing order.
