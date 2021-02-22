@@ -1,23 +1,17 @@
 /*
- * webapp.js
- * Jeff Ondich
- * 6 November 2020
- *
- * A little bit of Javascript for the tiny web app sample for CS257.
- */
+    webapp.js
+    Jimmy Zhong and Ross Grogan-Kaylor, CS257 Carleton College, Professor Jeff Ondich
+    Final Project 2021 Feburary 
+*/
 
 window.onload = initialize;
 
 function initialize() {
-    var element = document.getElementById('cats_button');
+    var element = document.getElementById('type_button');
     if (element) {
-        element.onclick = onCatsButton;
+        element.onclick = onTypeButton;
     }
-
-    var element = document.getElementById('dogs_button');
-    if (element) {
-        element.onclick = onDogsButton;
-    }
+    load_all_types();
 }
 
 function getAPIBaseURL() {
@@ -25,61 +19,38 @@ function getAPIBaseURL() {
     return baseURL;
 }
 
-function onCatsButton() {
-    var url = getAPIBaseURL() + '/cats/';
-
+function onTypeButton() {
+    var url = getAPIBaseURL() + '/types/';
     fetch(url, {method: 'get'})
-
     .then((response) => response.json())
-
-    .then(function(cats) {
-        var listBody = '';
-        for (var k = 0; k < cats.length; k++) {
-            var cat = cats[k];
-            listBody += '<li>' + cat['name']
-                      + ', ' + cat['birth_year']
-                      + '-' + cat['death_year']
-                      + ', ' + cat['description'];
-                      + '</li>\n';
+    .then(function(type) {
+        var listBody ='';
+        for (var i=0; i < type.length; i++){
+            listBody += '<li>' + type[i]['type_name'] + '</li>\n';
         }
-
-        var animalListElement = document.getElementById('animal_list');
-        if (animalListElement) {
-            animalListElement.innerHTML = listBody;
-        }
+        var typeListElement = document.getElementById('type_list');
+        if (typeListElement){typeListElement.innerHTML = listBody;}
     })
-
     .catch(function(error) {
         console.log(error);
     });
 }
 
-function onDogsButton() {
-    var url = getAPIBaseURL() + '/dogs/';
-
+function load_all_types() {
+    var url = getAPIBaseURL() + '/types/';
     fetch(url, {method: 'get'})
-
     .then((response) => response.json())
-
-    .then(function(dogs) {
-        var listBody = '';
-        for (var k = 0; k < dogs.length; k++) {
-            var dog = dogs[k];
-            listBody += '<li>' + dog['name']
-                      + ', ' + dog['birth_year']
-                      + '-' + dog['death_year']
-                      + ', ' + dog['description'];
-                      + '</li>\n';
+    .then(function(type) {
+        var listBody ='';
+        for (var i=0; i < type.length; i++){
+            thisType = type[i]
+            listBody += '<option value = "' + thisType['type_name'] + '">'
+                        + thisType['type_name'] + '</option>\n';
         }
-
-        var animalListElement = document.getElementById('animal_list');
-        if (animalListElement) {
-            animalListElement.innerHTML = listBody;
-        }
+        var typeListElement = document.getElementById('type_list_selection');
+        if (typeListElement){typeListElement.innerHTML = listBody;}
     })
-
     .catch(function(error) {
         console.log(error);
     });
 }
-

@@ -1,6 +1,11 @@
 sudo service postgresql start
 sudo -u postgres createdb grading
+cat data.sql | psql -U postgres grading
 sudo -u postgres psql -U postgres grading
+
+
+pg_dump --no-owner --no-privileges -U postgres grading > data.sql
+
 
 DROP TABLE IF EXISTS pokemon;
 CREATE TABLE pokemon(
@@ -65,6 +70,7 @@ create TABLE egg_groups (
     egg_group text
 );
 \copy growth_types from './static/egg_group_table.csv' DELIMITER ',' CSV NULL AS 'NULL' HEADER
+
 
 
 
