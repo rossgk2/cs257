@@ -2,7 +2,7 @@ CREATE TABLE pokemon(
     id SERIAL,
     pokedex_number integer,
     pokemon_name text,
-    legendary_id integer,
+    is_legendary integer,
     type1_id integer,
     type2_id integer,
     ability1_id integer,

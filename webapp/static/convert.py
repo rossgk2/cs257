@@ -23,29 +23,53 @@ def main():
     pokemon = pokemon.drop(columns = ["pokemon_id"]) # The pokemon_id column is not actually a unique identifier; we don't need it
 
     # Initialize pokemon_frame to contain all of the columns from pokemon in the list cols.
-    cols = ["pokedex_number"]
+    cols = ["pokedex_number", "pokemon_name", "legendary_type", "hidden_ability", "health_stat", "attack_stat",
+            "defense_stat", "special_attack_stat", "special_defense_stat", "speed_stat", "catch_rate", "male_ratio"]
     pokemon_cols_list = [pokemon[c] for c in cols]
     pokemon_frame = pd.concat(pokemon_cols_list, axis=1)
 
-    # Get types_frame.
-    typesCol = np.unique(pokemon["primary_type"])
-    types_frame = pd.DataFrame(typesCol)
-    types_frame.columns = ["primary_type"] # Necessary for convert_row_indices() to work correctly
+    # Rename the columns in the pokemon_frame. (The names chosen are weird- we want to use better-chosen names).
+    pokemon_frame.columns = ["pokedex_number", "name", "is_legendary", "hidden_ability", "health", "attack",
+                             "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_ratio"]
 
-    # Insert the type1 column right before the Pokedex Number column.
-    pokemon_frame["type1_id"] = convert_row_indices(pokemon, types_frame, "primary_type")
-
-    # pokemon_frame.insert(loc=cols.index("pokedex_number"), column="type1", value = team_ids)
+    # Create subframes for each column that will have its own linking table, and put the correct linking id's into pokemon_frame for each such column.
+    types_frame = get_subframe(pokemon, old_col_name = "primary_type")
+    insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "is_legendary", old_col_name = "primary_type", new_col_name = "type1_id")
+    insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "type1_id", old_col_name = "secondary_type", new_col_name = "type2_id")
 
     # Write each pandas dataframe to a .csv file.
     pokemon_frame.to_csv("pokemon_pandas.csv", header = False)
     types_frame.to_csv("types_pandas.csv", header = False)
 
+# Returns a DataFrame containing all distinct entries in the column old_col_name, and inserts an id column into pokemon_frame
+# that links pokemon_frame to the returned DataFrame.
+def get_subframe(pokemon, old_col_name):
+    # Make the DataFrame to be returned.
+    col = np.unique(pokemon[old_col_name])
+    subframe = pd.DataFrame(col)
+    subframe.columns = [""]  # The one column in subframe doesn't need a name
+    return subframe
+
+def insert_id_column(pokemon, pokemon_frame, to_insert, insert_after_name, old_col_name, new_col_name):
+    id_col = convert_row_indices(pokemon, to_insert, old_col_name)
+    insertion_location = list(pokemon_frame.columns).index(insert_after_name) + 1
+    pokemon_frame.insert(loc = insertion_location, column = new_col_name, value = id_col)
+
 # df1_rows_to_df2(df1, df2, col_name)[i] is the row in df2 that corresponds (via col_name) to the ith row in df1.
 def convert_row_indices(df1, df2, col_name):
-    idx = pd.Index(df2[col_name])
-    indexer = idx.get_indexer(df1[col_name])
-    return df2.index[indexer]
+    df2_first_col = df2.iloc[:, 0]
+    df2_index = pd.Index(df2_first_col)
+    indexer = df2_index.get_indexer(df1[col_name])
+    result = df2.index[indexer]
+
+    # At this point, we might think that we can return result and be done. However...
+    # Some entries in indexer were -1 (i.e. NULL). Unfortunately, this -1 is interpreted to mean "last element" by the previous line,
+    # so any -1 in indexer in fact refers to the last element of df2.index. We want to preserve the interpretation of -1 as NULL, so
+    # we do the following.
+
+    result = result.to_numpy() # Index objects are immutable; convert to numpy array so that we can modify final result
+    result[indexer == -1] = -1
+    return result
 
     # We can imagine that the returned value from this function is constructed as follows:
     # - iterate down the column with column name "col_name" in df1
