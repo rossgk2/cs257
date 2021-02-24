@@ -118,8 +118,17 @@ def create_main_table(type_dict, games_of_origin_dict, region_dict, experience_g
 		ability1_id = ability_dict[ability(poke_row.primary_ability)]
 		ability2_id = ability_dict[ability(poke_row.secondary_ability)]
 		hidden_ability = ability_dict[ability(poke_row.hidden_ability)]
+		
+		# pokemon name handling
+		pokemon_name = poke_row.pokemon_name.replace(" ", "-")
+		if pokemon_name == "nidoran-(male)":
+			pokemon_name = "nidoran-m"
+		if pokemon_name == "nidoran-(female)":
+			pokemon_name = "nidoran-f"
+		if pokemon_name == "type:-null":
+			pokemon_name = "type-null"
 
-		this_row = [poke_row.pokemon_id, poke_row.pokedex_number, poke_row.pokemon_name, legendary_id, type1_id, 
+		this_row = [poke_row.pokemon_id, poke_row.pokedex_number, pokemon_name, legendary_id, type1_id, 
 		type2_id, ability1_id, ability2_id, hidden_ability, poke_row.health, poke_row.attack, poke_row.defense, 
 		poke_row.special_attack, poke_row.special_defense, poke_row.speed, region_id, poke_row.catch_rate, 
 		growth_type_id, poke_row.male_ratio, game_id, egg_group1_id, egg_group2_id]
