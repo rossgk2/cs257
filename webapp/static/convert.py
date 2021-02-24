@@ -30,16 +30,39 @@ def main():
 
     # Rename the columns in the pokemon_frame. (The names chosen are weird- we want to use better-chosen names).
     pokemon_frame.columns = ["pokedex_number", "name", "is_legendary", "hidden_ability", "health", "attack",
-                             "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_ratio"]
+                             "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_percent"]
 
     # Create subframes for each column that will have its own linking table, and put the correct linking id's into pokemon_frame for each such column.
+
+    # Types.
     types_frame = get_subframe(pokemon, old_col_name = "primary_type")
     insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "is_legendary", old_col_name = "primary_type", new_col_name = "type1_id")
     insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "type1_id", old_col_name = "secondary_type", new_col_name = "type2_id")
 
-    # Write each pandas dataframe to a .csv file.
-    pokemon_frame.to_csv("pokemon_pandas.csv", header = False)
-    types_frame.to_csv("types_pandas.csv", header = False)
+    # Abilities.
+    abilities_frame = get_subframe(pokemon, old_col_name = "primary_ability")
+    insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "type2_id", old_col_name = "primary_ability", new_col_name = "ability1_id")
+    insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "ability1_id", old_col_name = "secondary_ability", new_col_name = "ability2_id")
+    insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "ability2_id", old_col_name = "hidden_ability", new_col_name = "hidden_ability_id")
+
+    # Regions.
+    regions_frame = get_subframe(pokemon, old_col_name = "region_of_origin")
+    insert_id_column(pokemon, pokemon_frame, regions_frame, insert_after_name = "speed", old_col_name = "region_of_origin", new_col_name = "region")
+
+    # Game (e.g. FireRed, LeafGreen, Diamond, Pearl).
+    games_frame = get_subframe(pokemon, old_col_name = "game(s)_of_origin")
+    insert_id_column(pokemon, pokemon_frame, games_frame, insert_after_name = "male_percent", old_col_name = "game(s)_of_origin", new_col_name = "game")
+
+    # Egg groups.
+    egg_groups_frame = get_subframe(pokemon, old_col_name = "primary_egg_group")
+    insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "game", old_col_name = "primary_egg_group", new_col_name = "egg_group1_id")
+    insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "egg_group1_id", old_col_name = "secondary_egg_group", new_col_name = "egg_group2_id")
+
+    # Write each DataFrame to a .csv file.
+    dataframes = [pokemon_frame, types_frame, abilities_frame, regions_frame, games_frame, egg_groups_frame]
+    filenames = ["pokemon", "types", "abilities", "regions", "games", "egg_groups"]
+    for (df, f) in zip(dataframes, filenames):
+        df.to_csv(f + "_pandas.csv")
 
 # Returns a DataFrame containing all distinct entries in the column old_col_name, and inserts an id column into pokemon_frame
 # that links pokemon_frame to the returned DataFrame.
