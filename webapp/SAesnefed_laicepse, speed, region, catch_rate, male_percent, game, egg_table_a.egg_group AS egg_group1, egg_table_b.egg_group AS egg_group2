@@ -1,4 +1,6 @@
- pokedex_number | pokemon_name | type1 | type2 | ability1 | ability2 | hidden_ability | legendary_status | health | attack | s_attack | defense | s_defense | speed | region | catch_rate | male_percent | game | egg_group1 | egg_group2 
-----------------+--------------+-------+-------+----------+----------+----------------+------------------+--------+--------+----------+---------+-----------+-------+--------+------------+--------------+------+------------+------------
-(0 rows)
+ pokedex_number | pokemon_name | type1 | type2 | ability1 | ability2 | hidden_ability | legendary_status | health | attack | s_attack | defense | s_defense | speed | region | catch_rate | male_percent |        game         | egg_group1 | egg_group2 
+----------------+--------------+-------+-------+----------+----------+----------------+------------------+--------+--------+----------+---------+-----------+-------+--------+------------+--------------+---------------------+------------+------------
+              4 | charmander   | fire  |       | blaze    |          | solar_power    | NULL             |     39 |     52 |       50 |      43 |         0 |    65 | kanto  |         45 |         87.5 | red_/_blue_/_yellow | monster    | dragon
+              4 | charmander   | fire  |       | blaze    |          | solar_power    | NULL             |     39 |     52 |       50 |      43 |         0 |    65 | kanto  |         45 |         87.5 | red_/_blue_/_yellow | monster    | dragon
+(2 rows)
 

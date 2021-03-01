@@ -67,7 +67,11 @@ def main():
 	insert_id_column(pokemon, pokemon_frame, games_frame, insert_after_name = "male_percent", old_col_name = "game(s)_of_origin", new_col_name = "game")
 
 	# Egg groups.
-	egg_groups_frame = get_subframe(pokemon, old_col_name = "secondary_egg_group", new_col_name = "egg_group")
+	egg_groups_frame = get_subframe(pokemon, old_col_name = "primary_egg_group", new_col_name = "egg_group")
+	null_row = pd.DataFrame([["null"]])
+	null_row.columns = ["egg_group"]
+	egg_groups_frame = egg_groups_frame.append(null_row, ignore_index = True) 
+	print(egg_groups_frame)
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "game", old_col_name = "primary_egg_group", new_col_name = "egg_group1_id")
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "egg_group1_id", old_col_name = "secondary_egg_group", new_col_name = "egg_group2_id")
 
