@@ -39,18 +39,24 @@ def main():
 	insert_id_column(pokemon, pokemon_frame, legendary_frame, insert_after_name = "name", old_col_name = "legendary_type", new_col_name = "legendary_id")
 
 	# Types.
-	types_frame = get_subframe(pokemon, old_col_name = "primary_type", new_col_name = "type")
+	types_frame = get_subframe(pokemon, old_col_name = "secondary_type", new_col_name = "type")
 	insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "legendary_id", old_col_name = "primary_type", new_col_name = "type1_id")
 	insert_id_column(pokemon, pokemon_frame, types_frame, insert_after_name = "type1_id", old_col_name = "secondary_type", new_col_name = "type2_id")
 
 	# Abilities.
-	abilities_frame = get_subframe(pokemon, old_col_name = "primary_ability")
+	primary_abilities = pokemon[["primary_ability", "primary_ability_description"]]
+	primary_abilities.columns = ["ability", "description"]
+	secondary_abilities = pokemon[["secondary_ability", "secondary_ability_description"]]
+	secondary_abilities.columns = ["ability", "description"]
+	hidden_abilities = pokemon[["hidden_ability", "hidden_ability_description"]]
+	hidden_abilities.columns = ["ability", "description"]
+	all_abilities = primary_abilities.append(secondary_abilities, ignore_index = True).append(hidden_abilities, ignore_index = True)
+	all_abilities = all_abilities.drop_duplicates(subset=['ability']).reset_index(drop = True)
+	abilities_frame = all_abilities[["ability"]]
+
 	insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "type2_id", old_col_name = "primary_ability", new_col_name = "ability1_id")
 	insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "ability1_id", old_col_name = "secondary_ability", new_col_name = "ability2_id")
 	insert_id_column(pokemon, pokemon_frame, abilities_frame, insert_after_name = "ability2_id", old_col_name = "hidden_ability", new_col_name = "hidden_ability_id")
-	abilities_descriptions = pokemon[["primary_ability", "primary_ability_description"]].drop_duplicates(subset=['primary_ability'])
-	abilities_frame = abilities_frame.merge(abilities_descriptions, how='left', left_on='primary_ability', right_on='primary_ability')
-	abilities_frame.columns = ["ability", "description"]
 
 	# Regions.
 	regions_frame = get_subframe(pokemon, old_col_name = "region_of_origin")
@@ -61,15 +67,15 @@ def main():
 	insert_id_column(pokemon, pokemon_frame, games_frame, insert_after_name = "male_percent", old_col_name = "game(s)_of_origin", new_col_name = "game")
 
 	# Egg groups.
-	egg_groups_frame = get_subframe(pokemon, old_col_name = "primary_egg_group", new_col_name = "egg_group")
+	egg_groups_frame = get_subframe(pokemon, old_col_name = "secondary_egg_group", new_col_name = "egg_group")
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "game", old_col_name = "primary_egg_group", new_col_name = "egg_group1_id")
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "egg_group1_id", old_col_name = "secondary_egg_group", new_col_name = "egg_group2_id")
 
 	# Replace all instances of "-1" in pokemon_frame with "NULL".
-	pokemon_frame = pokemon_frame.astype(str).replace("-1", "NULL", regex = True) #.astype(str) needed since otherwise -1 considered to be an int
+	# pokemon_frame = pokemon_frame.astype(str).replace("-1", "NULL", regex = True) #.astype(str) needed since otherwise -1 considered to be an int
 
 	# Write each DataFrame to a .csv file.
-	dataframes = [pokemon_frame, legendary_frame, types_frame, abilities_frame, regions_frame, games_frame, egg_groups_frame]
+	dataframes = [pokemon_frame, legendary_frame, types_frame, all_abilities, regions_frame, games_frame, egg_groups_frame]
 	filenames = ["pokemon", "legendaries", "types", "abilities", "regions", "games", "egg_groups"]
 	for (df, f) in zip(dataframes, filenames):
 		df.to_csv(f + "_pandas.csv", header = False)
@@ -104,7 +110,8 @@ def convert_row_indices(df1, df2, col_name):
 	# we do the following.
 
 	result = result.to_numpy() # Index objects are immutable; convert to numpy array so that we can modify final result
-	result[indexer == -1] = -1
+	# the last for egg_group, type, and abilities are always null
+	result[indexer == -1] = len(df2)
 	return result
 
 	# We can imagine that the returned value from this function is constructed as follows:

@@ -47,3 +47,8 @@ create TABLE egg_groups (
     id SERIAL,
     egg_group text
 );
+
+create TABLE legendaries (
+    id SERIAL,
+    legendary_status text
+);

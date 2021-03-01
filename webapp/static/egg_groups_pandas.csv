@@ -1,6 +1,6 @@
-0,amorphous
-1,bug
-2,ditto
+0,NULL
+1,amorphous
+2,bug
 3,dragon
 4,fairy
 5,field
@@ -9,7 +9,6 @@
 8,human-like
 9,mineral
 10,monster
-11,undiscovered
-12,water_1
-13,water_2
-14,water_3
+11,water_1
+12,water_2
+13,water_3
