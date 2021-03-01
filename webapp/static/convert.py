@@ -72,7 +72,7 @@ def main():
 	dataframes = [pokemon_frame, legendary_frame, types_frame, abilities_frame, regions_frame, games_frame, egg_groups_frame]
 	filenames = ["pokemon", "legendaries", "types", "abilities", "regions", "games", "egg_groups"]
 	for (df, f) in zip(dataframes, filenames):
-		df.to_csv(f + "_pandas.csv")
+		df.to_csv(f + "_pandas.csv", header = False)
 
 # Returns a DataFrame containing all distinct entries in the column old_col_name, and inserts an id column into pokemon_frame
 # that links pokemon_frame to the returned DataFrame.

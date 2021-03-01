@@ -16,7 +16,6 @@ CREATE TABLE pokemon(
     speed integer,
     region_id integer,
     catch_rate numeric,
-    growth_type_id integer,
     male_percent numeric,
     game_id integer,
     egg_group1_id integer,
@@ -37,11 +36,6 @@ create TABLE abilities (
 create TABLE regions (
     id SERIAL,
     region text
-);
-
-create TABLE growth_types (
-    id SERIAL,
-    growth_type text
 );
 
 create TABLE games (
