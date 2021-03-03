@@ -10,39 +10,12 @@
 
 <body>
     <h3>The stats and pictures of: <b id = pokemon_dynamic_name>{{ pokemon }}</b></h3>
-    <img src="../static/pokemon_images/pokemon_ball.gif" alt="The image of this pokemon is not available at this time" id = "pokemon_image_dynamic">
+    <img src="../static/pokemon_images/pokemon_ball_square.gif" alt="The image of this pokemon is not available at this time" id = "pokemon_image_dynamic">
     <p id = "change">just need this to change</p>
     <p id = "pokemon_stats_display1">this also need to change</p>
     <p> -------------- </p>
     <p id = "pokemon_stats_display2">this also need to change</p>
     <p> -------------- </p>
     <p id = "pokemon_stats_display3">this also need to change</p>
-
-    <!-- onerror= "javascript:this.src='static/pokemon_images/{{ pokemon }}.jpg'"-->
-    <h3>All Single Types and abilities</h3>
-    <select id = "type1_list_selection">
-        <option value = " 1 ">if you see this, it's an error</option>
-    </select>
-    <button id = "type1_button">find_type1</button>
-
-    <select id = "type2_list_selection">
-        <option value = " 1 "></option>
-    </select>
-    <button id = "type2_button">find_type2</button>
-
-    <select id = "ability_list_selection">
-        <option value = " 1 "></option>
-    </select>
-    <button id = "ability_button">find_ability</button>(ability1, ability2, or hidden ability) 
-
-    <p><button id="click_and_change_button">all pokemon regions</button></p>
-    <ul id="regions_list"> try click the button </ul>
-
 </body>
 </html>
-
-    <!--
-    attempting to use jQuery
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
-    -->

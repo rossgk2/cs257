@@ -27,7 +27,7 @@ def types():
 
 @app.route('/pokemon_page/<string:path>')
 def individual_pokemon_page(path):
-    # http://localhost:5000/individual_pokemon/araquanid
+    # http://localhost:5000/pokemon_page/araquanid
     query_pokemon = path.lower()
     return flask.render_template('pokemon_page.html', pokemon = query_pokemon)
 
