@@ -25,12 +25,11 @@ def types():
 # are stored in the templates/ directory or one of its descendant directories,
 # without requiring you to have specific routes for each page.
 
-@app.route('/individual_pokemon/<path:path>')
+@app.route('/pokemon_page/<string:path>')
 def individual_pokemon_page(path):
     # http://localhost:5000/individual_pokemon/araquanid
     query_pokemon = path.lower()
-    print(path)
-    return flask.render_template('each_pokemon.html', pokemon = query_pokemon)
+    return flask.render_template('pokemon_page.html', pokemon = query_pokemon)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Ross and Jimmy Pokemon application, including API')

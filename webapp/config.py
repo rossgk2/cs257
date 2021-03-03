@@ -15,7 +15,7 @@
 '''
 
 # Change these values as appropriate for your postgresql setup.
-database = 'grading'
-user = 'postgres'
+database = 'pokemon_db'
+user = 'ross'
 password = ''
 

@@ -75,25 +75,25 @@ def get_regions():
 @api.route('/query/<order>')
 def advance_query(order):
     query = '''SELECT DISTINCT pokemon_name pokemon_name, pokedex_number, 
-type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
-ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 
-legendary_status, health, attack, special_attack AS s_attack, defense, special_defense AS s_defense, speed, region, 
-catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
-FROM pokemon
-JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
-JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
+    type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
+    ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 
+    legendary_status, health, attack, special_attack AS s_attack, defense, special_defense AS s_defense, speed, region, 
+    catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
+    FROM pokemon
+    JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
+    JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
 
-JOIN egg_groups AS egg_table_a ON pokemon.egg_group1_id = egg_table_a.id
-JOIN egg_groups AS egg_table_b ON pokemon.egg_group2_id = egg_table_b.id
+    JOIN egg_groups AS egg_table_a ON pokemon.egg_group1_id = egg_table_a.id
+    JOIN egg_groups AS egg_table_b ON pokemon.egg_group2_id = egg_table_b.id
 
-JOIN abilities AS ability_table_a ON pokemon.ability1_id = ability_table_a.id
-JOIN abilities AS ability_table_b ON pokemon.ability2_id = ability_table_b.id
-JOIN abilities AS ability_table_c ON pokemon.hidden_ability = ability_table_c.id
+    JOIN abilities AS ability_table_a ON pokemon.ability1_id = ability_table_a.id
+    JOIN abilities AS ability_table_b ON pokemon.ability2_id = ability_table_b.id
+    JOIN abilities AS ability_table_c ON pokemon.hidden_ability = ability_table_c.id
 
-JOIN legendaries ON legendaries.id = pokemon.is_legendary
-JOIN regions ON regions.id = pokemon.region_id
-JOIN games ON games.id = pokemon.game_id
-WHERE pokedex_number BETWEEN %s AND %s '''
+    JOIN legendaries ON legendaries.id = pokemon.is_legendary
+    JOIN regions ON regions.id = pokemon.region_id
+    JOIN games ON games.id = pokemon.game_id
+    WHERE pokedex_number BETWEEN %s AND %s '''
 
     # http://localhost:5000/api/query/ASC?type1=fire
     # http://localhost:5000/api/query/ASC?pokemon_name=an
