@@ -11,9 +11,33 @@ function initialize() {
    load_info("abilities", "ability_list_selection");
 
    // there should be filter of types and ability implemented later
-   load_pokemon_images()
+   load_pokemon_cards()
 }
 
+
+function doesFileExist(urlToFile) {
+    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+     
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function getPokemonImagePath(pokemonName) {
+    var base_path = "../static/pokemon_images/";
+    var image_url = base_path + pokemonName + ".png";
+    var backup_image_url = base_path + pokemonName + ".jpg";
+    if (doesFileExist(image_url)) {
+        return image_url
+    }else{
+        return backup_image_url
+    }
+}
 
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
@@ -39,52 +63,36 @@ function load_info(thisTypeOfInfo, tag_name) {
     });
 }
 
-function load_pokemon_images(){
+function load_pokemon_cards(){
     //?pokemon_name=' + pokemon_dynamic_name
-    var num_pokemon_shown = 12;
-    var url = getAPIBaseURL() + '/query/DESC?limit=' + num_pokemon_shown;
+    var num_pokemon_shown = 18;
+    var num_pokemon_per_row = 6;
+    var url = getAPIBaseURL() + '/query/DESC?limit=' + num_pokemon_shown + "&order_by=pokedex_number";
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(returnPokemon) {
-        var outer_dict = {};
+        var pokemonDisplayDiv = '<div class="container">\n<div class="row">' //change row every 6 cards
         for (var i = 0; i < returnPokemon.length; i++){
-            inner_dict = {}; //for each pokemon
-            var var_names = ['pokemon_name', 'pokedex_number', 'type1', 'type2'];
-            for (var j = 0; j < var_names.length; j++) {
-                key = var_names[j];
-                inner_dict[key] = returnPokemon[i][key];
-                if (typeof inner_dict[key] === 'string') {
-                    inner_dict[key] = inner_dict[key].replaceAll('_', " ") 
-                }
+            pokemonDisplayDiv += '<div class="col-2">'
+            var thisPokemon = returnPokemon[i];
+
+            var name = thisPokemon['pokemon_name'].replaceAll('_', "-");
+            var pokemonImagePath = getPokemonImagePath(name);
+            var pokemonImageHtml = '<img src="' + pokemonImagePath + '" alt="sorry, we do not have picture for this pokemon now" class="img-thumbnail">\n\n';
+
+            var pokedexNum = thisPokemon['pokedex_number'];
+            var firstLine = '<h6>ID:' + pokedexNum.toString() + " " + name + "</h>\n"
+
+            var typeImageLine1 = 'T1:<img src="../static/type_images/' + thisPokemon['type1'] + '.png" alt="something is wrong" class="img-thumbnail">\n'
+            var typeImageLine2 = 'T2:<img src="../static/type_images/' + thisPokemon['type2'] + '.png" alt="something is wrong" class="img-thumbnail">\n'
+            var secondLine = '<h6>\n' + typeImageLine1 + typeImageLine2 + '</h2>\n' //type images
+            
+            pokemonDisplayDiv += (pokemonImageHtml+ firstLine + secondLine + '</div>')
+            if (i == num_pokemon_per_row-1){
+                pokemonDisplayDiv += '</div>\n<div class="row">'
             }
-            outer_dict[i] = inner_dict
-		}
-        document.getElementById("pokemon_landing_display").innerHTML = JSON.stringify(outer_dict)
+        }
+        pokemonDisplayDiv += '</div>\n</div>'
+        document.getElementById("pokemon_landing_display").innerHTML = pokemonDisplayDiv
     })
 }
-
-    /*
-    function onRegionButton() {
-    var url = getAPIBaseURL() + '/regions';
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(regions) {
-        var listBody ='';
-        for (var i=0; i < regions.length; i++){
-            listBody += '<li>' + regions[i]['regions'] + '</li>\n';
-        }
-        var listElement = document.getElementById('regions_list');
-        if (listElement){listElement.innerHTML = listBody;}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-    }
-    var homePageElement = document.getElementById('click_and_change_button');
-    if (homePageElement) {
-        homePageElement.onclick = onRegionButton;
-        load_info("types", "type1_list_selection");
-        load_info("types", "type2_list_selection");
-        load_info("abilities", "ability_list_selection")
-    }
-    */

@@ -105,7 +105,7 @@ def advance_query(order):
 
     user_pokedex_lower, user_pokedex_upper = flask.request.args.get('pokedex_lower'), flask.request.args.get('pokedex_upper')
     pokedex_lower = user_pokedex_lower if user_pokedex_lower else 0
-    pokedex_upper = user_pokedex_upper if user_pokedex_upper else 10000
+    pokedex_upper = user_pokedex_upper if user_pokedex_upper else 809
     # print('TYPE pokedex_lower is :', type(pokedex_lower), file=sys.stderr)
     
     query_parameters = [pokedex_lower, pokedex_upper]
@@ -143,36 +143,39 @@ def advance_query(order):
         argument = flask.request.args.get(stat)
         if argument:
             lower_bound, upper_bound = argument.split("-")
-            query = query + "\n AND " + stat + " BETWEEN %s AND %s"
+            query = query + "\n AND " + stat + " BETWEEN %s AND %s "
             query_parameters.append(lower_bound)
             query_parameters.append(upper_bound)
 
     order_by = "pokedex_number"
-    order = order.upper() # only ASC or DESC is allowed
     if flask.request.args.get('order_by'):
         order_by = flask.request.args.get('order_by')
         pokemon_info = ["pokedex_number", "pokemon_name", "is_legendary", "type1", "type2", 
         "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", 
         "special_defense", "speed", "region", "catch_rate", "male_percent", "game", "egg_group1", "egg_group2"]
-        if order_by in pokemon_info:
-            if order == "ASC":
-                query = query + "\n ORDER BY {};".format(order_by)
-            elif order == "DESC":
-                query = query + "\n ORDER BY {} DESC;".format(order_by)
-        else:
-            print("yooo, error, your order by must be one of these, and order must be ACS or DESC")
-            print(pokemon_info)
-            return
-
-    db_connection = connect_database()
-    cursor = db_connection.cursor()
-
+    
+    order = order.upper() # only ASC or DESC is allowed
+    if order == "ASC":
+        query = query + "\n ORDER BY {}".format(order_by)
+    elif order == "DESC":
+        query = query + "\n ORDER BY {} DESC".format(order_by)
+    else:
+        print("yooo, error, your order by must be one of these, and order must be ACS or DESC")
+        print(pokemon_info)
+        return
+    
     if flask.request.args.get('limit'):
         query = query + "\n LIMIT %s"
         line_limit = int(flask.request.args.get('limit'))
         query_parameters.append(line_limit)
     
+
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    
+    query = query + ";"
     query_parameters = tuple(query_parameters)
+    print(cursor.mogrify(query, query_parameters))
     cursor.execute(query, query_parameters)
     print("my query is: ")
     print(cursor.query)
