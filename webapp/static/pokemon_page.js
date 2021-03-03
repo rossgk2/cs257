@@ -40,7 +40,7 @@ function loadPokemonData(pokemon_name) {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(individualPokemon) {
-        
+        // Create a dictionary dict that has all the data for the current pokemon
 		var dict = {};
         var var_names = ['pokemon_name', 'pokedex_number', 'is_legendary', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
@@ -52,6 +52,8 @@ function loadPokemonData(pokemon_name) {
 			    dict[key] = dict[key].replaceAll('_', " "); 
 			}
 		}
+
+		//Now, use dict to fill in the blanks of pokemon_page.html
 
 		// Pokedex number
 		document.getElementById("pokedex_number").innerHTML = dict["pokedex_number"]
