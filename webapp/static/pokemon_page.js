@@ -1,10 +1,10 @@
 window.onload = initialize;
 
 function initialize() {
-	var individualPokemonName = document.getElementById('pokemon_dynamic_name').innerHTML;
-    if (individualPokemonName){
-        load_pokemon_data(individualPokemonName)
-        load_pokemon_image_individual_page(individualPokemonName)
+	var pokemonName = document.getElementById('pokemon_dynamic_name').innerHTML;
+    if (pokemonName) {
+        loadPokemonData(pokemonName)
+        loadPokemonImage(pokemonName)
     }
 }
 
@@ -21,10 +21,10 @@ function doesFileExist(urlToFile) {
     }
 }
 
-function load_pokemon_image_individual_page(individualPokemonName){
+function loadPokemonImage(pokemonName) {
     var base_path = "../static/pokemon_images/";
-    var image_url = base_path + individualPokemonName + ".png";
-    var backup_image_url = base_path + individualPokemonName + ".jpg";
+    var image_url = base_path + pokemonName + ".png";
+    var backup_image_url = base_path + pokemonName + ".jpg";
     if (doesFileExist(image_url)) {
         document.getElementById('pokemon_image_dynamic').src = image_url;
         document.getElementById('change').innerHTML = image_url
@@ -34,7 +34,7 @@ function load_pokemon_image_individual_page(individualPokemonName){
     }
 }
 
-function load_pokemon_data(pokemon_dynamic_name){
+function loadPokemonData(pokemon_dynamic_name) {
     // Example: http://localhost:5000/api/query/ASC?pokemon_name=castform
     var url = getAPIBaseURL() + '/query/ASC?pokemon_name=' + pokemon_dynamic_name;
     fetch(url, {method: 'get'})
