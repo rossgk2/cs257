@@ -13,10 +13,6 @@ REQUEST: /regions
 RESPONSE: a JSON list of strings representing regions that Pokemon can live in.
 
 
-REQUEST: /growth_types
-RESPONSE: a JSON list of strings representing "growth types" that Pokemon can conform to (e.g. "Medium Slow").
-
-
 REQUEST: /egg_groups
 RESPONSE: a JSON list of strings representing egg groups that Pokemon can belong to (e.g. "Water1", "Water2", "Grass")
 
