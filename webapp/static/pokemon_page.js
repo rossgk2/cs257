@@ -78,7 +78,7 @@ function loadPokemonData(pokemon_name) {
 		document.getElementById("catch_rate").innerHTML = "Catch rate: " + makePresentable(dict["catch_rate"]) + "%";
 
 		//Game
-		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " is found in the " + toTitleCase(dict["game"]) + " edition."
+		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " first appeared in the " + toTitleCase(dict["game"]) + " edition."
 
 		// The following fields coorrespond to HTML id's whose names don't exactly match up to the keys in dict (e.g. "sex_ratios" 
 		// is an HTML id but the coorresponding dict key is "male_percent").
@@ -129,77 +129,4 @@ function toTitleCase(str) {
 	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
   	return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
-
-// Not using the below functions
-
-// function load_info(this_info, tag_name) {
-//     var url = getAPIBaseURL() + '/' + this_info;
-//     fetch(url, {method: 'get'})
-//     .then((response) => response.json())
-//     .then(function(info) {
-//         var listBody ='';
-//         for (var i=0; i < info.length; i++){
-//             listBody += '<option value = "' + info[i][this_info] + '">'
-//                         + info[i][this_info] + '</option>\n';
-//         }
-//         var listElement = document.getElementById(tag_name);
-//         if (listElement){listElement.innerHTML = listBody;}
-//     })
-//     .catch(function(error) {
-//         console.log(error);
-//     });
-// }
-
-
-/* 
-    load_all_types();
-    load_all_abilities();
-
-
-function load_all_types() {
-    var url = getAPIBaseURL() + '/types';
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(type) {
-        var listBody ='';
-        for (var i=0; i < type.length; i++){
-            thisType = type[i]
-            listBody += '<option value = "' + thisType['type_name'] + '">'
-                        + thisType['type_name'] + '</option>\n';
-        }
-        var typeListElement = document.getElementById('type1_list_selection');
-        if (typeListElement){typeListElement.innerHTML = listBody;}
-        var typeListElement = document.getElementById('type2_list_selection');
-        if (typeListElement){typeListElement.innerHTML = listBody;}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function load_all_abilities() {
-    var url = getAPIBaseURL() + '/abilities';
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(abilities) {
-        var listBody ='';
-        for (var i=0; i < abilities.length; i++){
-            listBody += '<option value = "' + abilities[i]['ability'] + '">'
-                        + abilities[i]['ability'] + '</option>\n';
-        }
-        var abilityListElement = document.getElementById('ability_list_selection');
-        if (abilityListElement){abilityListElement.innerHTML = listBody;}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-
-
-jQuery attempt
-$(document).ready(function() {
-    $("ability_list_selection").select2();
-});
-*/
 
