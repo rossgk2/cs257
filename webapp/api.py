@@ -166,6 +166,11 @@ def advance_query(order):
 
     db_connection = connect_database()
     cursor = db_connection.cursor()
+
+    if flask.request.args.get('limit'):
+        query = query + "\n LIMIT %s"
+        line_limit = int(flask.request.args.get('limit'))
+        query_parameters.append(line_limit)
     
     query_parameters = tuple(query_parameters)
     cursor.execute(query, query_parameters)
