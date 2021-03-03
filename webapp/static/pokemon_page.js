@@ -27,10 +27,8 @@ function loadPokemonImage(pokemonName) {
     var backup_image_url = base_path + pokemonName + ".jpg";
     if (doesFileExist(image_url)) {
         document.getElementById('dynamic_pokemon_image').src = image_url;
-        document.getElementById('change').innerHTML = image_url
-    }else{
+    } else{
         document.getElementById('dynamic_pokemon_image').src = backup_image_url;
-        document.getElementById('change').innerHTML = backup_image_url
     }
 }
 
@@ -58,48 +56,69 @@ function loadPokemonData(pokemon_name) {
 		// Pokedex number
 		document.getElementById("pokedex_number").innerHTML = dict["pokedex_number"]
 
-		// Types
+		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
 		document.getElementById("type2").innerHTML = makePresentable(dict["type2"])
+		document.getElementById("is_legendary").innerHTML = dict["is_legendary"].toLowerCase() === "null" ? "Not legendary" : "Legendary"
 
 		// Stats
 		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
 		for (var i = 0; i < stats.length; i ++) {
-			key = stats[i]
-			document.getElementById(key).innerHTML = makePresentable(stats[i]) + ": " + dict[key]
+			key = stats[i];
+			document.getElementById(key).innerHTML = makePresentable(stats[i]) + ": " + dict[key];
 		}
 
+		// Abilities
+		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
+		document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
+		document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
+
+		// Region, catch rate
+		document.getElementById("region").innerHTML = "Region: " + makePresentable(dict["region"]);
+		document.getElementById("catch_rate").innerHTML = "Catch rate: " + makePresentable(dict["catch_rate"]) + "%";
+
+		//Game
+		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " is found in the " + toTitleCase(dict["game"]) + " edition."
+
+		// The following fields coorrespond to HTML id's whose names don't exactly match up to the keys in dict (e.g. "sex_ratios" 
+		// is an HTML id but the coorresponding dict key is "male_percent").
+
+		// Sex ratios (some in-line computation is needed)
+		document.getElementById("sex_ratios").innerHTML = dict["male_percent"] + "% of " + makePresentable(pokemon_name) + " are male and " + 
+		(100 - dict["male_percent"]) + "% are female.";
+
+		// Egg groups
+		document.getElementById("egg_groups").innerHTML = "Egg groups: " + makePresentable(dict["egg_group1"]) + ", " + makePresentable(dict["egg_group2"]);
 
 
+        // var firstTableBody = '<table>\n';
+        // var firstTableTitles = ["pokemon name", "pokedex number", "game appeared", "region", "male percentage", "catch rate", "legendary status"];
+        // var firstTableKeys = ["pokemon_name", "pokedex_number", "game", "region", "male_percent", "catch_rate", "is_legendary"];
+        // for (var i=0; i < firstTableKeys.length; i++){
+        //     firstTableBody += "<tr>\n<th>" + firstTableTitles[i] + "</th>\n<th>" + dict[firstTableKeys[i]] + "</th>\n</tr>"
+        // }
+        // firstTableBody += '\n</table>\n\n';
 
-        var firstTableBody = '<table>\n';
-        var firstTableTitles = ["pokemon name", "pokedex number", "game appeared", "region", "male percentage", "catch rate", "legendary status"];
-        var firstTableKeys = ["pokemon_name", "pokedex_number", "game", "region", "male_percent", "catch_rate", "is_legendary"];
-        for (var i=0; i < firstTableKeys.length; i++){
-            firstTableBody += "<tr>\n<th>" + firstTableTitles[i] + "</th>\n<th>" + dict[firstTableKeys[i]] + "</th>\n</tr>"
-        }
-        firstTableBody += '\n</table>\n\n';
+        // var secondTableBody = '<table>\n';
+        // var secondTableTitles = ["Primary Type", "Secondary Type", "Primary Ability", "Secondary Ability", "Hidden Ability", "egg_group1", "egg_group2"];
+        // var secondTableKeys = ["type1", "type2", "ability1", "ability2", "hidden_ability", "egg_group1", "egg_group2"];
+        // for (var i=0; i < secondTableKeys.length; i++){
+        //     secondTableBody += "<tr>\n<th>" + secondTableTitles[i] + "</th>\n<th>" + dict[secondTableKeys[i]] + "</th>\n</tr>"
+        // }
+        // secondTableBody += '\n</table>\n\n';
 
-        var secondTableBody = '<table>\n';
-        var secondTableTitles = ["Primary Type", "Secondary Type", "Primary Ability", "Secondary Ability", "Hidden Ability", "egg_group1", "egg_group2"];
-        var secondTableKeys = ["type1", "type2", "ability1", "ability2", "hidden_ability", "egg_group1", "egg_group2"];
-        for (var i=0; i < secondTableKeys.length; i++){
-            secondTableBody += "<tr>\n<th>" + secondTableTitles[i] + "</th>\n<th>" + dict[secondTableKeys[i]] + "</th>\n</tr>"
-        }
-        secondTableBody += '\n</table>\n\n';
+        // var thirdTableBody = '<table>\n';
+        // var thirdTableTitles = ["attack", "special attack", "defense", "special defense", "health", "speed"];
+        // var thirdTableKeys = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
+        // for (var i=0; i < secondTableKeys.length-1; i+=2){
+        //     thirdTableBody += "<tr>\n<th>" + thirdTableTitles[i] + "</th>\n<th>" + dict[thirdTableKeys[i]] 
+        //     + "</th>\n<th>"+ thirdTableTitles[i+1] + "</th>\n<th>" + dict[thirdTableKeys[i+1]] + "</th>\n</tr>"
+        // }
+        // thirdTableBody += '\n</table>\n\n';
 
-        var thirdTableBody = '<table>\n';
-        var thirdTableTitles = ["attack", "special attack", "defense", "special defense", "health", "speed"];
-        var thirdTableKeys = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
-        for (var i=0; i < secondTableKeys.length-1; i+=2){
-            thirdTableBody += "<tr>\n<th>" + thirdTableTitles[i] + "</th>\n<th>" + dict[thirdTableKeys[i]] 
-            + "</th>\n<th>"+ thirdTableTitles[i+1] + "</th>\n<th>" + dict[thirdTableKeys[i+1]] + "</th>\n</tr>"
-        }
-        thirdTableBody += '\n</table>\n\n';
-
-        document.getElementById('pokemon_stats_display1').innerHTML = firstTableBody;
-        document.getElementById('pokemon_stats_display2').innerHTML = secondTableBody;
-        document.getElementById('pokemon_stats_display3').innerHTML = thirdTableBody
+        // document.getElementById('pokemon_stats_display1').innerHTML = firstTableBody;
+        // document.getElementById('pokemon_stats_display2').innerHTML = secondTableBody;
+        // document.getElementById('pokemon_stats_display3').innerHTML = thirdTableBody
     })
     .catch(function(error) {
         console.log(error);
@@ -134,6 +153,11 @@ function onRegionButton() {
 function makePresentable(str) {
    result = str.charAt(0).toUpperCase() + str.slice(1);
    return result.replace("_", " ");
+}
+
+function toTitleCase(str) {
+	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+  	return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 // Not using the below functions
