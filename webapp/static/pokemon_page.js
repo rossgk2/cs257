@@ -3,7 +3,7 @@ window.onload = initialize;
 function initialize() {
 	var individualPokemonName = document.getElementById('pokemon_dynamic_name').innerHTML;
     if (individualPokemonName){
-        load_pokemon_stats(individualPokemonName)
+        load_pokemon_data(individualPokemonName)
         load_pokemon_image_individual_page(individualPokemonName)
     }
 }
@@ -34,57 +34,47 @@ function load_pokemon_image_individual_page(individualPokemonName){
     }
 }
 
-function load_pokemon_stats(pokemon_dynamic_name){
+function load_pokemon_data(pokemon_dynamic_name){
     // Example: http://localhost:5000/api/query/ASC?pokemon_name=castform
     var url = getAPIBaseURL() + '/query/ASC?pokemon_name=' + pokemon_dynamic_name;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(individualPokemon) {
-        var pokemon_name = individualPokemon[0]['pokemon_name'].replaceAll("_", " ");
-        var pokedex_number = individualPokemon[0]['pokedex_number']
-        var is_legendary = individualPokemon[0]['is_legendary']
-        var type1 = individualPokemon[0]['type1']
-        var type2 = individualPokemon[0]['type2']
-        var ability1 = individualPokemon[0]['ability1']
-        var ability2 = individualPokemon[0]['ability2']
-        var hiddenAbility = individualPokemon[0]['hidden_ability']
-        var health = individualPokemon[0]['health']
-        var attack = individualPokemon[0]['attack']
-        var defense = individualPokemon[0]['defense']
-        var specialAttack = individualPokemon[0]['special_attack']
-        var specialDefense = individualPokemon[0]['special_defense']
-        var speed = individualPokemon[0]['speed']
-        var region = individualPokemon[0]['region'].replaceAll("_", " ");
-        var catch_rate = individualPokemon[0]['catch_rate']
-        var male_percent = individualPokemon[0]['male_percent']
-        var game = (individualPokemon[0]['game']).replaceAll("_", " ");
-        var eggGroup1 = individualPokemon[0]['egg_group1'].replaceAll("_", " ");
-        var eggGroup2 = individualPokemon[0]['egg_group2'].replaceAll("_", " ");
         
-
+		var dict = {};
+        var var_names = ['pokemon_name', 'pokedex_number', 'is_legendary', 'type1', 'type2', 'ability1', 
+        'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
+        'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];
+        for (var i = 0; i < var_names.length; i++) {
+        	key = var_names[i];
+        	dict[key] = individualPokemon[0][key];
+        	if (typeof dict[key] === 'string') {
+			    dict[key] = dict[key].replaceAll('_', " ") 
+			}
+		}
         
         var firstTableBody = '<table>\n';
         var firstTableTitles = ["pokemon name", "pokedex number", "game appeared", "region", "male percentage", "catch rate", "legendary status"];
-        var firstTableContents = [pokemon_name, pokedex_number, game, region, male_percent, catch_rate, is_legendary];
-        for (var i=0; i < firstTableContents.length; i++){
-            firstTableBody += "<tr>\n<th>" + firstTableTitles[i] + "</th>\n<th>" + firstTableContents[i] + "</th>\n</tr>"
+        var firstTableKeys = ["pokemon_name", "pokedex_number", "game", "region", "male_percent", "catch_rate", "is_legendary"];
+        for (var i=0; i < firstTableKeys.length; i++){
+            firstTableBody += "<tr>\n<th>" + firstTableTitles[i] + "</th>\n<th>" + dict[firstTableKeys[i]] + "</th>\n</tr>"
         }
         firstTableBody += '\n</table>\n\n';
 
         var secondTableBody = '<table>\n';
         var secondTableTitles = ["Primary Type", "Secondary Type", "Primary Ability", "Secondary Ability", "Hidden Ability", "egg_group1", "egg_group2"];
-        var secondTableContents = [type1, type2, ability1, ability2, hiddenAbility, eggGroup1, eggGroup2];
-        for (var i=0; i < secondTableContents.length; i++){
-            secondTableBody += "<tr>\n<th>" + secondTableTitles[i] + "</th>\n<th>" + secondTableContents[i] + "</th>\n</tr>"
+        var secondTableKeys = ["type1", "type2", "ability1", "ability2", "hidden_ability", "egg_group1", "egg_group2"];
+        for (var i=0; i < secondTableKeys.length; i++){
+            secondTableBody += "<tr>\n<th>" + secondTableTitles[i] + "</th>\n<th>" + dict[secondTableKeys[i]] + "</th>\n</tr>"
         }
         secondTableBody += '\n</table>\n\n';
 
         var thirdTableBody = '<table>\n';
         var thirdTableTitles = ["attack", "special attack", "defense", "special defense", "health", "speed"];
-        var thirdTableContents = [attack, specialAttack, defense, specialDefense, health, speed];
-        for (var i=0; i < secondTableContents.length-1; i+=2){
-            thirdTableBody += "<tr>\n<th>" + thirdTableTitles[i] + "</th>\n<th>" + thirdTableContents[i] 
-            + "</th>\n<th>"+ thirdTableTitles[i+1] + "</th>\n<th>" + thirdTableContents[i+1] + "</th>\n</tr>"
+        var thirdTableKeys = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
+        for (var i=0; i < secondTableKeys.length-1; i+=2){
+            thirdTableBody += "<tr>\n<th>" + thirdTableTitles[i] + "</th>\n<th>" + dict[thirdTableKeys[i]] 
+            + "</th>\n<th>"+ thirdTableTitles[i+1] + "</th>\n<th>" + dict[thirdTableKeys[i+1]] + "</th>\n</tr>"
         }
         thirdTableBody += '\n</table>\n\n';
 
