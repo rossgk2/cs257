@@ -68,15 +68,17 @@ def main():
 
 	# Egg groups.
 	egg_groups_frame = get_subframe(pokemon, old_col_name = "primary_egg_group", new_col_name = "egg_group")
-	null_row = pd.DataFrame([["null"]])
+	null_row = pd.DataFrame([["NULL"]])
 	null_row.columns = ["egg_group"]
 	egg_groups_frame = egg_groups_frame.append(null_row, ignore_index = True) 
-	print(egg_groups_frame)
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "game", old_col_name = "primary_egg_group", new_col_name = "egg_group1_id")
 	insert_id_column(pokemon, pokemon_frame, egg_groups_frame, insert_after_name = "egg_group1_id", old_col_name = "secondary_egg_group", new_col_name = "egg_group2_id")
 
 	# Replace all instances of "-1" in pokemon_frame with "NULL".
 	# pokemon_frame = pokemon_frame.astype(str).replace("-1", "NULL", regex = True) #.astype(str) needed since otherwise -1 considered to be an int
+
+	# This data file is kind of messy => there are often repeated pokemon. I am allowing each pokemon to appear only once
+	pokemon_frame = pokemon_frame.drop_duplicates(subset=['name']).reset_index(drop = True)
 
 	# Write each DataFrame to a .csv file.
 	dataframes = [pokemon_frame, legendary_frame, types_frame, all_abilities, regions_frame, games_frame, egg_groups_frame]

@@ -17,19 +17,21 @@ app.register_blueprint(api.api, url_prefix='/api')
 def home():
     return flask.render_template('index.html')
 
-@app.route('/')
+@app.route('/types')
 def types():
     return flask.render_template('types.html')
 
 # This route supports relative links among your web pages, assuming those pages
 # are stored in the templates/ directory or one of its descendant directories,
 # without requiring you to have specific routes for each page.
-'''
-@app.route('/<path:path>')
-def shared_header_catchall(path):
+
+@app.route('/individual_pokemon/<path:path>')
+def individual_pokemon_page(path):
+    # http://localhost:5000/individual_pokemon/araquanid
+    query_pokemon = path.lower()
     print(path)
-    return flask.render_template(path)
-'''
+    return flask.render_template('each_pokemon.html', pokemon = query_pokemon)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Ross and Jimmy Pokemon application, including API')
     parser.add_argument('host', help='the host on which this application is running')
