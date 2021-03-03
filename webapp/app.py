@@ -31,6 +31,10 @@ def individual_pokemon_page(path):
     query_pokemon = path.lower()
     return flask.render_template('pokemon_page.html', pokemon = query_pokemon)
 
+@app.route('/advanced_search')
+def advanced_search():
+    return flask.render_template('advanced_search.html')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Ross and Jimmy Pokemon application, including API')
     parser.add_argument('host', help='the host on which this application is running')
