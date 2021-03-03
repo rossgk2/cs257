@@ -1,7 +1,7 @@
 window.onload = initialize;
 
 function initialize() {
-	var pokemonName = document.getElementById('pokemon_dynamic_name').innerHTML;
+	var pokemonName = document.getElementById('pokemon_name').innerHTML;
     if (pokemonName) {
         loadPokemonData(pokemonName)
         loadPokemonImage(pokemonName)
@@ -26,17 +26,17 @@ function loadPokemonImage(pokemonName) {
     var image_url = base_path + pokemonName + ".png";
     var backup_image_url = base_path + pokemonName + ".jpg";
     if (doesFileExist(image_url)) {
-        document.getElementById('pokemon_image_dynamic').src = image_url;
+        document.getElementById('dynamic_pokemon_image').src = image_url;
         document.getElementById('change').innerHTML = image_url
     }else{
-        document.getElementById('pokemon_image_dynamic').src = backup_image_url;
+        document.getElementById('dynamic_pokemon_image').src = backup_image_url;
         document.getElementById('change').innerHTML = backup_image_url
     }
 }
 
-function loadPokemonData(pokemon_dynamic_name) {
+function loadPokemonData(pokemon_name) {
     // Example: http://localhost:5000/api/query/ASC?pokemon_name=castform
-    var url = getAPIBaseURL() + '/query/ASC?pokemon_name=' + pokemon_dynamic_name;
+    var url = getAPIBaseURL() + '/query/ASC?pokemon_name=' + pokemon_name;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(individualPokemon) {
@@ -45,14 +45,31 @@ function loadPokemonData(pokemon_dynamic_name) {
         var var_names = ['pokemon_name', 'pokedex_number', 'is_legendary', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
         'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];
-        for (var i = 0; i < var_names.length; i++) {
+        for (var i = 0; i < var_names.length; i ++) {
         	key = var_names[i];
         	dict[key] = individualPokemon[0][key];
         	if (typeof dict[key] === 'string') {
-			    dict[key] = dict[key].replaceAll('_', " ") 
+			    dict[key] = dict[key].replaceAll('_', " "); 
 			}
 		}
-        
+
+		// Pokedex number
+		document.getElementById("pokedex_number").innerHTML = dict["pokedex_number"]
+
+		// Types
+		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
+		document.getElementById("type2").innerHTML = makePresentable(dict["type2"])
+
+		// Stats
+		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
+		for (var i = 0; i < stats.length; i ++) {
+			key = stats[i]
+			document.getElementById(key).innerHTML = makePresentable(stats[i]) + ": " + dict[key]
+		}
+
+
+
+
         var firstTableBody = '<table>\n';
         var firstTableTitles = ["pokemon name", "pokedex number", "game appeared", "region", "male percentage", "catch rate", "legendary status"];
         var firstTableKeys = ["pokemon_name", "pokedex_number", "game", "region", "male_percent", "catch_rate", "is_legendary"];
@@ -110,23 +127,32 @@ function onRegionButton() {
     });
 }
 
-function load_info(this_info, tag_name) {
-    var url = getAPIBaseURL() + '/' + this_info;
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(info) {
-        var listBody ='';
-        for (var i=0; i < info.length; i++){
-            listBody += '<option value = "' + info[i][this_info] + '">'
-                        + info[i][this_info] + '</option>\n';
-        }
-        var listElement = document.getElementById(tag_name);
-        if (listElement){listElement.innerHTML = listBody;}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
+//Helper functions
+
+function makePresentable(str) {
+   result = str.charAt(0).toUpperCase() + str.slice(1);
+   return result.replace("_", " ");
 }
+
+// Not using the below functions
+
+// function load_info(this_info, tag_name) {
+//     var url = getAPIBaseURL() + '/' + this_info;
+//     fetch(url, {method: 'get'})
+//     .then((response) => response.json())
+//     .then(function(info) {
+//         var listBody ='';
+//         for (var i=0; i < info.length; i++){
+//             listBody += '<option value = "' + info[i][this_info] + '">'
+//                         + info[i][this_info] + '</option>\n';
+//         }
+//         var listElement = document.getElementById(tag_name);
+//         if (listElement){listElement.innerHTML = listBody;}
+//     })
+//     .catch(function(error) {
+//         console.log(error);
+//     });
+// }
 
 
 /* 
