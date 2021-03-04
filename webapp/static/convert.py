@@ -21,6 +21,8 @@ def main():
 	new_cols = new_cols.str.lower()
 	pokemon.columns = new_cols
 	pokemon = pokemon.drop(columns = ["pokemon_id"]) # The pokemon_id column is not actually a unique identifier; we don't need it
+	# This data file is kind of messy => there are often repeated pokemon. I am allowing each pokemon to appear only once
+	pokemon = pokemon.drop_duplicates(subset=['pokemon_name']).reset_index(drop = True)
 
 	# Initialize pokemon_frame to contain all of the columns from pokemon in the list cols.
 	cols = ["pokedex_number", "pokemon_name", "health_stat", "attack_stat",
@@ -76,9 +78,6 @@ def main():
 
 	# Replace all instances of "-1" in pokemon_frame with "NULL".
 	# pokemon_frame = pokemon_frame.astype(str).replace("-1", "NULL", regex = True) #.astype(str) needed since otherwise -1 considered to be an int
-
-	# This data file is kind of messy => there are often repeated pokemon. I am allowing each pokemon to appear only once
-	pokemon_frame = pokemon_frame.drop_duplicates(subset=['name']).reset_index(drop = True)
 
 	# Write each DataFrame to a .csv file.
 	dataframes = [pokemon_frame, legendary_frame, types_frame, all_abilities, regions_frame, games_frame, egg_groups_frame]

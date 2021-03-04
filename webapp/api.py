@@ -130,12 +130,12 @@ def advanced_query(order):
     # http://localhost:5000/api/query/ASC?pokemon_name=an&catch_rate=0-50
     # http://localhost:5000/api/query/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
 
-    user_pokedex_lower, user_pokedex_upper = flask.request.args.get('pokedex_lower'), flask.request.args.get('pokedex_upper')
-    pokedex_lower = user_pokedex_lower if user_pokedex_lower else 0
-    pokedex_upper = user_pokedex_upper if user_pokedex_upper else 809
-    # print('TYPE pokedex_lower is :', type(pokedex_lower), file=sys.stderr)
-    
-    query_parameters = [pokedex_lower, pokedex_upper]
+    query_parameters = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
+    if flask.request.args.get('pokedex_lower'):
+        query_parameters[0] = flask.request.args.get('pokedex_lower')
+    if flask.request.args.get('pokedex_upper'):
+        query_parameters[1] = flask.request.args.get('pokedex_upper')
+    print(query_parameters)
 
     if flask.request.args.get('pokemon_name'):
         like_arguments = '%' + flask.request.args.get('pokemon_name') + '%'
@@ -165,6 +165,12 @@ def advanced_query(order):
     
     # same thing for egg groups
     # same for game, region, is_legendary
+
+    # special composite search: given ability X, return all pokemon with X in ability1, ability2, or hidden_ability
+    if flask.request.args.get('composite_ability'):
+        like_arguments = '%' + flask.request.args.get('composite_ability') + '%'
+        query = query + "\n AND (ability_table_a.ability LIKE %s OR ability_table_b.ability LIKE %s OR ability_table_c.ability LIKE %s) "
+        query_parameters.extend([like_arguments for i in range(3)])
 
     for stat in ["health", "attack", "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_percent"]:
         argument = flask.request.args.get(stat)
@@ -202,7 +208,7 @@ def advanced_query(order):
     
     query = query + ";"
     query_parameters = tuple(query_parameters)
-    print(cursor.mogrify(query, query_parameters))
+    # print(cursor.mogrify(query, query_parameters))
     cursor.execute(query, query_parameters)
     print("my query is: ")
     print(cursor.query)
