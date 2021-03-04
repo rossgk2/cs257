@@ -4,6 +4,11 @@ select {
 
 label {
   clear: left;
-  margin-right: 1em;
   float: left;
+  margin-right: 1em;
+}
+
+.dropdown_container {
+  padding-top: .25em;
+  padding-bottom: .25em;
 }
