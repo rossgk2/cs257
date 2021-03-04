@@ -33,8 +33,8 @@ function loadPokemonImage(pokemonName) {
 }
 
 function loadPokemonData(pokemon_name) {
-    // Example: http://localhost:5000/api/query/ASC?pokemon_name=castform
-    var url = getAPIBaseURL() + '/query/ASC?pokemon_name=' + pokemon_name;
+    // Example: http://localhost:5000/api/advanced_search/ASC?pokemon_name=castform
+    var url = getAPIBaseURL() + '/advanced_search/ASC?pokemon_name=' + pokemon_name;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(individualPokemon) {

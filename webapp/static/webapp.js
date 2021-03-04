@@ -75,7 +75,7 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
     //?pokemon_name=' + pokemon_dynamic_name
     var num_pokemon_shown = 18;
     var num_pokemon_per_row = 6;
-    var url = getAPIBaseURL() + '/query/DESC?limit=' + num_pokemon_shown + "&order_by=pokedex_number";
+    var url = getAPIBaseURL() + '/advanced_search/DESC?limit=' + num_pokemon_shown + "&order_by=pokedex_number";
     if(type1Filter != "all") url += "&type1=" + type1Filter;
     if(type2Filter != "all") url += "&type2=" + type2Filter;
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter

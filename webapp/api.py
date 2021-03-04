@@ -99,8 +99,8 @@ def get_egg_groups():
     output_list.remove("NULL")
     return json.dumps(output_list)
 
-@api.route('/query/<order>')
-def advanced_query(order):
+@api.route('advanced_search/<order>')
+def advanced_search(order):
     query = '''SELECT DISTINCT pokemon_name pokemon_name, pokedex_number, 
     type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
     ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 

@@ -9,22 +9,22 @@ function onReady() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
 	$(".search2").select2();
 
-	// Read selected option
-	$('#search_button').click(function() {
-		var value = $("#pokemon_name option:selected").text();
-		$('#result').html("selected value: " + value);
-	});
-
 	loadPokemonNameDropdown();
 	loadTypeDropdowns();
 	loadAbilityDropdowns();
 	loadRegionDropdowns();
 	loadGameDropdown();
 	loadEggGroupsDropdown();
+
+	// Read selected option
+	$('#search_button').click(function() {
+		var value = $("#pokemon_name option:selected").text();
+		$('#result').html("selected value: " + value);
+	});
 }
 
 function loadPokemonNameDropdown() {
-    var url = getAPIBaseURL() + "/query/ASC"
+    var url = getAPIBaseURL() + "/advanced_search/ASC"
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
