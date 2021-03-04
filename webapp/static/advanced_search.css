@@ -19,6 +19,6 @@ label {
   padding-right: 1% */
 }
 
-#id_search {
+input[type="text"] {
   width: 20em;
 }

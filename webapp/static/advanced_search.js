@@ -15,12 +15,38 @@ function onReady() {
 	loadRegionDropdowns();
 	loadGameDropdown();
 	loadEggGroupsDropdown();
+	registerSexRatioCallbacks();
+
 
 	// Read selected option
 	$('#search_button').click(function() {
 		var value = $("#pokemon_name option:selected").text();
 		$('#result').html("selected value: " + value);
 	});
+}
+
+function registerSexRatioCallbacks() {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	percentMaleSearch.oninput = function() { return updateSexRatios("female") };
+	percentFemaleSearch.oninput = function() { return updateSexRatios("male") };
+}
+
+// Since male_percent and female_percent sum to 100, we can update one when the other is changed.
+function updateSexRatios(fieldToUpdate) {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	if (fieldToUpdate === "male") {
+		femaleValue = percentFemaleSearch.value === null ? 0 : percentFemaleSearch.value;
+		percentMaleSearch.value = 100 - femaleValue;
+	}
+	else if (fieldToUpdate === "female") {
+		maleValue = percentMaleSearch.value === null ? 0 : percentMaleSearch.value;
+		percentFemaleSearch.value = 100 - maleValue;
+	}
+	else {
+		throw 'fieldToUpdate must be either "male" or "female"'
+	}
 }
 
 function loadPokemonNameDropdown() {
