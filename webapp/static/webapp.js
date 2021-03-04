@@ -10,14 +10,14 @@ function onReady() {
 
     load_info("types", "type1_list_selection", "all type1");
     load_info("types", "type2_list_selection", "all type2");
-    load_info("abilities", "ability_list_selection", "all ability1");
+    load_info("abilities", "ability_list_selection", "all ability");
     load_pokemon_cards()
 
     // Read selected option
     $('#search_button').click(function() {
         var type1Selected = $("#type1_list_selection").val();
         var type2Selected = $("#type2_list_selection").val();
-        var abilitySelected = $("#ability_list_selection").val();
+        var abilitySelected = $("#ability_list_selection").val().replaceAll(' ', "_"); //search in all ability1, 2, hidden
         document.getElementById("result").innerHTML = type1Selected + type2Selected + abilitySelected
         load_pokemon_cards(type1Selected, type2Selected, abilitySelected)
     });
@@ -76,6 +76,12 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
     var num_pokemon_shown = 18;
     var num_pokemon_per_row = 6;
     var url = getAPIBaseURL() + '/query/DESC?limit=' + num_pokemon_shown + "&order_by=pokedex_number";
+    if(type1Filter != "all") url += "&type1=" + type1Filter;
+    if(type2Filter != "all") url += "&type2=" + type2Filter;
+    if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter
+    //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
+    if(type1Filter!="all" || type2Filter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000" 
+    /*
     if (type1Filter != "all"){
         url += "&type1=" + type1Filter
     }
@@ -83,9 +89,9 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
         url += "&type2=" + type2Filter
     }
     if (abilityFilter != "all"){
-        url += "&ability1=" + abilityFilter
+        url += "&composite_ability=" + abilityFilter
     }
-
+    */
 
 
     fetch(url, {method: 'get'})
