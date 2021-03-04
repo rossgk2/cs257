@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- HTML, CSS, and JS for the files of the form advanced_search.* are adapted from https://makitweb.com/make-a-dropdown-with-search-box-using-jquery/ !-->
+
+	<!-- Use JQuery and the JQuery plugin select2 for searchable dropdown menus. It's important that this comes before the "usual boilerplate" below! !-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- Installing from Google is likely faster than using normal install, since user might have this script cached !-->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> 
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+	<!-- Do the usual boilerplate. !-->
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='advanced_search.css') }}" />
     <script type="text/javascript" src="{{ url_for('static', filename='advanced_search.js') }}"></script>
@@ -9,6 +17,15 @@
 </head>
 
 <body>
-    <h3> Advanced search </h3>
+
+	<select id="pokemon_name" class="search">
+	  <option> Click to search or select an option</option> <!-- -->
+	  <option> Option 1 </option> 
+	  <option> Option 2 </option> 
+	</select>
+
+	<input type= "button" value="Search" id="search_button">
+
+	<div id="result"></div>
 </body>
 </html>
