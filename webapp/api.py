@@ -45,7 +45,8 @@ def get_abilities():
     output_list = []
     for row in cursor:
         index, ability, ability_description = row
-        output_list.append({'abilities': ability})
+        output_list.append(ability)
+    output_list.remove("NULL")
     return json.dumps(output_list)
 
 @api.route('/types')
