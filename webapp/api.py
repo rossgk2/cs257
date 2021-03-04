@@ -57,7 +57,8 @@ def get_types():
     output_list = []
     for row in cursor:
         index, type_name = row
-        output_list.append({'types': type_name})
+        output_list.append(type_name)
+    output_list.remove("NULL")
     return json.dumps(output_list)
 
 @api.route('/regions')

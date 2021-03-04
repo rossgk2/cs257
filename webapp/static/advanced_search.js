@@ -6,8 +6,8 @@
 $(document).ready(onReady)
 
 function onReady() {
-	// Initialize the select2 JQuery plugin
-	$(".search").select2(); //".search" is a CSS selector string
+	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
+	$(".search2").select2();
 
 	// Read selected option
 	$('#search_button').click(function() {
@@ -16,6 +16,7 @@ function onReady() {
 	});
 
 	loadPokemonNameDropdown();
+	loadTypeDropdowns();
 }
 
 function loadPokemonNameDropdown() {
@@ -23,16 +24,25 @@ function loadPokemonNameDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
-    	// Construct the innerHTML for the dropdown
-    	var innerHTML = "<option> Click to search or select an option </option>\n";
-    	for (var i = 0; i < pokemonList.length; i ++) {
-			innerHTML += "<option> " + makePresentable(pokemonList[i]["pokemon_name"]) + " </option>\n";
-    	}
-    	innerHTML += "\n\n";
+    	innerHTML = getDropdownInnerHTML(pokemonList, function(arr, i){ return arr[i]["pokemon_name"]; });
+    	var pokemonNameDropdown = document.getElementById("pokemon_name_dropdown");
+		pokemonNameDropdown.innerHTML = innerHTML;    	
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
 
-    	// Assign this innerHTML
-    	var pokemonNameSearch = document.getElementById("pokemon_name_dropdown");
-		pokemonNameSearch.innerHTML = innerHTML;    	
+function loadTypeDropdowns() {
+	var url = getAPIBaseURL() + "/types"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(typesList) {
+    	innerHTML = getDropdownInnerHTML(typesList, null);
+    	var type1Dropdown = document.getElementById("type1_dropdown");
+    	var type2Dropdown = document.getElementById("type2_dropdown");
+		type1Dropdown.innerHTML = innerHTML;
+		type2Dropdown.innerHTML = innerHTML;    	
     })
     .catch(function(error) {
         console.log(error);
@@ -40,6 +50,17 @@ function loadPokemonNameDropdown() {
 }
 
 // Helper functions
+
+function getDropdownInnerHTML(arr, accessor) {
+	if (accessor === null) {
+		accessor = function(arrr, i){ return arrr[i]; }
+	}
+	var innerHTML = "<option> Click to search or select an option </option>\n";
+    for (var i = 0; i < arr.length; i ++) {
+		innerHTML += "<option> " + makePresentable(accessor(arr, i)) + " </option>\n";
+    }
+    return innerHTML;
+}
 
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
