@@ -1,4 +1,4 @@
-/* The symbol $ is an alias for JQuery(). To be totally clear, this means that $ is used as the name of a function! In the below, $(document)
+/* The symbol $ is an alias for jQuery(). To be totally clear, this means that $ is used as the name of a function! In the below, $(document)
  is the function $ acting on the argument whose name is document.
 */
 
@@ -24,7 +24,7 @@ function onReady() {
 }
 
 function loadPokemonNameDropdown() {
-    var url = getAPIBaseURL() + "/advanced_search/ASC"
+    var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokemon_name"
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
@@ -61,8 +61,10 @@ function loadAbilityDropdowns() {
     	innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, null);
     	var ability1Dropdown = document.getElementById("ability1_dropdown");
     	var ability2Dropdown = document.getElementById("ability2_dropdown");
+		var hiddenAbilityDropdown = document.getElementById("hidden_ability_dropdown");
 		ability1Dropdown.innerHTML = innerHTML;
-		ability2Dropdown.innerHTML = innerHTML;    	
+		ability2Dropdown.innerHTML = innerHTML;  
+		hiddenAbilityDropdown.innerHTML = innerHTML;  	
     })
     .catch(function(error) {
         console.log(error);

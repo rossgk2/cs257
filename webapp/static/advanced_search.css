@@ -1,5 +1,5 @@
 select {
-  width: 250px;
+  width: 20em;
 }
 
 label {
@@ -8,7 +8,17 @@ label {
   margin-right: 1em;
 }
 
-.dropdown_container {
+.container {
   padding-top: .25em;
   padding-bottom: .25em;
+}
+
+.container > div {
+  /* width: 50%;
+  float: left;
+  padding-right: 1% */
+}
+
+#id_search {
+  width: 20em;
 }
