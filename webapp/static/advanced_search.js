@@ -17,6 +17,7 @@ function onReady() {
 
 	loadPokemonNameDropdown();
 	loadTypeDropdowns();
+	loadAbilityDropdowns();
 }
 
 function loadPokemonNameDropdown() {
@@ -49,11 +50,27 @@ function loadTypeDropdowns() {
     });
 }
 
+function loadAbilityDropdowns() {
+	var url = getAPIBaseURL() + "/abilities"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(abilitiesList) {
+    	innerHTML = getDropdownInnerHTML(abilitiesList, null);
+    	var ability1Dropdown = document.getElementById("ability1_dropdown");
+    	var ability2Dropdown = document.getElementById("ability2_dropdown");
+		ability1Dropdown.innerHTML = innerHTML;
+		ability2Dropdown.innerHTML = innerHTML;    	
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
 // Helper functions
 
 function getDropdownInnerHTML(arr, accessor) {
 	if (accessor === null) {
-		accessor = function(arrr, i){ return arrr[i]; }
+		accessor = function(arr, i){ return arr[i]; };
 	}
 	var innerHTML = "<option> Click to search or select an option </option>\n";
     for (var i = 0; i < arr.length; i ++) {
