@@ -17,8 +17,8 @@ function onReady() {
     $('#search_button').click(function() {
         var type1Selected = $("#type1_list_selection").val();
         var type2Selected = $("#type2_list_selection").val();
-        var abilitySelected = $("#ability_list_selection").val().replaceAll(' ', "_"); //search in all ability1, 2, hidden
-        document.getElementById("result").innerHTML = type1Selected + type2Selected + abilitySelected
+        var abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
+        document.getElementById("result").innerHTML = "filter selection: " + type1Selected + " | " + type2Selected + " | " + abilitySelected;
         load_pokemon_cards(type1Selected, type2Selected, abilitySelected)
     });
 }
@@ -28,7 +28,6 @@ function doesFileExist(urlToFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', urlToFile, false);
     xhr.send();
-     
     if (xhr.status == "404") {
         return false;
     } else {
@@ -38,13 +37,11 @@ function doesFileExist(urlToFile) {
 
 function getPokemonImagePath(pokemonName) {
     var base_path = "../static/pokemon_images/";
-    var image_url = base_path + pokemonName + ".jpg";
-    var backup_image_url = base_path + pokemonName + ".png";
-    if (doesFileExist(image_url)) {
-        return image_url
-    }else{
-        return backup_image_url
-    }
+    var jpg_url = base_path + pokemonName + ".jpg";
+    var png_url = base_path + pokemonName + ".png";
+    if (doesFileExist(jpg_url)) return jpg_url;
+    if (doesFileExist(png_url)) return png_url;
+    return "../static/pokemon_images/pokemon_picture_missing.png"
 }
 
 function getAPIBaseURL() {
@@ -52,19 +49,17 @@ function getAPIBaseURL() {
     return baseURL;
 }
 
-function load_info(thisTypeOfInfo, tag_name, searchBarText) {
+function load_info(thisTypeOfInfo, htmlID, searchBarText) {
     var url = getAPIBaseURL() + '/' + thisTypeOfInfo;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(info) {
         var listBody ='<option value = "all">' + searchBarText + '</option>\n';
         for (var i=0; i < info.length; i++){
-            var individualElement = info[i][thisTypeOfInfo].replaceAll('_', " ") 
-            listBody += '<option value = "' + individualElement + '">'
-                        + individualElement + '</option>\n';
+            var rawElement = info[i];
+            listBody += '<option value = "' + rawElement + '">' + makePresentable(rawElement) + '</option>\n'
         }
-        var listElement = document.getElementById(tag_name);
-        if (listElement){listElement.innerHTML = listBody;}
+        document.getElementById(htmlID).innerHTML = listBody
     })
     .catch(function(error) {
         console.log(error);
@@ -81,18 +76,6 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter
     //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
     if(type1Filter!="all" || type2Filter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000" 
-    /*
-    if (type1Filter != "all"){
-        url += "&type1=" + type1Filter
-    }
-    if (type2Filter != "all"){
-        url += "&type2=" + type2Filter
-    }
-    if (abilityFilter != "all"){
-        url += "&composite_ability=" + abilityFilter
-    }
-    */
-
 
     fetch(url, {method: 'get'})
     .then((response) => response.json())
@@ -123,3 +106,7 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
     })
 }
 
+function makePresentable(str) {
+    result = str.charAt(0).toUpperCase() + str.slice(1);
+    return result.replace("_", " ");
+ }
