@@ -114,14 +114,14 @@ create TABLE regions (
     id SERIAL,
     region text
 );
-\copy regions from './static/region_table.csv' DELIMITER ',' CSV
+\copy regions from './static/regions_pandas.csv' DELIMITER ',' CSV
 
 DROP TABLE IF EXISTS games;
 create TABLE games (
     id SERIAL,
     game text
 );
-\copy games from './static/games_of_origins_table.csv' DELIMITER ',' CSV
+\copy games from './static/games_pandas.csv' DELIMITER ',' CSV
 
 DROP TABLE IF EXISTS egg_groups;
 create TABLE egg_groups (

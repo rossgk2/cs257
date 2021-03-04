@@ -11,19 +11,6 @@ import psycopg2
 
 api = flask.Blueprint('api', __name__)
 
-''' Jimmy's old code of executing querys, DON'T USE IT. Need to pass in parameter as safe sql string
-def execute_query(connection, query):
-    try:
-        cursor = connection.cursor()
-        query_command = "\n".join(query)
-        print(query_command)
-        cursor.execute(query_command)
-        return cursor
-    except Exception as search_not_sucessful:
-        print(search_not_sucessful)
-        exit()
-'''
-
 def connect_database():
     ''' return a connection object to the postgres database, which is passed down for querying'''
     from config import database
