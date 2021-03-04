@@ -175,7 +175,7 @@ def advance_query(order):
     
     query = query + ";"
     query_parameters = tuple(query_parameters)
-    print(cursor.mogrify(query, query_parameters))
+    # print(cursor.mogrify(query, query_parameters))
     cursor.execute(query, query_parameters)
     print("my query is: ")
     print(cursor.query)

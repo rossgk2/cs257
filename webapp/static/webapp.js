@@ -3,15 +3,21 @@
     Jimmy Zhong and Ross Grogan-Kaylor, CS257 Carleton College, Professor Jeff Ondich
     Final Project 2021 Feburary 
 */
-window.onload = initialize;
+$(document).ready(onReady)
+function onReady() {
+	// Initialize the select2 JQuery plugin
+	$(".search").select2(); //".search" is a CSS selector string
 
-function initialize() {
-   load_info("types", "type1_list_selection");
-   load_info("types", "type2_list_selection");
-   load_info("abilities", "ability_list_selection");
+	// Read selected option
+	$('#search_button').click(function() {
+		var value = $("#ability_list_selection option:selected").text();
+		$('#result').html("selected value: " + value);
+	});
 
-   // there should be filter of types and ability implemented later
-   load_pokemon_cards()
+    load_info("types", "type1_list_selection");
+    load_info("types", "type2_list_selection");
+    load_info("abilities", "ability_list_selection");
+    load_pokemon_cards()
 }
 
 
@@ -49,7 +55,7 @@ function load_info(thisTypeOfInfo, tag_name) {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(info) {
-        var listBody ='';
+        var listBody ="<option> Click to search </option>\n";
         for (var i=0; i < info.length; i++){
             var individualElement = info[i][thisTypeOfInfo].replaceAll('_', " ") 
             listBody += '<option value = "' + individualElement + '">'
@@ -96,3 +102,17 @@ function load_pokemon_cards(){
         document.getElementById("pokemon_landing_display").innerHTML = pokemonDisplayDiv
     })
 }
+
+$(document).ready(function() {
+ 
+    // Initialize the select2 JQuery plugin
+    $(".search").select2(); //".search" is a CSS selector string
+  
+    // Read selected option
+    $('#search_button').click(function(){
+      var value = $("#ability_list_selection option:selected").text();
+  
+      $('#result').html("selected value: " + value);
+  
+    });
+  });
