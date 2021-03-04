@@ -18,6 +18,9 @@ function onReady() {
 	loadPokemonNameDropdown();
 	loadTypeDropdowns();
 	loadAbilityDropdowns();
+	loadRegionDropdowns();
+	loadGameDropdown();
+	loadEggGroupsDropdown();
 }
 
 function loadPokemonNameDropdown() {
@@ -25,7 +28,7 @@ function loadPokemonNameDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
-    	innerHTML = getDropdownInnerHTML(pokemonList, function(arr, i){ return arr[i]["pokemon_name"]; });
+    	innerHTML = getDropdownInnerHTML(pokemonList, makePresentable, function(arr, i){ return arr[i]["pokemon_name"]; });
     	var pokemonNameDropdown = document.getElementById("pokemon_name_dropdown");
 		pokemonNameDropdown.innerHTML = innerHTML;    	
     })
@@ -39,7 +42,7 @@ function loadTypeDropdowns() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(typesList) {
-    	innerHTML = getDropdownInnerHTML(typesList, null);
+    	innerHTML = getDropdownInnerHTML(typesList, makePresentable, null);
     	var type1Dropdown = document.getElementById("type1_dropdown");
     	var type2Dropdown = document.getElementById("type2_dropdown");
 		type1Dropdown.innerHTML = innerHTML;
@@ -55,7 +58,7 @@ function loadAbilityDropdowns() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(abilitiesList) {
-    	innerHTML = getDropdownInnerHTML(abilitiesList, null);
+    	innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, null);
     	var ability1Dropdown = document.getElementById("ability1_dropdown");
     	var ability2Dropdown = document.getElementById("ability2_dropdown");
 		ability1Dropdown.innerHTML = innerHTML;
@@ -66,15 +69,65 @@ function loadAbilityDropdowns() {
     });
 }
 
+function loadRegionDropdowns() {
+	var url = getAPIBaseURL() + "/regions"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(regionsList) {
+    	innerHTML = getDropdownInnerHTML(regionsList, makePresentable, null);
+    	var regionDropdown = document.getElementById("region_dropdown");
+		regionDropdown.innerHTML = innerHTML;
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function loadGameDropdown() {
+	var url = getAPIBaseURL() + "/games"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(gamesList) {
+    	innerHTML = getDropdownInnerHTML(gamesList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	var gameDropdown = document.getElementById("game_dropdown");
+		gameDropdown.innerHTML = innerHTML;
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function loadEggGroupsDropdown() {
+	var url = getAPIBaseURL() + "/egg_groups"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(eggGroupsList) {
+    	innerHTML = getDropdownInnerHTML(eggGroupsList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	var eggGroup1Dropdown = document.getElementById("egg_group1_dropdown");
+		var eggGroup2Dropdown = document.getElementById("egg_group2_dropdown");
+		eggGroup1Dropdown.innerHTML = innerHTML;
+		eggGroup2Dropdown.innerHTML = innerHTML;
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+
 // Helper functions
 
-function getDropdownInnerHTML(arr, accessor) {
+/* Inputs:
+ arr is an array
+ presentor is a function that takes a single string as input and returns a string as output
+ accessor is a function that takes in an array and an integer and returns an element of that array
+*/
+function getDropdownInnerHTML(arr, presentor, accessor) {
 	if (accessor === null) {
 		accessor = function(arr, i){ return arr[i]; };
 	}
 	var innerHTML = "<option> Click to search or select an option </option>\n";
     for (var i = 0; i < arr.length; i ++) {
-		innerHTML += "<option> " + makePresentable(accessor(arr, i)) + " </option>\n";
+		innerHTML += "<option> " + presentor(accessor(arr, i)) + " </option>\n";
     }
     return innerHTML;
 }
@@ -86,5 +139,10 @@ function getAPIBaseURL() {
 
 function makePresentable(str) {
    result = str.charAt(0).toUpperCase() + str.slice(1);
-   return result.replace("_", " ");
+   return result.replaceAll("_", " ");
+}
+
+function toTitleCase(str) {
+	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+  	return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }

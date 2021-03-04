@@ -71,11 +71,36 @@ def get_regions():
     output_list = []
     for row in cursor:
         index, region = row
-        output_list.append({'regions': region})
+        output_list.append(region)
+    return json.dumps(output_list)
+
+@api.route('/games')
+def get_games():
+    query = "SELECT * FROM games;"
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        index, game = row
+        output_list.append(game)
+    return json.dumps(output_list)
+
+@api.route('/egg_groups')
+def get_egg_groups():
+    query = "SELECT * FROM egg_groups;"
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        index, egg_group = row
+        output_list.append(egg_group)
+    output_list.remove("NULL")
     return json.dumps(output_list)
 
 @api.route('/query/<order>')
-def advance_query(order):
+def advanced_query(order):
     query = '''SELECT DISTINCT pokemon_name pokemon_name, pokedex_number, 
     type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
     ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 
