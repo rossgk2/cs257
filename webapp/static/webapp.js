@@ -5,21 +5,23 @@
 */
 $(document).ready(onReady)
 function onReady() {
-	// Initialize the select2 JQuery plugin
-	$(".search").select2(); //".search" is a CSS selector string
+    // Initialize the select2 JQuery plugin
+    $(".search").select2(); //".search" is a CSS selector string
 
-	// Read selected option
-	$('#search_button').click(function() {
-		var value = $("#ability_list_selection option:selected").text();
-		$('#result').html("selected value: " + value);
-	});
-
-    load_info("types", "type1_list_selection");
-    load_info("types", "type2_list_selection");
-    load_info("abilities", "ability_list_selection");
+    load_info("types", "type1_list_selection", "all type1");
+    load_info("types", "type2_list_selection", "all type2");
+    load_info("abilities", "ability_list_selection", "all ability1");
     load_pokemon_cards()
-}
 
+    // Read selected option
+    $('#search_button').click(function() {
+        var type1Selected = $("#type1_list_selection").val();
+        var type2Selected = $("#type2_list_selection").val();
+        var abilitySelected = $("#ability_list_selection").val();
+        document.getElementById("result").innerHTML = type1Selected + type2Selected + abilitySelected
+        load_pokemon_cards(type1Selected, type2Selected, abilitySelected)
+    });
+}
 
 function doesFileExist(urlToFile) {
     // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
@@ -36,8 +38,8 @@ function doesFileExist(urlToFile) {
 
 function getPokemonImagePath(pokemonName) {
     var base_path = "../static/pokemon_images/";
-    var image_url = base_path + pokemonName + ".png";
-    var backup_image_url = base_path + pokemonName + ".jpg";
+    var image_url = base_path + pokemonName + ".jpg";
+    var backup_image_url = base_path + pokemonName + ".png";
     if (doesFileExist(image_url)) {
         return image_url
     }else{
@@ -50,12 +52,12 @@ function getAPIBaseURL() {
     return baseURL;
 }
 
-function load_info(thisTypeOfInfo, tag_name) {
+function load_info(thisTypeOfInfo, tag_name, searchBarText) {
     var url = getAPIBaseURL() + '/' + thisTypeOfInfo;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(info) {
-        var listBody ="<option> Click to search </option>\n";
+        var listBody ='<option value = "all">' + searchBarText + '</option>\n';
         for (var i=0; i < info.length; i++){
             var individualElement = info[i][thisTypeOfInfo].replaceAll('_', " ") 
             listBody += '<option value = "' + individualElement + '">'
@@ -69,11 +71,23 @@ function load_info(thisTypeOfInfo, tag_name) {
     });
 }
 
-function load_pokemon_cards(){
+function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFilter = "all"){
     //?pokemon_name=' + pokemon_dynamic_name
     var num_pokemon_shown = 18;
     var num_pokemon_per_row = 6;
     var url = getAPIBaseURL() + '/query/DESC?limit=' + num_pokemon_shown + "&order_by=pokedex_number";
+    if (type1Filter != "all"){
+        url += "&type1=" + type1Filter
+    }
+    if (type2Filter != "all"){
+        url += "&type2=" + type2Filter
+    }
+    if (abilityFilter != "all"){
+        url += "&ability1=" + abilityFilter
+    }
+
+
+
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(returnPokemon) {
@@ -103,16 +117,3 @@ function load_pokemon_cards(){
     })
 }
 
-$(document).ready(function() {
- 
-    // Initialize the select2 JQuery plugin
-    $(".search").select2(); //".search" is a CSS selector string
-  
-    // Read selected option
-    $('#search_button').click(function(){
-      var value = $("#ability_list_selection option:selected").text();
-  
-      $('#result').html("selected value: " + value);
-  
-    });
-  });
