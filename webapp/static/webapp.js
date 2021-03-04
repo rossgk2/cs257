@@ -8,9 +8,9 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
-    load_info("types", "type1_list_selection", "all type1");
-    load_info("types", "type2_list_selection", "all type2");
-    load_info("abilities", "ability_list_selection", "all ability");
+    load_info("types", "type1_list_selection", "Select type 1");
+    load_info("types", "type2_list_selection", "Select type 2");
+    load_info("abilities", "ability_list_selection", "Select ability");
     load_pokemon_cards()
 
     // Read selected option
@@ -85,12 +85,12 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
             pokemonDisplayDiv += '<div class="col-2">'
             var thisPokemon = returnPokemon[i];
 
-            var name = thisPokemon['pokemon_name'].replaceAll('_', "-");
+            var name = makePresentable(thisPokemon['pokemon_name']);
             var pokemonImagePath = getPokemonImagePath(name);
             var pokemonImageHtml = '<img src="' + pokemonImagePath + '" alt="sorry, we do not have picture for this pokemon now" class="img-thumbnail">\n\n';
 
             var pokedexNum = thisPokemon['pokedex_number'];
-            var firstLine = '<h6>ID:' + pokedexNum.toString() + " " + name + "</h>\n"
+            var firstLine = '<h6>(ID: ' + pokedexNum.toString() + ") " + name + "</h>\n"
 
             var typeImageLine1 = 'T1:<img src="../static/type_images/' + thisPokemon['type1'] + '.png" alt="something is wrong" class="img-thumbnail">\n'
             var typeImageLine2 = 'T2:<img src="../static/type_images/' + thisPokemon['type2'] + '.png" alt="something is wrong" class="img-thumbnail">\n'
@@ -108,5 +108,5 @@ function load_pokemon_cards(type1Filter = "all", type2Filter = "all", abilityFil
 
 function makePresentable(str) {
     result = str.charAt(0).toUpperCase() + str.slice(1);
-    return result.replace("_", " ");
+    return result.replaceAll("_", " ");
  }
