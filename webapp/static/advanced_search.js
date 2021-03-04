@@ -37,16 +37,49 @@ function updateSexRatios(fieldToUpdate) {
 	var percentMaleSearch = document.getElementById("percent_male_search");
 	var percentFemaleSearch = document.getElementById("percent_female_search");
 	if (fieldToUpdate === "male") {
-		femaleValue = percentFemaleSearch.value === null ? 0 : percentFemaleSearch.value;
-		percentMaleSearch.value = 100 - femaleValue;
+		percentMaleSearch.value = updateSexRatiosHelper(percentFemaleSearch);
 	}
 	else if (fieldToUpdate === "female") {
-		maleValue = percentMaleSearch.value === null ? 0 : percentMaleSearch.value;
-		percentFemaleSearch.value = 100 - maleValue;
+		percentFemaleSearch.value = updateSexRatiosHelper(percentMaleSearch);
 	}
 	else {
 		throw 'fieldToUpdate must be either "male" or "female"'
 	}
+}
+
+function updateSexRatiosHelper(sexRatioField) {
+	values = sexRatioField.value === null ? "" : sexRatioField.value;
+	values = values.replace(/\s+/g, ""); //remove all whitespace from string
+	 if (values.includes("-")) {
+	 	valuesSplit = values.split(/\D/);
+	 	
+	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
+	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
+	
+		if (onlyDigitsBefore || onlyDigitsAfter)
+	 	{
+	 		if (onlyDigitsBefore) { 
+		 		lower = valuesSplit[0];
+		 		upper = 100;
+	 		} 
+	 		else if (onlyDigitsAfter) {
+		 		lower = 0;
+		 		upper = valuesSplit[1];
+	 		}
+		 	lowerOther = Math.min(100 - lower, 100 - upper);
+		 	upperOther = Math.max(100 - lower, 100 - upper);
+		}
+		else {
+			valueBefore = valuesSplit[0];
+	 		valueAfter = valuesSplit[1];
+	 		lowerOther = Math.min(100 - valueBefore, 100 - valueAfter);
+	 		upperOther = Math.max(100 - valueBefore, 100 - valueAfter);
+		}
+		return lowerOther + " - " + upperOther;
+	 }
+	 else { //values is either the empty string or a string of digits
+	 	return values;
+	 }
 }
 
 function loadPokemonNameDropdown() {
