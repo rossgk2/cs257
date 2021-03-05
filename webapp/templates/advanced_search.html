@@ -17,6 +17,9 @@
 </head>
 
 <body>
+
+	<h3 id = "link_to_homepage">this should be a link; if you see this you get a problem</h3>
+
 	<h3> Advanced search</h3>
 	
 	<div id = "advanced_search">
@@ -114,17 +117,18 @@
 
 		<div>
 			<input type="text" id = "catch_rate_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
-			<label for="catch_rate_search"> Catch rate </label>
+			<label for="catch_rate_search"> Catch rate percent </label>
 		</div>
 		
 		<div class = "container">
+			Percent chance that the Pokemon spawns as...
 			<div>
 				<input type="text" id = "percent_male_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
-				<label for="percent_male_search"> Percent male </label>
+				<label for="percent_male_search"> Male </label>
 			</div>
 			<div>
 				<input type="text" id = "percent_female_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
-				<label for="percent_female_search"> Percent female </label>
+				<label for="percent_female_search"> Female </label>
 			</div>
 		</div>
 
@@ -145,7 +149,6 @@
 		</div>
 
 		<input type= "button" value="Search" id="search_button">
-		<h3 id = "link_to_homepage">this should be a link; if you see this you get a problem</h3>
 	</div>
 	<div id="search_results"></div>
 </body>

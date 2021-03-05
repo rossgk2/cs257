@@ -1,3 +1,13 @@
+#link_to_homepage {
+    float: bottom;
+}
+
+#pokemon_data { 
+    float: bottom;
+}
+
+/* Might be useful: */
+
 /*.menu {
     margin: 20px;
     padding: 5px;

@@ -127,7 +127,7 @@ def advanced_search(order):
     # http://localhost:5000/api/advanced_search/DESC?pokemon_name=an&order_by=pokemon_name
     # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&special_defense=50-100
     # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&catch_rate=0-50
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&percent_male=50-100&catch_rate=0-50
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
 
     query_parameters = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
     if flask.request.args.get('pokedex_lower'):
@@ -140,6 +140,10 @@ def advanced_search(order):
         like_arguments = '%' + flask.request.args.get('pokemon_name') + '%'
         query = query + ''' \n AND pokemon_name LIKE %s'''
         query_parameters.append(like_arguments)
+
+    if flask.request.args.get('legendary_status'):
+        query = query + '''\n AND legendaries.legendary_status = %s '''
+        query_parameters.append(flask.request.args.get('legendary_status')) 
 
     if flask.request.args.get('type1'):
         type1 = flask.request.args.get('type1')
@@ -161,9 +165,24 @@ def advanced_search(order):
     if flask.request.args.get('hidden_ability'):
         query = query + '''\n AND ability_table_c.ability = %s '''
         query_parameters.append(flask.request.args.get('hidden_ability'))
+
+    if flask.request.args.get('egg_group1'):
+        query = query + '''\n AND egg_table_a.egg_group = %s '''
+        query_parameters.append(flask.request.args.get('egg_group1'))
+
+    if flask.request.args.get('egg_group2'):
+        query = query + '''\n AND egg_table_a.egg_group = %s '''
+        query_parameters.append(flask.request.args.get('egg_group2'))
     
-    # same thing for egg groups
-    # same for game, region, is_legendary
+    if flask.request.args.get('game'):
+        query = query + '''\n AND games.game = %s '''
+        query_parameters.append(flask.request.args.get('game'))
+
+    if flask.request.args.get('region'):
+        query = query + '''\n AND regions.region = %s '''
+        query_parameters.append(flask.request.args.get('region')) 
+
+     
 
     # special composite search: given ability X, return all pokemon with X in ability1, ability2, or hidden_ability
     if flask.request.args.get('composite_ability'):
@@ -171,7 +190,7 @@ def advanced_search(order):
         query = query + "\n AND (ability_table_a.ability LIKE %s OR ability_table_b.ability LIKE %s OR ability_table_c.ability LIKE %s) "
         query_parameters.extend([like_arguments for i in range(3)])
 
-    for stat in ["health", "attack", "defense", "special_attack", "special_defense", "speed", "catch_rate", "percent_male"]:
+    for stat in ["health", "attack", "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_percent"]:
         argument = flask.request.args.get(stat)
         if argument:
             lower_bound, upper_bound = argument.split("-")
@@ -182,9 +201,9 @@ def advanced_search(order):
     order_by = "pokedex_number"
     if flask.request.args.get('order_by'):
         order_by = flask.request.args.get('order_by')
-        pokemon_info = ["pokedex_number", "pokemon_name", "is_legendary", "type1", "type2", 
+        pokemon_info = ["pokedex_number", "pokemon_name", "legendary_status", "type1", "type2", 
         "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", 
-        "special_defense", "speed", "region", "catch_rate", "percent_male", "game", "egg_group1", "egg_group2"]
+        "special_defense", "speed", "region", "catch_rate", "male_percent", "game", "egg_group1", "egg_group2"]
     
     order = order.upper() # only ASC or DESC is allowed
     if order == "ASC":
@@ -218,11 +237,11 @@ def advanced_search(order):
     
     output_list = []
     for row in cursor:
-        name, pokedex_num, type1, type2, abi1, abi2, hid_abi, is_legendary, health, attack, defense, \
-            s_attack, s_defense, speed, region, catch_rate, percent_male, game, egg1, egg2 = row
-        output_list.append({"pokemon_name": name, "pokedex_number": pokedex_num, "is_legendary": is_legendary,
+        name, pokedex_num, type1, type2, abi1, abi2, hid_abi, legendary_status, health, attack, defense, \
+            s_attack, s_defense, speed, region, catch_rate, male_percent, game, egg1, egg2 = row
+        output_list.append({"pokemon_name": name, "pokedex_number": pokedex_num, "legendary_status": legendary_status,
         "type1": type1, "type2": type2, "ability1": abi1, "ability2": abi2, "hidden_ability": hid_abi, 
         "health": health, "attack": attack, "defense": defense, "special_attack": s_attack, "special_defense": s_defense,
-        "speed": speed, "region": region, "catch_rate": str(catch_rate), "percent_male": str(percent_male), "game": game,
+        "speed": speed, "region": region, "catch_rate": str(catch_rate), "male_percent": str(male_percent), "game": game,
         "egg_group1": egg1, "egg_group2": egg2})
     return json.dumps(output_list)
