@@ -4,6 +4,7 @@ function initialize() {
     var URL = window.location.href;
     URLSplit = URL.split("/");
     var pokemonName = URLSplit[URLSplit.length - 1];
+    console.log(pokemonName);
 
     loadPokemonData(pokemonName);
     loadPokemonImage(pokemonName);

@@ -98,9 +98,9 @@ function onSearchButtonClicked() {
 }
 
 function buildPokemonStatsHTML(pokemonDict){
-	var rawPokemonName = pokemonDict["pokemon_name"];
-	var pokemonImagePath = getPokemonImagePath(rawPokemonName);
-	var returnString = `<div class = "col-2"><img src="${pokemonImagePath}" alt="the image for this pokemon is missing" class="img-thumbnail"></div>\n`;
+	var rawName = pokemonDict["pokemon_name"];
+	var imageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="the image for this pokemon is missing" class="img-thumbnail">\n`;
+	var returnString = `<a href="${getPokemonPageURL(rawName)}">${imageHtml}</a>`;
 	
 	var firstTableHTML = "<table>\n";
 	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
@@ -139,6 +139,17 @@ function getPokemonImagePath(pokemonName) {
     if (doesFileExist(png_url)) return png_url;
     if (doesFileExist(jpg_url)) return jpg_url;
     return "../static/pokemon_images/pokemon_picture_missing.png";
+}
+
+function getTypeImagesHTML(type1, type2){
+    var typeImageLine1 = '<img src="../static/type_images/' + type1 + '.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: '+ type1 + '">\n';
+    var typeImageLine2 = '<img src="../static/type_images/' + type2 + '.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: '+ type2 + '">\n';
+    return (typeImageLine1 + typeImageLine2);
+}
+
+function getPokemonPageURL(pokemon_name){
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
+    return baseURL;
 }
 
 function doesFileExist(urlToFile) {
@@ -263,8 +274,8 @@ function loadEggGroupsDropdown() {
 function loadLinkToHomePage() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
     var image = "../static/pokemon_images/homePageSign.png";
-    image = '<img src="' + image + '"  width="50" align = "left" alt="homePageSign"></img>'
-    var htmlElement = '<a href="' + baseURL + '">' + image + '</a>';
+    image = `<img src="${image}"  width="50" align = "left" alt="homePageSign"></img>`
+    var htmlElement = `<a href="${baseURL}">${image}</a>`;
     document.getElementById('link_to_homepage').innerHTML = htmlElement;
 }
 
