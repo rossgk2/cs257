@@ -34,7 +34,7 @@ function onSearchButtonClicked() {
 	for (var i = 0; i < dropdownInput.length; i ++) {
 		var key = dropdownInput[i];
 		var id = key + "_dropdown";
-		dict[key] = $("#" + id + " option:selected")[0].value;
+		dict[key] = $("#" + id + " option:selected").val();
 	}
 
 	// Now get user input from search fields (i.e. <input type = "text"> tags). This includes all of the stats.
