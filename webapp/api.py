@@ -24,6 +24,19 @@ def connect_database():
         print(e)
         exit()
 
+@api.route('/types')
+def get_types():
+    query = "SELECT * FROM types;"
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        index, type_name = row
+        output_list.append(type_name)
+    output_list.remove("NULL")
+    return json.dumps(output_list)
+
 @api.route('/abilities') 
 def get_abilities():
     query = "SELECT * FROM abilities;"
@@ -36,9 +49,9 @@ def get_abilities():
     output_list.remove("NULL")
     return json.dumps(output_list)
 
-@api.route('/types')
-def get_types():
-    query = "SELECT * FROM types;"
+@api.route('/legendaries')
+def get_legendaries():
+    query = "SELECT * FROM legendaries;"
     db_connection = connect_database()
     cursor = db_connection.cursor()
     cursor.execute(query)
@@ -46,7 +59,6 @@ def get_types():
     for row in cursor:
         index, type_name = row
         output_list.append(type_name)
-    output_list.remove("NULL")
     return json.dumps(output_list)
 
 @api.route('/regions')

@@ -10,6 +10,7 @@ function onReady() {
 	$(".search2").select2();
 
 	//loadPokemonNameDropdown();
+	loadLegendaryStatusDropdown();
 	loadTypeDropdowns();
 	loadAbilityDropdowns();
 	loadRegionDropdowns();
@@ -24,17 +25,29 @@ function onReady() {
 }
 
 function onSearchButtonClicked() {
+	// This dict will store all the search data input by the user.
 	var dict = {};
-	var dropdownFields = ["type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2"];
-
-	for (var i = 0; i < dropdownFields.length; i ++) {
-		var key = dropdownFields[i];
+	
+	// First load user input from select2 dropdown menus
+	var dropdownInput = ["legendary_status", "type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2"];
+	for (var i = 0; i < dropdownInput.length; i ++) {
+		var key = dropdownInput[i];
 		var id = key + "_dropdown";
 		dict[key] = $("#" + id + " option:selected").text();
 	}
 
+	// Now get user input from search fields (i.e. <input type = "text"> tags). This includes all of the stats.
+	var searchInput = ["id", "pokemon_name", "health", "attack", "defense", "special_attack", "special_defense", "speed"];
+	for (var i = 0; i < searchInput.length; i ++) { 
+		var key = searchInput[i];
+		var id = key + "_search";
+		dict[key] = document.getElementById(id).value;
+	}
 
-	$('#result').html("selected value: " + dict["type1"]);
+	
+
+
+	$('#result').html("selected value: " + dict["legendary_status"]);
 }
 
 function loadPokemonNameDropdown() {
@@ -45,6 +58,21 @@ function loadPokemonNameDropdown() {
     	innerHTML = getDropdownInnerHTML(pokemonList, makePresentable, function(arr, i){ return arr[i]["pokemon_name"]; });
     	var pokemonNameDropdown = document.getElementById("pokemon_name_dropdown");
 		pokemonNameDropdown.innerHTML = innerHTML;    	
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function loadLegendaryStatusDropdown() {
+	var url = getAPIBaseURL() + "/legendaries"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(legendaryStatusList) {
+    	innerHTML = getDropdownInnerHTML(legendaryStatusList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	innerHTML = innerHTML.replace("Null", "Not legendary");
+    	var legendaryStatusDropdown = document.getElementById("legendary_status_dropdown");
+		legendaryStatusDropdown.innerHTML = innerHTML;
     })
     .catch(function(error) {
         console.log(error);
