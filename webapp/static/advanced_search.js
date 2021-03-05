@@ -9,13 +9,14 @@ function onReady() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
 	$(".search2").select2();
 
-	loadPokemonNameDropdown();
+	//loadPokemonNameDropdown();
 	loadTypeDropdowns();
 	loadAbilityDropdowns();
 	loadRegionDropdowns();
 	loadGameDropdown();
 	loadEggGroupsDropdown();
 	registerSexRatioCallbacks();
+	loadStatsButtonCallback();
 
 
 	// Read selected option
@@ -23,63 +24,6 @@ function onReady() {
 		var value = $("#pokemon_name option:selected").text();
 		$('#result').html("selected value: " + value);
 	});
-}
-
-function registerSexRatioCallbacks() {
-	var percentMaleSearch = document.getElementById("percent_male_search");
-	var percentFemaleSearch = document.getElementById("percent_female_search");
-	percentMaleSearch.oninput = function() { return updateSexRatios("female") };
-	percentFemaleSearch.oninput = function() { return updateSexRatios("male") };
-}
-
-// Since male_percent and female_percent sum to 100, we can update one when the other is changed.
-function updateSexRatios(fieldToUpdate) {
-	var percentMaleSearch = document.getElementById("percent_male_search");
-	var percentFemaleSearch = document.getElementById("percent_female_search");
-	if (fieldToUpdate === "male") {
-		percentMaleSearch.value = updateSexRatiosHelper(percentFemaleSearch);
-	}
-	else if (fieldToUpdate === "female") {
-		percentFemaleSearch.value = updateSexRatiosHelper(percentMaleSearch);
-	}
-	else {
-		throw 'fieldToUpdate must be either "male" or "female"'
-	}
-}
-
-function updateSexRatiosHelper(sexRatioField) {
-	values = sexRatioField.value === null ? "" : sexRatioField.value;
-	values = values.replace(/\s+/g, ""); //remove all whitespace from string
-	 if (values.includes("-")) {
-	 	valuesSplit = values.split(/\D/);
-	 	
-	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
-	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
-	
-		if (onlyDigitsBefore || onlyDigitsAfter)
-	 	{
-	 		if (onlyDigitsBefore) { 
-		 		lower = valuesSplit[0];
-		 		upper = 100;
-	 		} 
-	 		else if (onlyDigitsAfter) {
-		 		lower = 0;
-		 		upper = valuesSplit[1];
-	 		}
-		 	lowerOther = Math.min(100 - lower, 100 - upper);
-		 	upperOther = Math.max(100 - lower, 100 - upper);
-		}
-		else {
-			valueBefore = valuesSplit[0];
-	 		valueAfter = valuesSplit[1];
-	 		lowerOther = Math.min(100 - valueBefore, 100 - valueAfter);
-	 		upperOther = Math.max(100 - valueBefore, 100 - valueAfter);
-		}
-		return lowerOther + " - " + upperOther;
-	 }
-	 else { //values is either the empty string or a string of digits
-	 	return values;
-	 }
 }
 
 function loadPokemonNameDropdown() {
@@ -174,8 +118,93 @@ function loadEggGroupsDropdown() {
     });
 }
 
+function registerSexRatioCallbacks() {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	percentMaleSearch.oninput = function() { return updateSexRatios("female") };
+	percentFemaleSearch.oninput = function() { return updateSexRatios("male") };
+}
+
+// Since male_percent and female_percent sum to 100, we can update one when the other is changed.
+function updateSexRatios(fieldToUpdate) {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	if (fieldToUpdate === "male") {
+		percentMaleSearch.value = updateSexRatiosHelper(percentFemaleSearch);
+	}
+	else if (fieldToUpdate === "female") {
+		percentFemaleSearch.value = updateSexRatiosHelper(percentMaleSearch);
+	}
+	else {
+		throw 'fieldToUpdate must be either "male" or "female"'
+	}
+}
+
+function updateSexRatiosHelper(sexRatioField) {
+	values = sexRatioField.value === null ? "" : sexRatioField.value;
+	values = values.replace(/\s+/g, ""); //remove all whitespace from string
+	 if (values.includes("-")) {
+	 	valuesSplit = values.split(/\D/);
+	 	
+	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
+	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
+	
+		if (onlyDigitsBefore || onlyDigitsAfter)
+	 	{
+	 		if (onlyDigitsBefore) { 
+		 		lower = valuesSplit[0];
+		 		upper = 100;
+	 		} 
+	 		else if (onlyDigitsAfter) {
+		 		lower = 0;
+		 		upper = valuesSplit[1];
+	 		}
+		 	lowerOther = Math.min(100 - lower, 100 - upper);
+		 	upperOther = Math.max(100 - lower, 100 - upper);
+		}
+		else {
+			valueBefore = valuesSplit[0];
+	 		valueAfter = valuesSplit[1];
+	 		lowerOther = Math.min(100 - valueBefore, 100 - valueAfter);
+	 		upperOther = Math.max(100 - valueBefore, 100 - valueAfter);
+		}
+		return lowerOther + " - " + upperOther;
+	 }
+	 else { //values is either the empty string or a string of digits
+	 	return values;
+	 }
+}
+
+function loadStatsButtonCallback() {
+	var button = getStatsCollapsibleContainerChild("stats_collapsible_button")
+	button.onclick = function() {
+	    this.classList.toggle("active");
+	    var content = getStatsCollapsibleContainerChild("content");
+	    if (content.style.display === "block") {
+	      content.style.display = "none";
+	    } 
+	    else {
+	      content.style.display = "block";
+	    }
+	  };
+}
 
 // Helper functions
+
+function getStatsCollapsibleContainerChild(id) {
+	var container = document.getElementById("stats_collapsible_container");
+	var children = container.children;
+	return getElementFromArray(children, id);
+}
+
+function getElementFromArray(arr, id) {
+	for (var i = 0; i < arr.length; i ++) {
+		if (arr[i].getAttribute("id") === id) {
+			return arr[i];
+		}
+	}
+	return null;
+}
 
 /* Inputs:
  arr is an array
@@ -186,7 +215,7 @@ function getDropdownInnerHTML(arr, presentor, accessor) {
 	if (accessor === null) {
 		accessor = function(arr, i){ return arr[i]; };
 	}
-	var innerHTML = "<option> Click to search or select an option </option>\n";
+	var innerHTML = "<option> Any </option>\n";
     for (var i = 0; i < arr.length; i ++) {
 		innerHTML += "<option> " + presentor(accessor(arr, i)) + " </option>\n";
     }
