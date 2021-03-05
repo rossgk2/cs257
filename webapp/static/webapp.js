@@ -36,7 +36,8 @@ function onReady() {
     });
 
     $(window).on("scroll", function() {
-        if (!reachTheEnd) infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
+        var isTheEndOfQuery = document.getElementById("the_end_of_query").innerHTML
+        if (!reachTheEnd && isTheEndOfQuery == 0) infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
     })
 }
 
@@ -102,8 +103,7 @@ function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
         pokemonDisplayDiv += '</div>\n</div>';
 
         curNumPokemonOnThePage += numPokemonEachQuery;
-        //reachTheEnd = checkReachTheEnd(url, pokedexNum);
-        //document.getElementById("result").innerHTML += "reach the end is: " + reachTheEnd;
+        checkReachTheEnd(url, pokedexNum);
 
         page_content = document.getElementById("pokemon_landing_display");
         newInnerHTML = page_content.innerHTML.replaceAll(load_wating_pic(), " ") + pokemonDisplayDiv;
@@ -124,9 +124,7 @@ function checkReachTheEnd(url, pokedexNum){
     .then((response) => response.json())
     .then(function(returnPokemon) {
         if (returnPokemon.length == 0){
-            return 1;
-        }else{
-            return 0;
+            document.getElementById("the_end_of_query").innerHTML = "It's already the end of the query"
         }
     })
 }
