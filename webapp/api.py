@@ -173,11 +173,12 @@ def advanced_search(order):
             pokedex_id_range.append(upper_bound)
 
     order_by = "pokedex_number"
-    if flask.request.args.get('order_by'):
-        order_by = flask.request.args.get('order_by')
-        pokemon_info = ["pokedex_number", "pokemon_name", "legendary_status", "type1", "type2", 
-        "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", 
-        "special_defense", "speed", "region", "catch_rate", "male_percent", "game", "egg_group1", "egg_group2"]
+    user_order_by = flask.request.args.get('order_by')
+    pokemon_info = ["pokedex_number", "pokemon_name", "legendary_status", "type1", "type2", 
+    "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", 
+    "special_defense", "speed", "region", "catch_rate", "male_percent", "game", "egg_group1", "egg_group2"]
+    if user_order_by in pokemon_info:
+        order_by = user_order_by
     
     order = order.upper() # only ASC or DESC is allowed
     if order == "ASC":
@@ -196,12 +197,12 @@ def advanced_search(order):
         if flask.request.args.get('offset'):
             query = query + " OFFSET %s"
             pokedex_id_range.append(int(flask.request.args.get('offset')))
+    query = query + ";"
 
 
     db_connection = connect_database()
     cursor = db_connection.cursor()
     
-    query = query + ";"
     pokedex_id_range = tuple(pokedex_id_range)
     # print(cursor.mogrify(query, pokedex_id_range))
     cursor.execute(query, pokedex_id_range)

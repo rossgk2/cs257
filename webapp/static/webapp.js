@@ -66,7 +66,7 @@ function load_info(thisTypeOfInfo, htmlID, searchBarText) {
 }
 
 function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
-    var url = getAPIBaseURL() + "/advanced_search/DESC?order_by=pokedex_number&limit=" + numPokemonEachQuery + "&offset=" + curNumPokemonOnThePage;
+    var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokedex_number&limit=" + numPokemonEachQuery + "&offset=" + curNumPokemonOnThePage;
     if(type1Filter != "all") url += "&type1=" + type1Filter;
     if(type2Filter != "all") url += "&type2=" + type2Filter;
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter;
@@ -150,8 +150,8 @@ function getPokemonImagePath(pokemonName) {
     var base_path = "../static/pokemon_images/";
     var jpg_url = base_path + pokemonName + ".jpg";
     var png_url = base_path + pokemonName + ".png";
-    if (doesFileExist(jpg_url)) return jpg_url;
     if (doesFileExist(png_url)) return png_url;
+    if (doesFileExist(jpg_url)) return jpg_url;
     return "../static/pokemon_images/pokemon_picture_missing.png";
 }
 
