@@ -1,3 +1,7 @@
+#advanced_search {
+  width: 40%;
+}
+
 select {
   width: 7em;
 }
@@ -28,10 +32,9 @@ input[type="text"] {
  /* Style the button that is used to open and close the collapsible content */
 #stats_collapsible_button {
   background-color: #eee;
-  color: #444;
   cursor: pointer;
-  padding: 18px;
-  width: 100%;
+  padding: .5em;
+  width: 50%;
   border: none;
   text-align: left;
   outline: none;
@@ -48,5 +51,4 @@ input[type="text"] {
   padding: 0 18px;
   display: none;
   overflow: hidden;
-  background-color: #f1f1f1;
 } 

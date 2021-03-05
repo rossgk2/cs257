@@ -16,7 +16,7 @@ function onReady() {
 	loadGameDropdown();
 	loadEggGroupsDropdown();
 	registerSexRatioCallbacks();
-	loadStatsButtonCallback();
+	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
 
 
 	// Read selected option
