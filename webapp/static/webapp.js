@@ -46,7 +46,6 @@ function infinite_user_scroll(type1Selected, type2Selected, abilitySelected){
     //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
-    document.getElementById("result").innerHTML = "scroll height/scrollPos: " + scrollHeight + "/" + scrollPos;
     if (scrollHeight - scrollPos <= 3) {
         document.getElementById("pokemon_landing_display").innerHTML += load_wating_pic();
         load_pokemon_cards(type1Selected, type2Selected, abilitySelected);
@@ -58,10 +57,10 @@ function load_info(thisTypeOfInfo, htmlID, searchBarText) {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(info) {
-        var listBody ='<option value = "all">' + searchBarText + '</option>\n';
+        var listBody =`<option value = "all">${searchBarText}</option>\n`;
         for (var i=0; i < info.length; i++){
             var rawElement = info[i];
-            listBody += '<option value = "' + rawElement + '">' + makePresentable(rawElement) + '</option>\n'
+            listBody += `<option value = "${rawElement}">${makePresentable(rawElement)}</option>\n`
         }
         document.getElementById(htmlID).innerHTML = listBody
     })
@@ -71,7 +70,7 @@ function load_info(thisTypeOfInfo, htmlID, searchBarText) {
 }
 
 function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
-    var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokedex_number&limit=" + numPokemonEachQuery + "&offset=" + curNumPokemonOnThePage;
+    var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}&offset=${curNumPokemonOnThePage}`;
     if(type1Filter != "all") url += "&type1=" + type1Filter;
     if(type2Filter != "all") url += "&type2=" + type2Filter;
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter;
@@ -89,11 +88,11 @@ function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
             pokedexNum = thisPokemon['pokedex_number'];
 
             var rawName = thisPokemon['pokemon_name'];
-            var pokemonImageHtml = '<img src="' + getPokemonImagePath(rawName) + '" alt="sorry, pokemon image missing" class="img-thumbnail">\n';
-            var pokeImageLink = '<a href="'+ getPokemonPageURL(rawName) + '">' + pokemonImageHtml + "</a>"
+            var pokemonImageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="sorry, pokemon image missing" class="img-thumbnail">\n`;
+            var pokeImageLink = `<a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a>`
 
-            var firstLine = '<h6>(ID: ' + pokedexNum + ") " + makePresentable(rawName) + "</h>\n"
-            var secondLine = '<h6>\n' + getTypeImagesHTML(thisPokemon['type1'], thisPokemon['type2']) + '</h2>\n';
+            var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`
+            var secondLine = `<h6>${getTypeImagesHTML(thisPokemon['type1'], thisPokemon['type2'])}</h6>\n`;
             pokemonDisplayDiv += pokeImageLink + firstLine + secondLine + '</div>'
 
             if (i == numPokemonPerRow-1){ //change row every 6 cards
@@ -124,7 +123,7 @@ function checkReachTheEnd(url, pokedexNum){
     .then((response) => response.json())
     .then(function(returnPokemon) {
         if (returnPokemon.length == 0){
-            document.getElementById("the_end_of_query").innerHTML = "It's already the end of the query"
+            document.getElementById("the_end_of_query").innerHTML = "It's already the end of the query!"
         }
     })
 }
@@ -143,7 +142,7 @@ function doesFileExist(urlToFile) {
 
 function load_advanced_search(){
     advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
-    linkElement = '<a href ="' + advancedSearchURL + '"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>';
+    linkElement = `<a href ="${advancedSearchURL}"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>`;
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
@@ -158,8 +157,8 @@ function getPokemonImagePath(pokemonName) {
 }
 
 function getTypeImagesHTML(type1, type2){
-    var typeImageLine1 = '<img src="../static/type_images/' + type1 + '.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: '+ type1 + '">\n';
-    var typeImageLine2 = '<img src="../static/type_images/' + type2 + '.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: '+ type2 + '">\n';
+    var typeImageLine1 = `<img src="../static/type_images/${type1}.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: ${type1}">\n`;
+    var typeImageLine2 = `<img src="../static/type_images/${type2}.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: ${type2}">\n`;
     return (typeImageLine1 + typeImageLine2);
 }
 

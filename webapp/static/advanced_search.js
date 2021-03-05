@@ -101,6 +101,8 @@ function buildPokemonStatsHTML(pokemonDict){
 	var rawName = pokemonDict["pokemon_name"];
 	var imageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="the image for this pokemon is missing" class="img-thumbnail">\n`;
 	var returnString = `<a href="${getPokemonPageURL(rawName)}">${imageHtml}</a>`;
+
+	returnString += '<div class="invisible-vertical-line"></div>';
 	
 	var firstTableHTML = "<table>\n";
 	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
@@ -115,7 +117,7 @@ function buildPokemonStatsHTML(pokemonDict){
 	firstTableHTML += "</table>\n";
 	returnString += firstTableHTML;
 
-	returnString += '<div class="invisible-vertical-line"></div>'
+	returnString += '<div class="invisible-vertical-line"></div>';
 
 	var secondTableHTML = "<table>\n";
 	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
