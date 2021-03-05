@@ -83,17 +83,13 @@ function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
             pokedexNum = thisPokemon['pokedex_number'];
 
             var rawName = thisPokemon['pokemon_name'];
-            var pokemonImagePath = getPokemonImagePath(rawName);
-            var pokemonImageHtml = '<img src="' + pokemonImagePath + '" alt="sorry, we do not have picture for this pokemon now" class="img-thumbnail">\n';
+            var pokemonImageHtml = '<img src="' + getPokemonImagePath(rawName) + '" alt="sorry, pokemon image missing" class="img-thumbnail">\n';
             var pokeImageLink = '<a href="'+ getPokemonPageURL(rawName) + '">' + pokemonImageHtml + "</a>"
 
-            var firstLine = '<h6>(ID: ' + pokedexNum.toString() + ") " + makePresentable(rawName) + "</h>\n"
-
-            var typeImageLine1 = 'T1:<img src="../static/type_images/' + thisPokemon['type1'] + '.png" alt="something is wrong" class="img-thumbnail">\n';
-            var typeImageLine2 = 'T2:<img src="../static/type_images/' + thisPokemon['type2'] + '.png" alt="something is wrong" class="img-thumbnail">\n';
-            var secondLine = '<h6>\n' + typeImageLine1 + typeImageLine2 + '</h2>\n'; //type images
-            
+            var firstLine = '<h6>(ID: ' + pokedexNum + ") " + makePresentable(rawName) + "</h>\n"
+            var secondLine = '<h6>\n' + getTypeImagesHTML(thisPokemon['type1'], thisPokemon['type2']) + '</h2>\n';
             pokemonDisplayDiv += pokeImageLink + firstLine + secondLine + '</div>'
+
             if (i == numPokemonPerRow-1){ //change row every 6 cards
                 pokemonDisplayDiv += '</div>\n<div class="row">'
             }
@@ -119,7 +115,15 @@ function checkReachTheEnd(url, pokedexNum){
     //see whether we get any pokemon below this pokedexNum given the same filter criteria
     var upper_bound_pokedexNum = pokedexNum -1;
     checkURL = url + "&pokedex_upper=" + upper_bound_pokedexNum;
-    return fetch(checkURL)
+    return fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(returnPokemon) {
+        if (returnPokemon.length == 0){
+            return 1;
+        }else{
+            return 0;
+        }
+    })
 }
 
 function doesFileExist(urlToFile) {
@@ -135,12 +139,19 @@ function doesFileExist(urlToFile) {
 }
 
 function getPokemonImagePath(pokemonName) {
+    pokemonName = pokemonName.replaceAll("_", "-")
     var base_path = "../static/pokemon_images/";
     var jpg_url = base_path + pokemonName + ".jpg";
     var png_url = base_path + pokemonName + ".png";
     if (doesFileExist(jpg_url)) return jpg_url;
     if (doesFileExist(png_url)) return png_url;
-    return "../static/pokemon_images/pokemon_picture_missing.png"
+    return "../static/pokemon_images/pokemon_picture_missing.png";
+}
+
+function getTypeImagesHTML(type1, type2){
+    var typeImageLine1 = '<img src="../static/type_images/' + type1 + '.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: '+ type1 + '">\n';
+    var typeImageLine2 = '<img src="../static/type_images/' + type2 + '.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: '+ type2 + '">\n';
+    return (typeImageLine1 + typeImageLine2);
 }
 
 function getAPIBaseURL() {

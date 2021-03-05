@@ -22,13 +22,17 @@ function doesFileExist(urlToFile) {
 }
 
 function loadPokemonImage(pokemonName) {
+    pokemonName = pokemonName.replaceAll("_", "-")
     var base_path = "../static/pokemon_images/";
-    var image_url = base_path + pokemonName + ".png";
-    var backup_image_url = base_path + pokemonName + ".jpg";
-    if (doesFileExist(image_url)) {
-        document.getElementById('dynamic_pokemon_image').src = image_url;
-    } else{
-        document.getElementById('dynamic_pokemon_image').src = backup_image_url;
+    var jpg_url = base_path + pokemonName + ".jpg";
+    var png_url = base_path + pokemonName + ".png";
+    pokemonImageElement = document.getElementById('dynamic_pokemon_image');
+    if (doesFileExist(jpg_url)) { 
+        pokemonImageElement.src = jpg_url;
+    }else if (doesFileExist(png_url)) {
+        pokemonImageElement.src = png_url;
+    }else {
+        pokemonImageElement.src = "../static/pokemon_images/pokemon_picture_missing.png";
     }
 }
 
