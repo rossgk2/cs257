@@ -104,7 +104,7 @@ def advanced_search(order):
     type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
     ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 
     legendary_status, health, attack, special_attack AS s_attack, defense, special_defense AS s_defense, speed, region, 
-    catch_rate, percent_male, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
+    catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
     FROM pokemon
     JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
     JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
