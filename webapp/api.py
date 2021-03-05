@@ -121,13 +121,13 @@ def advanced_search(order):
     JOIN games ON games.id = pokemon.game_id
     WHERE pokedex_number BETWEEN %s AND %s '''
 
-    # http://localhost:5000/api/query/ASC?type1=fire
-    # http://localhost:5000/api/query/ASC?pokemon_name=an
-    # http://localhost:5000/api/query/ASC?pokemon_name=an&ability1=battle_armor
-    # http://localhost:5000/api/query/DESC?pokemon_name=an&order_by=pokemon_name
-    # http://localhost:5000/api/query/ASC?pokemon_name=an&special_defense=50-100
-    # http://localhost:5000/api/query/ASC?pokemon_name=an&catch_rate=0-50
-    # http://localhost:5000/api/query/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
+    # http://localhost:5000/api/advanced_search/ASC?type1=fire
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&ability1=battle_armor
+    # http://localhost:5000/api/advanced_search/DESC?pokemon_name=an&order_by=pokemon_name
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&special_defense=50-100
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&catch_rate=0-50
+    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
 
     query_parameters = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
     if flask.request.args.get('pokedex_lower'):

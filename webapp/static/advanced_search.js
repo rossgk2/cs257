@@ -41,13 +41,38 @@ function onSearchButtonClicked() {
 	for (var i = 0; i < searchInput.length; i ++) { 
 		var key = searchInput[i];
 		var id = key + "_search";
-		dict[key] = document.getElementById(id).value;
+		dict[key] = document.getElementById(id).value.replaceAll(" ", "");
+	}
+	
+	// Get an array of all the names of the user input fields
+	var keys = dropdownInput;
+	for (var i = 0; i < searchInput.length; i ++) {
+		keys.push(searchInput[i]);
 	}
 
-	// Query the API using the user input in order to display the pokemon that satisfy the search criteria
-	var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokemon_name"
+	// Temporary: ignore legendary_status and egg groups for now
+	keys = keys.filter(function(x){ return x !== "legendary_status" && x !== "egg_group1" && x !== "egg_group2" });
 
-	
+	// Query the API using the user input in order to display the pokemon that satisfy the search criteria
+
+	//Form the query
+	var query = "ASC?";
+	var i;
+	for (i = 0; i < keys.length; i ++) {
+		key = keys[i];
+		userInput = dict[key];
+		userInput = userInput.replaceAll(" ", "").toLowerCase();
+		//Don't include arguments in the query that coorrespond to fields not filled out by the user
+		if (userInput !== "any" && userInput != "") { 
+			query += key + "=" + userInput;
+			if (i <= keys.length - 2) {
+				query += "&";
+			}
+		}
+	}
+
+	// Use the query
+	var url = getAPIBaseURL() + "/advanced_search/" + query;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
