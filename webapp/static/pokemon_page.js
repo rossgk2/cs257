@@ -46,7 +46,7 @@ function loadPokemonData(pokemon_name) {
     .then(function(individualPokemon) {
         // Create a dictionary dict that has all the data for the current pokemon
 		var dict = {};
-        var var_names = ['pokemon_name', 'pokedex_number', 'is_legendary', 'type1', 'type2', 'ability1', 
+        var var_names = ['pokemon_name', 'pokedex_number', 'legendary_status', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
         'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];
         for (var i = 0; i < var_names.length; i ++) {
@@ -66,7 +66,7 @@ function loadPokemonData(pokemon_name) {
 		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
 		document.getElementById("type2").innerHTML = makePresentable(dict["type2"])
-		document.getElementById("is_legendary").innerHTML = dict["is_legendary"].toLowerCase() === "null" ? "Not legendary" : "Legendary"
+		document.getElementById("legendary_status").innerHTML = dict["legendary_status"].toLowerCase() === "null" ? "Not legendary" : "Legendary"
 
 		// Stats
 		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
