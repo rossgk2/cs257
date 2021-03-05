@@ -33,11 +33,12 @@ function onSearchButtonClicked() {
 	for (var i = 0; i < dropdownInput.length; i ++) {
 		var key = dropdownInput[i];
 		var id = key + "_dropdown";
-		dict[key] = $("#" + id + " option:selected").text();
+		dict[key] = $("#" + id + " option:selected").value;
 	}
 
 	// Now get user input from search fields (i.e. <input type = "text"> tags). This includes all of the stats.
-	var searchInput = ["id", "pokemon_name", "health", "attack", "defense", "special_attack", "special_defense", "speed"];
+	var searchInput = ["id", "pokemon_name", "health", "attack", "defense", "special_attack", "special_defense", "speed", 
+	"catch_rate", "percent_male", "percent_female"];
 	for (var i = 0; i < searchInput.length; i ++) { 
 		var key = searchInput[i];
 		var id = key + "_search";
@@ -56,14 +57,18 @@ function onSearchButtonClicked() {
 	// Query the API using the user input in order to display the pokemon that satisfy the search criteria
 
 	//Form the query
-	var query = "ASC?";
+	var query = "ASC";
+
+	if (keys.length > 0) {
+		query += "?";
+	}
+
 	var i;
 	for (i = 0; i < keys.length; i ++) {
-		key = keys[i];
-		userInput = dict[key];
-		userInput = userInput.replaceAll(" ", "").toLowerCase();
+		var key = keys[i];
+		var userInput = dict[key];
 		//Don't include arguments in the query that coorrespond to fields not filled out by the user
-		if (userInput !== "any" && userInput != "") { 
+		if (userInput !== undefined) { 
 			query += key + "=" + userInput;
 			if (i <= keys.length - 2) {
 				query += "&";
@@ -305,7 +310,7 @@ function getDropdownInnerHTML(arr, presentor, accessor) {
 	}
 	var innerHTML = "<option> Any </option>\n";
     for (var i = 0; i < arr.length; i ++) {
-		innerHTML += "<option> " + presentor(accessor(arr, i)) + " </option>\n";
+		innerHTML += "<option value = " + accessor(arr, i) + " >" + presentor(accessor(arr, i)) + " </option>\n";
     }
     return innerHTML;
 }
