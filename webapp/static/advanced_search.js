@@ -44,10 +44,24 @@ function onSearchButtonClicked() {
 		dict[key] = document.getElementById(id).value;
 	}
 
+	// Query the API using the user input in order to display the pokemon that satisfy the search criteria
+	var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokemon_name"
+
 	
-
-
-	$('#result').html("selected value: " + dict["legendary_status"]);
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(pokemonList) {
+    	var search_results = document.getElementById("search_results");
+    	var innerHTML = "<ul>\n";
+    	for (var i = 0; i < pokemonList.length; i ++) {
+    		innerHTML += "<li> " + makePresentable(pokemonList[i]["pokemon_name"]) + " </li>\n"; 
+    	}
+    	result += "</ul>";
+    	search_results.innerHTML = innerHTML;    	
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 }
 
 function loadPokemonNameDropdown() {
