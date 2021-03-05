@@ -13,6 +13,10 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
+    var type1Selected = "all";
+    var type2Selected = "all";
+    var abilitySelected = "all";
+
     load_info("types", "type1_list_selection", "all type1");
     load_info("types", "type2_list_selection", "all type2");
     load_info("abilities", "ability_list_selection", "all ability");
@@ -22,9 +26,9 @@ function onReady() {
 
     // Read selected option
     $('#search_button').click(function() {
-        var type1Selected = $("#type1_list_selection").val();
-        var type2Selected = $("#type2_list_selection").val();
-        var abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
+        type1Selected = $("#type1_list_selection").val();
+        type2Selected = $("#type2_list_selection").val();
+        abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
         curNumPokemonOnThePage = 0;
         reachTheEnd = 0;
@@ -32,19 +36,19 @@ function onReady() {
     });
 
     $(window).on("scroll", function() {
-        if (!reachTheEnd) infinite_user_scroll();
+        if (!reachTheEnd) infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
     })
 }
 
 
-function infinite_user_scroll(){
+function infinite_user_scroll(type1Selected, type2Selected, abilitySelected){
     //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
     document.getElementById("result").innerHTML = "scroll height/scrollPos: " + scrollHeight + "/" + scrollPos;
     if (scrollHeight - scrollPos <= 3) {
         document.getElementById("pokemon_landing_display").innerHTML += load_wating_pic();
-        load_pokemon_cards("all", "all", "all");
+        load_pokemon_cards(type1Selected, type2Selected, abilitySelected);
     }
 }
 
