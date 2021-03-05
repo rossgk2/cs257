@@ -34,7 +34,7 @@ function onSearchButtonClicked() {
 	for (var i = 0; i < dropdownInput.length; i ++) {
 		var key = dropdownInput[i];
 		var id = key + "_dropdown";
-		dict[key] = $("#" + id + " option:selected").value;
+		dict[key] = $("#" + id + " option:selected")[0].value;
 	}
 
 	// Now get user input from search fields (i.e. <input type = "text"> tags). This includes all of the stats.
@@ -52,32 +52,33 @@ function onSearchButtonClicked() {
 		keys.push(searchInput[i]);
 	}
 
-	// Temporary: ignore legendary_status and egg groups for now
-	keys = keys.filter(function(x){ return x !== "legendary_status" && x !== "egg_group1" && x !== "egg_group2" });
-
-	// Query the API using the user input in order to display the pokemon that satisfy the search criteria
-
-	//Form the query
+	// Query the API using the user input in order to display the pokemon that satisfy the search criteria.
+	// First, we form the query.
+	// If the user passed in arguments, the query needs to start with "ASC?".
 	var query = "ASC";
-
 	if (keys.length > 0) {
 		query += "?";
 	}
 
-	var i;
-	for (i = 0; i < keys.length; i ++) {
+	// Add the user input to the query.
+	for (var i = 0; i < keys.length; i ++) {
 		var key = keys[i];
 		var userInput = dict[key];
-		//Don't include arguments in the query that coorrespond to fields not filled out by the user
-		if (userInput !== undefined) { 
+		var userInputProcessed = userInput.replaceAll(" ", "").toLowerCase();
+
+		//Only include arguments in the query that coorrespond to fields filled out by the user.
+		if (userInputProcessed !== "any" && userInputProcessed !== "") { 
 			query += key + "=" + userInput;
-			if (i <= keys.length - 2) {
-				query += "&";
-			}
+			query += "&";
 		}
 	}
 
-	// Use the query
+	// If the last character in query is "&", remove that "&" from the query.
+	if (query[query.length - 1] == "&") {
+		query = query.substring(0, query.length - 1)
+	}
+
+	// Now, use the query.
 	var url = getAPIBaseURL() + "/advanced_search/" + query;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
