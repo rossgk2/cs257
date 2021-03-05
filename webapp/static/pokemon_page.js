@@ -6,6 +6,7 @@ function initialize() {
         loadPokemonData(pokemonName)
         loadPokemonImage(pokemonName)
     }
+    loadLinkToHomePage();
 }
 
 function doesFileExist(urlToFile) {
@@ -58,7 +59,7 @@ function loadPokemonData(pokemon_name) {
 		//Now, use dict to fill in the blanks of pokemon_page.html
 
 		// Pokedex number
-		document.getElementById("pokedex_number").innerHTML = dict["pokedex_number"]
+		document.getElementById("pokedex_number").innerHTML = String(dict["pokedex_number"])
 
 		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
@@ -103,6 +104,14 @@ function loadPokemonData(pokemon_name) {
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
     return baseURL;
+}
+
+function loadLinkToHomePage() {
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
+    var image = "../static/pokemon_images/homePageSign.png";
+    image = '<img src="' + image + '"  width="50" align = "left" alt="homePageSign"></img>'
+    var htmlElement = '<a href="' + baseURL + '">' + image + '</a>';
+    document.getElementById('link_to_homepage').innerHTML = htmlElement;
 }
 
 function onRegionButton() {

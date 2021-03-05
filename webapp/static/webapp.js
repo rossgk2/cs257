@@ -16,6 +16,7 @@ function onReady() {
     load_info("types", "type1_list_selection", "all type1");
     load_info("types", "type2_list_selection", "all type2");
     load_info("abilities", "ability_list_selection", "all ability");
+    load_advanced_search();
     document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
     load_pokemon_cards("all", "all", "all");
 
@@ -136,6 +137,12 @@ function doesFileExist(urlToFile) {
     } else {
         return true;
     }
+}
+
+function load_advanced_search(){
+    advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
+    linkElement = '<a href ="' + advancedSearchURL + '"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>';
+    document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
 function getPokemonImagePath(pokemonName) {

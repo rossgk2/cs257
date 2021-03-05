@@ -16,6 +16,7 @@ function onReady() {
 	loadRegionDropdowns();
 	loadGameDropdown();
 	loadEggGroupsDropdown();
+	loadLinkToHomePage();
 	registerSexRatioCallbacks();
 	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
 
@@ -169,6 +170,14 @@ function loadEggGroupsDropdown() {
     .catch(function(error) {
         console.log(error);
     });
+}
+
+function loadLinkToHomePage() {
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
+    var image = "../static/pokemon_images/homePageSign.png";
+    image = '<img src="' + image + '"  width="50" align = "left" alt="homePageSign"></img>'
+    var htmlElement = '<a href="' + baseURL + '">' + image + '</a>';
+    document.getElementById('link_to_homepage').innerHTML = htmlElement;
 }
 
 function registerSexRatioCallbacks() {
