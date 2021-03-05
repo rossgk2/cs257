@@ -7,7 +7,6 @@ $(document).ready(onReady)
 var numPokemonEachQuery = 30;
 var curNumPokemonOnThePage = 0;
 var numPokemonPerRow = 6;
-var reachTheEnd = 0; //whether the query result reach the end: 0 is no, 1 is yes
 
 function onReady() {
     // Initialize the select2 JQuery plugin
@@ -31,13 +30,14 @@ function onReady() {
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
         curNumPokemonOnThePage = 0;
-        reachTheEnd = 0;
+        document.getElementById("the_end_of_query").innerHTML = "still querying";
         load_pokemon_cards(type1Selected, type2Selected, abilitySelected);
     });
 
     $(window).on("scroll", function() {
-        var isTheEndOfQuery = document.getElementById("the_end_of_query").innerHTML
-        if (!reachTheEnd && isTheEndOfQuery == 0) infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
+        if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
+            infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
+        }
     })
 }
 
