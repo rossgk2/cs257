@@ -19,87 +19,133 @@
 <body>
 	<h3> Advanced search</h3>
 	
-	<div>
-		<input type="text" id = "id_search" placeholder='A number or a range (e.g. "7", "50-60")'> </input>
-		<label for="id_search"> Pokedex ID </label>
-	</div>
-
-	<div class = "container">
-		<select id="pokemon_name_dropdown" class = "search2"> </select> <!-- The class is used by the onReady() function in the .js file !-->
-		<label for="pokemon_name_dropdown"> Substring of Pokemon name </label>
-	</div>
-
-	<div class = "container">
-		<input type="checkbox" id="legendary_checkbox" name="Legendary?">
-		<label for="legendary_checkbox"> Legendary? </label>
-	</div>
-
-	<div class = "container">
+	<div id = "advanced_search">
 		<div>
-			<select id="type1_dropdown" class = "search2"> </select>
-			<label for="type1_dropdown"> Type 1 </label>
+			<input type="text" id = "id_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+			<label for="id_search"> Pokedex ID </label>
 		</div>
-		<div>
-			<select id="type2_dropdown" class = "search2"> </select>
-			<label for="type2_dropdown"> Type 2 </label>
-		</div>
-	</div>
 
-	<div class = "container">
-		<div>
-			<select id="ability1_dropdown" class = "search2"> </select>
-			<label for="ability1_dropdown"> Ability 1 </label>
+		<div class = "container">
+			<input type="text" id="pokemon_name_search" placeholder='Default: any (e.g. "s", "sq", "squir", "squirtle", "abcd").'> </select> <!-- The class is used by the onReady() function in the .js file !-->
+			<label for="pokemon_name_search"> Substring of Pokemon name </label>
 		</div>
-		<div>
-			<select id="ability2_dropdown" class = "search2"> </select>
-			<label for="ability1_dropdown"> Ability 2 </label>
-		</div>
-		<div>
-			<select id="hidden_ability_dropdown" class = "search2"> </select>
-			<label for="hidden_ability_dropdown"> Hidden ability </label>
-		</div>
-	</div>
 
-	Stats
-
-	<div class = "container">
-		<select id="region_dropdown" class = "search2"> </select>
-		<label for="region_dropdown"> Region </label>
-	</div>
-
-	<div>
-		<input type="text" id = "catch_rate_search" placeholder='A number or a range (e.g. "7", "50-60")'> </input>
-		<label for="catch_rate_search"> Catch rate </label>
-	</div>
-	
-	<div class = "container">
-		<div>
-			<input type="text" id = "percent_male_search" placeholder='A number or a range (e.g. "7", "50-60")'> </input>
-			<label for="percent_male_search"> Percent male </label>
+		<div class = "container">
+			<input type="checkbox" id="legendary_checkbox" name="Legendary?">
+			<label for="legendary_checkbox"> Legendary? </label>
 		</div>
-		<div>
-			<input type="text" id = "percent_female_search" placeholder='A number or a range (e.g. "7", "50-60")'> </input>
-			<label for="percent_female_search"> Percent female </label>
-		</div>
-	</div>
 
-	<div class = "container">
-		<div>
-			<select id="egg_group1_dropdown" class = "search2"> </select>
-			<label for="egg_group1_dropdown"> Egg group 1 </label>
+		<div class = "container">
+			<div>
+				<select id="type1_dropdown" class = "search2"> </select>
+				<label for="type1_dropdown"> Type 1 </label>
+			</div>
+			<div>
+				<select id="type2_dropdown" class = "search2"> </select>
+				<label for="type2_dropdown"> Type 2 </label>
+			</div>
 		</div>
-		<div>
-			<select id="egg_group2_dropdown" class = "search2"> </select>
-			<label for="egg_group2_dropdown"> Egg group 2 </label>
+
+		<div class = "container">
+			<div>
+				<select id="ability1_dropdown" class = "search2"> </select>
+				<label for="ability1_dropdown"> Ability 1 </label>
+			</div>
+			<div>
+				<select id="ability2_dropdown" class = "search2"> </select>
+				<label for="ability1_dropdown"> Ability 2 </label>
+			</div>
+			<div>
+				<select id="hidden_ability_dropdown" class = "search2"> </select>
+				<label for="hidden_ability_dropdown"> Hidden ability </label>
+			</div>
 		</div>
-	</div>
 
-	<div class = "container">
-		<select id="game_dropdown" class = "search2"> </select>
-		<label for="game_dropdown"> Game </label>
-	</div>
+		<div id = "stats_collapsible_container">
+			<button type="button" id="stats_collapsible_button"> Stats </button>
+			<div id = "content">
+				<!-- Recall that the stats table is: health, special attack,
+													 attack, special defense,
+													 defense, speed           
+				 
+				The following div contains search fields for the left column of the stats table. !-->
+				<div>
+					<div>
+						<input type="text" id = "health_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Health </label>
+					</div>
 
-	<input type= "button" value="Search" id="search_button">
-	<div id="result"></div>
+					<div>
+						<input type="text" id = "attack_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Attack </label>
+					</div>
+				
+					<div>
+						<input type="text" id = "defense_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Defense </label>
+					</div>
+				</div>
+
+				<!-- This div search fields for the right column of the stats table !-->
+
+				<div>
+					<div>
+						<input type="text" id = "special_attack_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Special attack </label>
+					</div>
+
+					<div>
+						<input type="text" id = "special_defense_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Special defense </label>
+					</div>
+				
+					<div>
+						<input type="text" id = "speed_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+						<label for="id_search"> Speed </label>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class = "container">
+			<select id="region_dropdown" class = "search2"> </select>
+			<label for="region_dropdown"> Region </label>
+		</div>
+
+		<div>
+			<input type="text" id = "catch_rate_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+			<label for="catch_rate_search"> Catch rate </label>
+		</div>
+		
+		<div class = "container">
+			<div>
+				<input type="text" id = "percent_male_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+				<label for="percent_male_search"> Percent male </label>
+			</div>
+			<div>
+				<input type="text" id = "percent_female_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
+				<label for="percent_female_search"> Percent female </label>
+			</div>
+		</div>
+
+		<div class = "container">
+			<div>
+				<select id="egg_group1_dropdown" class = "search2"> </select>
+				<label for="egg_group1_dropdown"> Egg group 1 </label>
+			</div>
+			<div>
+				<select id="egg_group2_dropdown" class = "search2"> </select>
+				<label for="egg_group2_dropdown"> Egg group 2 </label>
+			</div>
+		</div>
+
+		<div class = "container">
+			<select id="game_dropdown" class = "search2"> </select>
+			<label for="game_dropdown"> Game </label>
+		</div>
+
+		<input type= "button" value="Search" id="search_button">
+		<div id="result"></div>
+	</div>
 </body>
 </html>

@@ -9,77 +9,32 @@ function onReady() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
 	$(".search2").select2();
 
-	loadPokemonNameDropdown();
+	//loadPokemonNameDropdown();
 	loadTypeDropdowns();
 	loadAbilityDropdowns();
 	loadRegionDropdowns();
 	loadGameDropdown();
 	loadEggGroupsDropdown();
 	registerSexRatioCallbacks();
+	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
 
-
-	// Read selected option
-	$('#search_button').click(function() {
-		var value = $("#pokemon_name option:selected").text();
-		$('#result').html("selected value: " + value);
-	});
+	//Load the search button's callback. Simple enough.
+	searchButton = document.getElementById("search_button");
+	searchButton.onclick = onSearchButtonClicked;
 }
 
-function registerSexRatioCallbacks() {
-	var percentMaleSearch = document.getElementById("percent_male_search");
-	var percentFemaleSearch = document.getElementById("percent_female_search");
-	percentMaleSearch.oninput = function() { return updateSexRatios("female") };
-	percentFemaleSearch.oninput = function() { return updateSexRatios("male") };
-}
+function onSearchButtonClicked() {
+	var dict = {};
+	var dropdownFields = ["type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2"];
 
-// Since male_percent and female_percent sum to 100, we can update one when the other is changed.
-function updateSexRatios(fieldToUpdate) {
-	var percentMaleSearch = document.getElementById("percent_male_search");
-	var percentFemaleSearch = document.getElementById("percent_female_search");
-	if (fieldToUpdate === "male") {
-		percentMaleSearch.value = updateSexRatiosHelper(percentFemaleSearch);
+	for (var i = 0; i < dropdownFields.length; i ++) {
+		var key = dropdownFields[i];
+		var id = key + "_dropdown";
+		dict[key] = $("#" + id + " option:selected").text();
 	}
-	else if (fieldToUpdate === "female") {
-		percentFemaleSearch.value = updateSexRatiosHelper(percentMaleSearch);
-	}
-	else {
-		throw 'fieldToUpdate must be either "male" or "female"'
-	}
-}
 
-function updateSexRatiosHelper(sexRatioField) {
-	values = sexRatioField.value === null ? "" : sexRatioField.value;
-	values = values.replace(/\s+/g, ""); //remove all whitespace from string
-	 if (values.includes("-")) {
-	 	valuesSplit = values.split(/\D/);
-	 	
-	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
-	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
-	
-		if (onlyDigitsBefore || onlyDigitsAfter)
-	 	{
-	 		if (onlyDigitsBefore) { 
-		 		lower = valuesSplit[0];
-		 		upper = 100;
-	 		} 
-	 		else if (onlyDigitsAfter) {
-		 		lower = 0;
-		 		upper = valuesSplit[1];
-	 		}
-		 	lowerOther = Math.min(100 - lower, 100 - upper);
-		 	upperOther = Math.max(100 - lower, 100 - upper);
-		}
-		else {
-			valueBefore = valuesSplit[0];
-	 		valueAfter = valuesSplit[1];
-	 		lowerOther = Math.min(100 - valueBefore, 100 - valueAfter);
-	 		upperOther = Math.max(100 - valueBefore, 100 - valueAfter);
-		}
-		return lowerOther + " - " + upperOther;
-	 }
-	 else { //values is either the empty string or a string of digits
-	 	return values;
-	 }
+
+	$('#result').html("selected value: " + dict["type1"]);
 }
 
 function loadPokemonNameDropdown() {
@@ -174,8 +129,103 @@ function loadEggGroupsDropdown() {
     });
 }
 
+function registerSexRatioCallbacks() {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	percentMaleSearch.oninput = function() { return updateSexRatios("female") };
+	percentFemaleSearch.oninput = function() { return updateSexRatios("male") };
+}
+
+// Since male_percent and female_percent sum to 100, we can update one when the other is changed.
+function updateSexRatios(fieldToUpdate) {
+	var percentMaleSearch = document.getElementById("percent_male_search");
+	var percentFemaleSearch = document.getElementById("percent_female_search");
+	if (fieldToUpdate === "male") {
+		percentMaleSearch.value = updateSexRatiosHelper(percentFemaleSearch);
+	}
+	else if (fieldToUpdate === "female") {
+		percentFemaleSearch.value = updateSexRatiosHelper(percentMaleSearch);
+	}
+	else {
+		throw 'fieldToUpdate must be either "male" or "female"'
+	}
+}
+
+
+/* Returns the string that should be stored in the sex ratio field that is the "opposite" of sexRatioField. For example, if
+sexRatioField is "percent_male_search", then this function returns the string that should be be assigned to the .value field of
+the HTML element whose id is "percent_female_search".
+*/
+function updateSexRatiosHelper(sexRatioField) {
+	values = sexRatioField.value === null ? "" : sexRatioField.value;
+	values = values.replace(/\s+/g, ""); //remove all whitespace from string
+	 if (values.includes("-")) {
+	 	valuesSplit = values.split(/\D/);
+	 	
+	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
+	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
+	
+		if (onlyDigitsBefore || onlyDigitsAfter)
+	 	{
+	 		if (onlyDigitsBefore) { 
+		 		lower = valuesSplit[0];
+		 		upper = 100;
+	 		} 
+	 		else if (onlyDigitsAfter) {
+		 		lower = 0;
+		 		upper = valuesSplit[1];
+	 		}
+		 	lowerOther = Math.min(100 - lower, 100 - upper);
+		 	upperOther = Math.max(100 - lower, 100 - upper);
+		}
+		else {
+			valueBefore = valuesSplit[0];
+	 		valueAfter = valuesSplit[1];
+	 		lowerOther = Math.min(100 - valueBefore, 100 - valueAfter);
+	 		upperOther = Math.max(100 - valueBefore, 100 - valueAfter);
+		}
+		return lowerOther + " - " + upperOther;
+	 }
+	 else { //values is either the empty string or a string of digits
+	 	if (values === "") {
+	 		return "";
+	 	}
+	 	else {
+	 		return 100 - values;
+	 	}
+	 }
+}
+
+function loadStatsButtonCallback() {
+	var button = getStatsCollapsibleContainerChild("stats_collapsible_button")
+	button.onclick = function() {
+	    this.classList.toggle("active");
+	    var content = getStatsCollapsibleContainerChild("content");
+	    if (content.style.display === "block") {
+	      content.style.display = "none";
+	    } 
+	    else {
+	      content.style.display = "block";
+	    }
+	  };
+}
 
 // Helper functions
+
+function getStatsCollapsibleContainerChild(id) {
+	var container = document.getElementById("stats_collapsible_container");
+	var children = container.children;
+	return getElementFromArray(children, id);
+}
+
+function getElementFromArray(arr, id) {
+	for (var i = 0; i < arr.length; i ++) {
+		if (arr[i].getAttribute("id") === id) {
+			return arr[i];
+		}
+	}
+	return null;
+}
 
 /* Inputs:
  arr is an array
@@ -186,7 +236,7 @@ function getDropdownInnerHTML(arr, presentor, accessor) {
 	if (accessor === null) {
 		accessor = function(arr, i){ return arr[i]; };
 	}
-	var innerHTML = "<option> Click to search or select an option </option>\n";
+	var innerHTML = "<option> Any </option>\n";
     for (var i = 0; i < arr.length; i ++) {
 		innerHTML += "<option> " + presentor(accessor(arr, i)) + " </option>\n";
     }
