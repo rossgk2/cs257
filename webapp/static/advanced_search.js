@@ -84,16 +84,73 @@ function onSearchButtonClicked() {
     .then((response) => response.json())
     .then(function(pokemonList) {
     	var search_results = document.getElementById("search_results");
-    	var innerHTML = "<ul>\n";
+    	var innerHTML = '<div class = "container">\n';
     	for (var i = 0; i < pokemonList.length; i ++) {
-    		innerHTML += "<li> " + makePresentable(pokemonList[i]["pokemon_name"]) + " </li>\n"; 
+			//innerHTML += "<li> " + makePresentable(pokemonList[i]["pokemon_name"]) + " </li>\n";
+			innerHTML += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
     	}
-    	result += "</ul>";
-    	search_results.innerHTML = innerHTML;    	
+    	innerHTML += "\n</div>";
+    	search_results.innerHTML = innerHTML;
     })
     .catch(function(error) {
         console.log(error);
     });
+}
+
+function buildPokemonStatsHTML(pokemonDict){
+	var rawPokemonName = pokemonDict["pokemon_name"];
+	var pokemonImagePath = getPokemonImagePath(rawPokemonName);
+	var returnString = `<div class = "col-2"><img src="${pokemonImagePath}" alt="the image for this pokemon is missing" class="img-thumbnail"></div>\n`;
+	
+	var firstTableHTML = "<table>\n";
+	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
+	var displayDict = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
+	for (var i = 0; i < firstTableInfo.length; i++){
+		firstTableHTML += "<tr>\n";
+		firstTableHTML += "<th>" + firstTableInfo[i] + "</th>";
+		internalName = displayDict[firstTableInfo[i]]
+		firstTableHTML += "<th>" + pokemonDict[internalName] + "</th>";
+		firstTableHTML += "</tr>\n";
+	}
+	firstTableHTML += "</table>\n";
+	returnString += firstTableHTML;
+
+	returnString += '<div class="invisible-vertical-line"></div>'
+
+	var secondTableHTML = "<table>\n";
+	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
+	for (var i = 0; i < secondTableInfo.length; i++){
+		secondTableHTML += "<tr>\n";
+		secondTableHTML += "<th>" + secondTableInfo[i] + "</th>";
+		secondTableHTML += "<th>" + pokemonDict[secondTableInfo[i]] + "</th>";
+		secondTableHTML += "</tr>\n";
+	}
+	secondTableHTML += "</table>\n";
+	returnString += secondTableHTML;
+
+	return returnString
+}
+
+function getPokemonImagePath(pokemonName) {
+    pokemonName = pokemonName.replaceAll("_", "-")
+    var base_path = "../static/pokemon_images/";
+    var jpg_url = base_path + pokemonName + ".jpg";
+    var png_url = base_path + pokemonName + ".png";
+    if (doesFileExist(png_url)) return png_url;
+    if (doesFileExist(jpg_url)) return jpg_url;
+    return "../static/pokemon_images/pokemon_picture_missing.png";
+}
+
+function doesFileExist(urlToFile) {
+    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function loadPokemonNameDropdown() {
