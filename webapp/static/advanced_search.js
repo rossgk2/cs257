@@ -18,12 +18,23 @@ function onReady() {
 	registerSexRatioCallbacks();
 	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
 
+	//Load the search button's callback. Simple enough.
+	searchButton = document.getElementById("search_button");
+	searchButton.onclick = onSearchButtonClicked;
+}
 
-	// Read selected option
-	$('#search_button').click(function() {
-		var value = $("#pokemon_name option:selected").text();
-		$('#result').html("selected value: " + value);
-	});
+function onSearchButtonClicked() {
+	var dict = {};
+	var dropdownFields = ["type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2"];
+
+	for (var i = 0; i < dropdownFields.length; i ++) {
+		var key = dropdownFields[i];
+		var id = key + "_dropdown";
+		dict[key] = $("#" + id + " option:selected").text();
+	}
+
+
+	$('#result').html("selected value: " + dict["type1"]);
 }
 
 function loadPokemonNameDropdown() {
@@ -140,6 +151,11 @@ function updateSexRatios(fieldToUpdate) {
 	}
 }
 
+
+/* Returns the string that should be stored in the sex ratio field that is the "opposite" of sexRatioField. For example, if
+sexRatioField is "percent_male_search", then this function returns the string that should be be assigned to the .value field of
+the HTML element whose id is "percent_female_search".
+*/
 function updateSexRatiosHelper(sexRatioField) {
 	values = sexRatioField.value === null ? "" : sexRatioField.value;
 	values = values.replace(/\s+/g, ""); //remove all whitespace from string
