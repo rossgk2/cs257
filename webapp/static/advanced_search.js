@@ -171,7 +171,12 @@ function updateSexRatiosHelper(sexRatioField) {
 		return lowerOther + " - " + upperOther;
 	 }
 	 else { //values is either the empty string or a string of digits
-	 	return values;
+	 	if (values === "") {
+	 		return "";
+	 	}
+	 	else {
+	 		return 100 - values;
+	 	}
 	 }
 }
 
