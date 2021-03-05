@@ -1,11 +1,12 @@
 window.onload = initialize;
 
 function initialize() {
-	var pokemonName = document.getElementById('pokemon_name').innerHTML;
-    if (pokemonName) {
-        loadPokemonData(pokemonName)
-        loadPokemonImage(pokemonName)
-    }
+    var URL = window.location.href;
+    URLSplit = URL.split("/");
+    var pokemonName = URLSplit[URLSplit.length - 1];
+
+    loadPokemonData(pokemonName);
+    loadPokemonImage(pokemonName);
     loadLinkToHomePage();
 }
 
@@ -58,8 +59,9 @@ function loadPokemonData(pokemon_name) {
 
 		//Now, use dict to fill in the blanks of pokemon_page.html
 
-		// Pokedex number
-		document.getElementById("pokedex_number").innerHTML = String(dict["pokedex_number"])
+		// Pokemon number and name
+        var numberAndName = document.getElementById("number_and_name");
+        number_and_name.innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]);
 
 		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
