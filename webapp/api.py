@@ -198,8 +198,12 @@ def advanced_search(order):
     
     if flask.request.args.get('limit'):
         query = query + "\n LIMIT %s"
-        line_limit = int(flask.request.args.get('limit'))
-        query_parameters.append(line_limit)
+        query_parameters.append(int(flask.request.args.get('limit')))
+
+        if flask.request.args.get('offset'):
+            query = query + " OFFSET %s"
+            query_parameters.append(int(flask.request.args.get('offset')))
+
     
 
     db_connection = connect_database()
