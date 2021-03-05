@@ -100,6 +100,17 @@ def get_egg_groups():
 
 @api.route('advanced_search/<order>')
 def advanced_search(order):
+    ''' 
+    Examples of how to use this endpoint:
+    http://localhost:5000/api/advanced_search/ASC?type1=fire
+    http://localhost:5000/api/advanced_search/ASC?pokemon_name=an
+    http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&ability1=battle_armor
+    http://localhost:5000/api/advanced_search/DESC?pokemon_name=an&order_by=pokemon_name
+    http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&special_defense=50-100
+    http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&catch_rate=0-50
+    http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
+    '''
+
     query = '''SELECT DISTINCT pokemon_name pokemon_name, pokedex_number, 
     type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, 
     ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, 
@@ -121,82 +132,45 @@ def advanced_search(order):
     JOIN games ON games.id = pokemon.game_id
     WHERE pokedex_number BETWEEN %s AND %s '''
 
-    # http://localhost:5000/api/advanced_search/ASC?type1=fire
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&ability1=battle_armor
-    # http://localhost:5000/api/advanced_search/DESC?pokemon_name=an&order_by=pokemon_name
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&special_defense=50-100
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&catch_rate=0-50
-    # http://localhost:5000/api/advanced_search/ASC?pokemon_name=an&male_percent=50-100&catch_rate=0-50
-
-    query_parameters = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
+    # Restrict the range of Pokedex ID's based on user input.
+    pokedex_id_range = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
     if flask.request.args.get('pokedex_lower'):
-        query_parameters[0] = flask.request.args.get('pokedex_lower')
+        pokedex_id_range[0] = flask.request.args.get('pokedex_lower')
     if flask.request.args.get('pokedex_upper'):
-        query_parameters[1] = flask.request.args.get('pokedex_upper')
-    print(query_parameters)
+        pokedex_id_range[1] = flask.request.args.get('pokedex_upper')
 
-    if flask.request.args.get('pokemon_name'):
-        like_arguments = '%' + flask.request.args.get('pokemon_name') + '%'
-        query = query + ''' \n AND pokemon_name LIKE %s'''
-        query_parameters.append(like_arguments)
+    # Now add the API arguments to the SQL query.
+    api_arg_to_sql_condition = {"pokemon_name" : "pokemon_name LIKE %s", "legendary_status" : "legendaries.legendary_status = %s",
+    "type1" : "type_table_a.pokemon_type = %s", "type2" : "type_table_b.pokemon_type = %s", "ability1" : "ability_table_a.ability = %s",
+    "ability2" : "ability_table_b.ability = %s", "hidden_ability" : "ability_table_c.ability = %s", "egg_group1" : "egg_table_a.egg_group = %s",
+    "egg_group2" : "egg_table_b.egg_group = %s", "game": "games.game = %s", "region" : "regions.region = %s"}
 
-    if flask.request.args.get('legendary_status'):
-        query = query + '''\n AND legendaries.legendary_status = %s '''
-        query_parameters.append(flask.request.args.get('legendary_status')) 
+    for api_arg in api_arg_to_sql_condition:
+        if flask.request.args.get(api_arg):
+            sql_condition = api_arg_to_sql_condition[api_arg]
+            user_api_input = flask.request.args.get(api_arg)
+            if "LIKE" in sql_condition:
+                like_arguments = "%" + user_api_input + "%"
+                query = query + " \n AND " + sql_condition
+                pokedex_id_range.append(like_arguments)
+            else:
+                query = query + "\n AND " + sql_condition + " "
+                pokedex_id_range.append(user_api_input) 
 
-    if flask.request.args.get('type1'):
-        type1 = flask.request.args.get('type1')
-        query = query + '''\n AND type_table_a.pokemon_type = %s '''
-        query_parameters.append(type1)
-    
-    if flask.request.args.get('type2'):
-        query = query + '''\n AND type_table_b.pokemon_type = %s '''
-        query_parameters.append(flask.request.args.get('type2'))
-    
-    if flask.request.args.get('ability1'):
-        query = query + '''\n AND ability_table_a.ability = %s '''
-        query_parameters.append(flask.request.args.get('ability1'))
-    
-    if flask.request.args.get('ability2'):
-        query = query + '''\n AND ability_table_b.ability = %s '''
-        query_parameters.append(flask.request.args.get('ability2'))
-
-    if flask.request.args.get('hidden_ability'):
-        query = query + '''\n AND ability_table_c.ability = %s '''
-        query_parameters.append(flask.request.args.get('hidden_ability'))
-
-    if flask.request.args.get('egg_group1'):
-        query = query + '''\n AND egg_table_a.egg_group = %s '''
-        query_parameters.append(flask.request.args.get('egg_group1'))
-
-    if flask.request.args.get('egg_group2'):
-        query = query + '''\n AND egg_table_a.egg_group = %s '''
-        query_parameters.append(flask.request.args.get('egg_group2'))
-    
-    if flask.request.args.get('game'):
-        query = query + '''\n AND games.game = %s '''
-        query_parameters.append(flask.request.args.get('game'))
-
-    if flask.request.args.get('region'):
-        query = query + '''\n AND regions.region = %s '''
-        query_parameters.append(flask.request.args.get('region')) 
-
-     
-
-    # special composite search: given ability X, return all pokemon with X in ability1, ability2, or hidden_ability
+    # Modify the query to handle abilities a little differently. That is, given an ability X,
+    # we want to return all pokemon that have X as ability1, ability2, or hidden_ability.
     if flask.request.args.get('composite_ability'):
         like_arguments = '%' + flask.request.args.get('composite_ability') + '%'
         query = query + "\n AND (ability_table_a.ability LIKE %s OR ability_table_b.ability LIKE %s OR ability_table_c.ability LIKE %s) "
-        query_parameters.extend([like_arguments for i in range(3)])
+        pokedex_id_range.extend([like_arguments for i in range(3)])
 
     for stat in ["health", "attack", "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_percent"]:
         argument = flask.request.args.get(stat)
         if argument:
             lower_bound, upper_bound = argument.split("-")
             query = query + "\n AND " + stat + " BETWEEN %s AND %s "
-            query_parameters.append(lower_bound)
-            query_parameters.append(upper_bound)
+            pokedex_id_range.append(lower_bound)
+            pokedex_id_range.append(upper_bound)
 
     order_by = "pokedex_number"
     if flask.request.args.get('order_by'):
@@ -217,21 +191,20 @@ def advanced_search(order):
     
     if flask.request.args.get('limit'):
         query = query + "\n LIMIT %s"
-        query_parameters.append(int(flask.request.args.get('limit')))
+        pokedex_id_range.append(int(flask.request.args.get('limit')))
 
         if flask.request.args.get('offset'):
             query = query + " OFFSET %s"
-            query_parameters.append(int(flask.request.args.get('offset')))
+            pokedex_id_range.append(int(flask.request.args.get('offset')))
 
-    
 
     db_connection = connect_database()
     cursor = db_connection.cursor()
     
     query = query + ";"
-    query_parameters = tuple(query_parameters)
-    # print(cursor.mogrify(query, query_parameters))
-    cursor.execute(query, query_parameters)
+    pokedex_id_range = tuple(pokedex_id_range)
+    # print(cursor.mogrify(query, pokedex_id_range))
+    cursor.execute(query, pokedex_id_range)
     print("my query is: ")
     print(cursor.query)
     
