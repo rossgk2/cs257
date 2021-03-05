@@ -1,3 +1,3 @@
-user = 'ross'
-database = 'pokemon_db'
+user = 'postgres'
+database = 'grading'
 password = ''
