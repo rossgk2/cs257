@@ -98,6 +98,14 @@ def get_egg_groups():
     output_list.remove("NULL")
     return json.dumps(output_list)
 
+# use script calculate_effect.py, not the database
+@api.route('/supereffect_cal/<my_type1>/<my_type2>')
+def get_supereffect(my_type1, my_type2):
+    my_type1 = my_type1.lower()
+    my_type2 = my_type2.lower()
+    # not finish yet
+    return
+
 @api.route('advanced_search/<order>')
 def advanced_search(order):
     ''' 
