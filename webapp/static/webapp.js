@@ -105,17 +105,26 @@ function load_pokemon_cards(typeFilter, abilityFilter){
         page_content.innerHTML = newInnerHTML
     })
 }
-
+/*
 function makePresentable(str) {
     result = str.charAt(0).toUpperCase() + str.slice(1);
     return result.replaceAll("_", " ");
  }
+*/
+function makePresentable(str) {
+    str = str.replaceAll("_", " ")
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+    .join(' ');
+   //result = str.charAt(0).toUpperCase() + str.slice(1);
+   return str;
+}
 
 function checkReachTheEnd(url, pokedexNum){
-    //see whether we get any pokemon below this pokedexNum given the same filter criteria
-    var upper_bound_pokedexNum = pokedexNum -1;
-    checkURL = url + "&pokedex_upper=" + upper_bound_pokedexNum;
-    return fetch(url, {method: 'get'})
+    //see whether we get any pokemon above this pokedexNum given the same filter criteria
+    checkURL = url + "&pokedex_lower=" + (pokedexNum + 1);
+    return fetch(checkURL, {method: 'get'})
     .then((response) => response.json())
     .then(function(returnPokemon) {
         if (returnPokemon.length == 0){
