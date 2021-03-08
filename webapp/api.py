@@ -49,6 +49,22 @@ def get_abilities():
     output_list.remove("NULL")
     return json.dumps(output_list)
 
+@api.route('/ability_description/<ability>') 
+def get_abilities_description(ability):
+    return_description = "no description"
+    if ability.lower() == "null":
+        return json.dumps(return_description)
+    
+    like_argument = "%" + ability + "%"
+    query = "SELECT * FROM abilities WHERE ability ILIKE %s;"
+    cursor = connect_database().cursor()
+    cursor.execute(query, (like_argument,))
+    # there should only be 1 return value
+    for row in cursor:
+        print(row)
+        return_description = row[2]
+    return json.dumps(return_description)
+
 @api.route('/legendaries')
 def get_legendaries():
     query = "SELECT * FROM legendaries;"

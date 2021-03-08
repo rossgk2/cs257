@@ -49,20 +49,20 @@ function loadPokemonData(pokemon_name) {
         var dict = {};
         //make sure only pokemon with the exact name are selected (i.e. "mew" and "mewtwo" are 2 different pokemons)
         pokemon_name = pokemon_name.toLowerCase();
-        var var_names = ['pokemon_name', 'pokedex_number', 'legendary_status', 'type1', 'type2', 'ability1', 
+        /*var var_names = ['pokemon_name', 'pokedex_number', 'legendary_status', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
-        'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];
+        'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];*/
         for (var i = 0; i < queryPokemonResult.length; i++){
             if (queryPokemonResult[i]['pokemon_name'] == pokemon_name){
                 dict = queryPokemonResult[i];
 
-                //string processing
+                /* I thought we do that later, I need the raw ability string to get the ability desciption
                 for (var i = 0; i < var_names.length; i ++) {
                     key = var_names[i];
                     if (typeof dict[key] === 'string') {
                         dict[key] = makePresentable(dict[key]); 
                     }
-                }
+                }*/
             }
         }
 
@@ -72,8 +72,10 @@ function loadPokemonData(pokemon_name) {
         number_and_name.innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]);
 
 		// Types and legendary status
-		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]);
-		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]);
+		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
+        document.getElementById("type1_image").innerHTML = getTypeImagesHTML(dict["type1"], "click to learn more about the type of this pokemon");
+		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;"
+        document.getElementById("type2_image").innerHTML = getTypeImagesHTML(dict["type2"], "click to learn more about the type of this pokemon");
 		legendary_status = dict["legendary_status"].toLowerCase();
 		if (legendary_status === "null"){
             legendary_status = "Not legendary";
@@ -86,20 +88,23 @@ function loadPokemonData(pokemon_name) {
 		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
 		for (var i = 0; i < stats.length; i ++) {
 			key = stats[i];
-			document.getElementById(key).innerHTML = makePresentable(stats[i]) + ": " + dict[key];
+			document.getElementById(key).innerHTML = `${makePresentable(stats[i])}: <b>${dict[key]} </b> `;
 		}
 
 		// Abilities
 		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
+        getAbilityDescription(dict["ability1"], "ability1_description");
 		document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
+        getAbilityDescription(dict["ability2"], "ability2_description");
 		document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
+        getAbilityDescription(dict["hidden_ability"], "hidden_ability_description");
 
 		// Region, catch rate
 		document.getElementById("region").innerHTML = "Region: " + makePresentable(dict["region"]);
 		document.getElementById("catch_rate").innerHTML = "Catch rate: " + makePresentable(dict["catch_rate"]) + "%";
 
 		//Game
-		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " first appeared in the " + toTitleCase(dict["game"]) + " edition."
+		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " first appeared in the " + makePresentable(dict["game"]) + " edition."
 
 		// The following fields coorrespond to HTML id's whose names don't exactly match up to the keys in dict (e.g. "sex_ratios" 
 		// is an HTML id but the coorresponding dict key is "male_percent").
@@ -116,6 +121,18 @@ function loadPokemonData(pokemon_name) {
     });
 }
 
+function getAbilityDescription(abilityName, htmlTag){
+    var url = getAPIBaseURL() + '/ability_description/' + abilityName;
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(abilityDescription) {
+        abilityDescription = makePresentable(abilityDescription);
+        document.getElementById(htmlTag).innerHTML = `Description: ${abilityDescription}`
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
 
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
@@ -150,12 +167,23 @@ function onRegionButton() {
 //Helper functions
 
 function makePresentable(str) {
-   result = str.charAt(0).toUpperCase() + str.slice(1);
-   return result.replaceAll("_", " ");
+    str = str.replaceAll("_", " ")
+    .toLowerCase()
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+    .join(' ');
+   //result = str.charAt(0).toUpperCase() + str.slice(1);
+   return str;
 }
 
+/** the new makePresentable took care of the function of this
 function toTitleCase(str) {
-	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-  	return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+  	return str.replace(/\w\S*/     /*g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}*/
+
+function getTypeImagesHTML(type, imageTitle){
+    var typeImageLine = `<img src="../static/type_images/${type}.png" align = "right" alt="something is wrong" class="img-thumbnail" title= "${imageTitle}">\n`;
+    return typeImageLine;
 }
 

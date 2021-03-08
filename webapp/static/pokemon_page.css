@@ -1,5 +1,5 @@
-#link_to_homepage {
-    float: bottom;
+.link_to_homepage {
+    padding-left: 5%;
 }
 
 #pokemon_data { 
