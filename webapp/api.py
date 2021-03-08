@@ -8,6 +8,7 @@ import flask
 import json
 import config
 import psycopg2
+import calculate_effect
 
 api = flask.Blueprint('api', __name__)
 
@@ -115,12 +116,18 @@ def get_egg_groups():
     return json.dumps(output_list)
 
 # use script calculate_effect.py, not the database
+# return all abnormal effects (non 1) into 2 list: supereffect (>1), and undereffect (<1)
 @api.route('/supereffect_cal/<my_type1>/<my_type2>')
 def get_supereffect(my_type1, my_type2):
     my_type1 = my_type1.lower()
     my_type2 = my_type2.lower()
-    # not finish yet
-    return
+    from calculate_effect import single_against_all_single
+    from calculate_effect import double_against_all_single
+    if my_type2 == "null":
+        return json.dumps(single_against_all_single(my_type1))
+    else:
+        double_type = my_type1 + "_" + my_type2
+        return json.dumps(double_against_all_single(double_type))
 
 @api.route('advanced_search/<order>')
 def advanced_search(order):
