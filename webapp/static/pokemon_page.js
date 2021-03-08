@@ -44,30 +44,43 @@ function loadPokemonData(pokemon_name) {
     var url = getAPIBaseURL() + '/advanced_search/ASC?pokemon_name=' + pokemon_name;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(individualPokemon) {
+    .then(function(queryPokemonResult) {
         // Create a dictionary dict that has all the data for the current pokemon
-		var dict = {};
+        var dict = {};
+        //make sure only pokemon with the exact name are selected (i.e. "mew" and "mewtwo" are 2 different pokemons)
+        pokemon_name = pokemon_name.toLowerCase();
         var var_names = ['pokemon_name', 'pokedex_number', 'legendary_status', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
         'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];
-        for (var i = 0; i < var_names.length; i ++) {
-        	key = var_names[i];
-        	dict[key] = individualPokemon[0][key];
-        	if (typeof dict[key] === 'string') {
-			    dict[key] = dict[key].replaceAll('_', " "); 
-			}
-		}
+        for (var i = 0; i < queryPokemonResult.length; i++){
+            if (queryPokemonResult[i]['pokemon_name'] == pokemon_name){
+                dict = queryPokemonResult[i];
+
+                //string processing
+                for (var i = 0; i < var_names.length; i ++) {
+                    key = var_names[i];
+                    if (typeof dict[key] === 'string') {
+                        dict[key] = makePresentable(dict[key]); 
+                    }
+                }
+            }
+        }
 
 		//Now, use dict to fill in the blanks of pokemon_page.html
-
 		// Pokemon number and name
         var numberAndName = document.getElementById("number_and_name");
         number_and_name.innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]);
 
 		// Types and legendary status
-		document.getElementById("type1").innerHTML = makePresentable(dict["type1"])
-		document.getElementById("type2").innerHTML = makePresentable(dict["type2"])
-		document.getElementById("legendary_status").innerHTML = dict["legendary_status"].toLowerCase() === "null" ? "Not legendary" : "Legendary"
+		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]);
+		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]);
+		legendary_status = dict["legendary_status"].toLowerCase();
+		if (legendary_status === "null"){
+            legendary_status = "Not legendary";
+        }else{
+            legendary_status = makePresentable(legendary_status);
+        }
+		document.getElementById("legendary_status").innerHTML = legendary_status;
 
 		// Stats
 		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
@@ -138,7 +151,7 @@ function onRegionButton() {
 
 function makePresentable(str) {
    result = str.charAt(0).toUpperCase() + str.slice(1);
-   return result.replace("_", " ");
+   return result.replaceAll("_", " ");
 }
 
 function toTitleCase(str) {

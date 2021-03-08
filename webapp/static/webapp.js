@@ -12,43 +12,40 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
-    var type1Selected = "all";
-    var type2Selected = "all";
+    var typeSelected = "all";
     var abilitySelected = "all";
 
-    load_info("types", "type1_list_selection", "all type1");
-    load_info("types", "type2_list_selection", "all type2");
-    load_info("abilities", "ability_list_selection", "all ability");
+    load_info("types", "type_list_selection", "all types");
+    load_info("abilities", "ability_list_selection", "all abilities");
     load_advanced_search();
     document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
     load_pokemon_cards("all", "all", "all");
 
     // Read selected option
     $('#search_button').click(function() {
-        type1Selected = $("#type1_list_selection").val();
-        type2Selected = $("#type2_list_selection").val();
+        typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
         curNumPokemonOnThePage = 0;
         document.getElementById("the_end_of_query").innerHTML = "still querying";
-        load_pokemon_cards(type1Selected, type2Selected, abilitySelected);
+        load_pokemon_cards(typeSelected, abilitySelected);
     });
 
     $(window).on("scroll", function() {
         if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
-            infinite_user_scroll(type1Selected, type2Selected, abilitySelected);
+            infinite_user_scroll(typeSelected, abilitySelected);
         }
     })
 }
 
 
-function infinite_user_scroll(type1Selected, type2Selected, abilitySelected){
+function infinite_user_scroll(typeSelected, abilitySelected){
     //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
     if (scrollHeight - scrollPos <= 3) {
         document.getElementById("pokemon_landing_display").innerHTML += load_wating_pic();
-        load_pokemon_cards(type1Selected, type2Selected, abilitySelected);
+        load_pokemon_cards(typeSelected, abilitySelected);
     }
 }
 
@@ -69,13 +66,12 @@ function load_info(thisTypeOfInfo, htmlID, searchBarText) {
     });
 }
 
-function load_pokemon_cards(type1Filter, type2Filter, abilityFilter){
+function load_pokemon_cards(typeFilter, abilityFilter){
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}&offset=${curNumPokemonOnThePage}`;
-    if(type1Filter != "all") url += "&type1=" + type1Filter;
-    if(type2Filter != "all") url += "&type2=" + type2Filter;
+    if(typeFilter != "all") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter;
     //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
-    if(type1Filter!="all" || type2Filter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000";
+    //if(typeFilter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000";
 
     return fetch(url, {method: 'get'})
     .then((response) => response.json())

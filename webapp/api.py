@@ -141,14 +141,14 @@ def advanced_search(order):
     WHERE pokedex_number BETWEEN %s AND %s '''
 
     # Restrict the range of Pokedex ID's based on user input.
-    pokedex_id_range = [0, 809] # default pokedex range, the picture of pokedex > 809 are usually lacking
+    parameter_list = [0, 2000] # default pokedex range, the picture of pokedex > 809 are usually lacking
     if flask.request.args.get('pokedex_lower'):
-        pokedex_id_range[0] = flask.request.args.get('pokedex_lower')
+        parameter_list[0] = flask.request.args.get('pokedex_lower')
     if flask.request.args.get('pokedex_upper'):
-        pokedex_id_range[1] = flask.request.args.get('pokedex_upper')
+        parameter_list[1] = flask.request.args.get('pokedex_upper')
 
     # Now add the API arguments to the SQL query.
-    api_arg_to_sql_condition = {"pokemon_name" : "pokemon_name LIKE %s", "legendary_status" : "legendaries.legendary_status = %s",
+    api_arg_to_sql_condition = {"pokemon_name" : "pokemon_name ILIKE %s", "legendary_status" : "legendaries.legendary_status = %s",
     "type1" : "type_table_a.pokemon_type = %s", "type2" : "type_table_b.pokemon_type = %s", "ability1" : "ability_table_a.ability = %s",
     "ability2" : "ability_table_b.ability = %s", "hidden_ability" : "ability_table_c.ability = %s", "egg_group1" : "egg_table_a.egg_group = %s",
     "egg_group2" : "egg_table_b.egg_group = %s", "game": "games.game = %s", "region" : "regions.region = %s"}
@@ -157,28 +157,33 @@ def advanced_search(order):
         if flask.request.args.get(api_arg):
             sql_condition = api_arg_to_sql_condition[api_arg]
             user_api_input = flask.request.args.get(api_arg)
-            if "LIKE" in sql_condition:
+            if "ILIKE" in sql_condition:
                 like_arguments = "%" + user_api_input + "%"
                 query = query + " \n AND " + sql_condition
-                pokedex_id_range.append(like_arguments)
+                parameter_list.append(like_arguments)
             else:
                 query = query + "\n AND " + sql_condition + " "
-                pokedex_id_range.append(user_api_input) 
+                parameter_list.append(user_api_input) 
 
     # Modify the query to handle abilities a little differently. That is, given an ability X,
     # we want to return all pokemon that have X as ability1, ability2, or hidden_ability.
     if flask.request.args.get('composite_ability'):
         like_arguments = '%' + flask.request.args.get('composite_ability') + '%'
-        query = query + "\n AND (ability_table_a.ability LIKE %s OR ability_table_b.ability LIKE %s OR ability_table_c.ability LIKE %s) "
-        pokedex_id_range.extend([like_arguments for i in range(3)])
+        query = query + "\n AND (ability_table_a.ability ILIKE %s OR ability_table_b.ability ILIKE %s OR ability_table_c.ability ILIKE %s) "
+        parameter_list.extend([like_arguments for i in range(3)])
+
+    if flask.request.args.get('composite_type'):
+        like_arguments = '%' + flask.request.args.get('composite_type') + '%'
+        query = query + "\n AND (type_table_a.pokemon_type ILIKE %s OR type_table_b.pokemon_type ILIKE %s) "
+        parameter_list.extend([like_arguments for i in range(2)])
 
     for stat in ["health", "attack", "defense", "special_attack", "special_defense", "speed", "catch_rate", "male_percent"]:
         argument = flask.request.args.get(stat)
         if argument:
             lower_bound, upper_bound = argument.split("-")
             query = query + "\n AND " + stat + " BETWEEN %s AND %s "
-            pokedex_id_range.append(lower_bound)
-            pokedex_id_range.append(upper_bound)
+            parameter_list.append(lower_bound)
+            parameter_list.append(upper_bound)
 
     order_by = "pokedex_number"
     user_order_by = flask.request.args.get('order_by')
@@ -200,20 +205,20 @@ def advanced_search(order):
     
     if flask.request.args.get('limit'):
         query = query + "\n LIMIT %s"
-        pokedex_id_range.append(int(flask.request.args.get('limit')))
+        parameter_list.append(int(flask.request.args.get('limit')))
 
         if flask.request.args.get('offset'):
             query = query + " OFFSET %s"
-            pokedex_id_range.append(int(flask.request.args.get('offset')))
+            parameter_list.append(int(flask.request.args.get('offset')))
     query = query + ";"
 
 
     db_connection = connect_database()
     cursor = db_connection.cursor()
     
-    pokedex_id_range = tuple(pokedex_id_range)
-    # print(cursor.mogrify(query, pokedex_id_range))
-    cursor.execute(query, pokedex_id_range)
+    parameter_list = tuple(parameter_list)
+    # print(cursor.mogrify(query, parameter_list))
+    cursor.execute(query, parameter_list)
     print("my query is: ")
     print(cursor.query)
     

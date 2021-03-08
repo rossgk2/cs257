@@ -123,7 +123,7 @@ function buildPokemonStatsHTML(pokemonDict){
 	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
 	for (var i = 0; i < secondTableInfo.length; i++){
 		secondTableHTML += "<tr>\n";
-		secondTableHTML += "<th>" + secondTableInfo[i] + "</th>";
+		secondTableHTML += "<th>" + makePresentable(secondTableInfo[i]) + "</th>";
 		secondTableHTML += "<th>" + pokemonDict[secondTableInfo[i]] + "</th>";
 		secondTableHTML += "</tr>\n";
 	}
