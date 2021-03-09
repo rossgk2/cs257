@@ -11,34 +11,6 @@ function initialize() {
     loadLinkToHomePage();
 }
 
-function doesFileExist(urlToFile) {
-    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', urlToFile, false);
-    xhr.send();
-     
-    if (xhr.status == "404") {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function loadPokemonImage(pokemonName) {
-    pokemonName = pokemonName.replaceAll("_", "-")
-    var base_path = "../static/pokemon_images/";
-    var jpg_url = base_path + pokemonName + ".jpg";
-    var png_url = base_path + pokemonName + ".png";
-    pokemonImageElement = document.getElementById('dynamic_pokemon_image');
-    if (doesFileExist(jpg_url)) { 
-        pokemonImageElement.src = jpg_url;
-    }else if (doesFileExist(png_url)) {
-        pokemonImageElement.src = png_url;
-    }else {
-        pokemonImageElement.src = "../static/pokemon_images/pokemon_picture_missing.png";
-    }
-}
-
 function loadPokemonData(pokemon_name) {
     // Example: http://localhost:5000/api/advanced_search/ASC?pokemon_name=castform
     var url = getAPIBaseURL() + '/advanced_search/ASC?pokemon_name=' + pokemon_name;
@@ -47,13 +19,12 @@ function loadPokemonData(pokemon_name) {
     .then(function(queryPokemonResult) {
         // Create a dictionary dict that has all the data for the current pokemon
         var dict = {};
-        //make sure only pokemon with the exact name are selected (i.e. "mew" and "mewtwo" are 2 different pokemons)
-        pokemon_name = pokemon_name.toLowerCase();
         /*var var_names = ['pokemon_name', 'pokedex_number', 'legendary_status', 'type1', 'type2', 'ability1', 
         'ability2', 'hidden_ability', 'health', 'attack', 'defense', 'special_attack', 'special_defense',
         'speed', 'region', 'catch_rate', 'male_percent', 'game', 'egg_group1', 'egg_group2'];*/
         for (var i = 0; i < queryPokemonResult.length; i++){
-            if (queryPokemonResult[i]['pokemon_name'] == pokemon_name){
+            //make sure only pokemon with the exact name are selected (i.e. "mew" and "mewtwo" are 2 different pokemons)
+            if (queryPokemonResult[i]['pokemon_name'] == pokemon_name.toLowerCase()){
                 dict = queryPokemonResult[i];
 
                 /* I thought we do that later, I need the raw ability string to get the ability desciption
@@ -68,14 +39,13 @@ function loadPokemonData(pokemon_name) {
 
 		//Now, use dict to fill in the blanks of pokemon_page.html
 		// Pokemon number and name
-        var numberAndName = document.getElementById("number_and_name");
-        number_and_name.innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]);
+        document.getElementById("number_and_name").innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]); 
 
 		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
-        document.getElementById("type1_image").innerHTML = getTypeImagesHTML(dict["type1"], "click to learn more about the type of this pokemon");
+        document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
 		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;"
-        document.getElementById("type2_image").innerHTML = getTypeImagesHTML(dict["type2"], "click to learn more about the type of this pokemon");
+        document.getElementById("type2_image").innerHTML = getTypeImageHTML(dict["type2"]);
 		legendary_status = dict["legendary_status"].toLowerCase();
 		if (legendary_status === "null"){
             legendary_status = "Not legendary";
@@ -124,6 +94,23 @@ function loadPokemonData(pokemon_name) {
     });
 }
 
+
+function loadPokemonImage(pokemonName) {
+    pokemonName = pokemonName.replaceAll("_", "-")
+    var base_path = "../static/pokemon_images/";
+    var jpg_url = base_path + pokemonName + ".jpg";
+    var png_url = base_path + pokemonName + ".png";
+    pokemonImageElement = document.getElementById('dynamic_pokemon_image');
+    if (doesFileExist(jpg_url)) { 
+        pokemonImageElement.src = jpg_url;
+    }else if (doesFileExist(png_url)) {
+        pokemonImageElement.src = png_url;
+    }else {
+        pokemonImageElement.src = "../static/pokemon_images/pokemon_picture_missing.png";
+    }
+}
+
+
 function loadTypeInformation(type1, type2){
     url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
     fetch(url, {method: 'get'})
@@ -164,57 +151,3 @@ function getAbilityDescription(abilityName, htmlTag){
         console.log(error);
     });
 }
-
-function getAPIBaseURL() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
-    return baseURL;
-}
-
-function loadLinkToHomePage() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
-    var image = "../static/pokemon_images/homePageSign.png";
-    image = '<img src="' + image + '"  width="50" align = "left" alt="homePageSign"></img>'
-    var htmlElement = '<a href="' + baseURL + '">' + image + '</a>';
-    document.getElementById('link_to_homepage').innerHTML = htmlElement;
-}
-
-function onRegionButton() {
-    var url = getAPIBaseURL() + '/regions';
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(regions) {
-        var listBody ='';
-        for (var i=0; i < regions.length; i++){
-            listBody += '<li>' + regions[i]['regions'] + '</li>\n';
-        }
-        var listElement = document.getElementById('regions_list');
-        if (listElement){listElement.innerHTML = listBody;}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-//Helper functions
-
-function makePresentable(str) {
-    str = str.replaceAll("_", " ")
-    .toLowerCase()
-    .split(' ')
-    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-    .join(' ');
-   //result = str.charAt(0).toUpperCase() + str.slice(1);
-   return str;
-}
-
-/** the new makePresentable took care of the function of this
-function toTitleCase(str) {
-	from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-  	return str.replace(/\w\S*/     /*g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}*/
-
-function getTypeImagesHTML(type, imageTitle){
-    var typeImageLine = `<img src="../static/type_images/${type}.png" align = "right" alt="something is wrong" class="img-thumbnail" title= "${imageTitle}">\n`;
-    return typeImageLine;
-}
-

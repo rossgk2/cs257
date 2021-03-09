@@ -133,39 +133,6 @@ function buildPokemonStatsHTML(pokemonDict){
 	return returnString
 }
 
-function getPokemonImagePath(pokemonName) {
-    pokemonName = pokemonName.replaceAll("_", "-")
-    var base_path = "../static/pokemon_images/";
-    var jpg_url = base_path + pokemonName + ".jpg";
-    var png_url = base_path + pokemonName + ".png";
-    if (doesFileExist(png_url)) return png_url;
-    if (doesFileExist(jpg_url)) return jpg_url;
-    return "../static/pokemon_images/pokemon_picture_missing.png";
-}
-
-function getTypeImagesHTML(type1, type2){
-    var typeImageLine1 = '<img src="../static/type_images/' + type1 + '.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: '+ type1 + '">\n';
-    var typeImageLine2 = '<img src="../static/type_images/' + type2 + '.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: '+ type2 + '">\n';
-    return (typeImageLine1 + typeImageLine2);
-}
-
-function getPokemonPageURL(pokemon_name){
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
-    return baseURL;
-}
-
-function doesFileExist(urlToFile) {
-    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', urlToFile, false);
-    xhr.send();
-    if (xhr.status == "404") {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 function loadPokemonNameDropdown() {
     var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokemon_name"
     fetch(url, {method: 'get'})
@@ -185,7 +152,7 @@ function loadLegendaryStatusDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(legendaryStatusList) {
-    	innerHTML = getDropdownInnerHTML(legendaryStatusList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	innerHTML = getDropdownInnerHTML(legendaryStatusList, function(str) {return makePresentable(str) } , null);
     	innerHTML = innerHTML.replace("Null", "Not legendary");
     	var legendaryStatusDropdown = document.getElementById("legendary_status_dropdown");
 		legendaryStatusDropdown.innerHTML = innerHTML;
@@ -248,7 +215,7 @@ function loadGameDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(gamesList) {
-    	innerHTML = getDropdownInnerHTML(gamesList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	innerHTML = getDropdownInnerHTML(gamesList, function(str) {return makePresentable(str)} , null);
     	var gameDropdown = document.getElementById("game_dropdown");
 		gameDropdown.innerHTML = innerHTML;
     })
@@ -262,7 +229,7 @@ function loadEggGroupsDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(eggGroupsList) {
-    	innerHTML = getDropdownInnerHTML(eggGroupsList, function(str) {return toTitleCase(makePresentable(str)) } , null);
+    	innerHTML = getDropdownInnerHTML(eggGroupsList, function(str) {return makePresentable(str)} , null);
     	var eggGroup1Dropdown = document.getElementById("egg_group1_dropdown");
 		var eggGroup2Dropdown = document.getElementById("egg_group2_dropdown");
 		eggGroup1Dropdown.innerHTML = innerHTML;
@@ -271,14 +238,6 @@ function loadEggGroupsDropdown() {
     .catch(function(error) {
         console.log(error);
     });
-}
-
-function loadLinkToHomePage() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
-    var image = "../static/pokemon_images/homePageSign.png";
-    image = `<img src="${image}"  width="50" align = "left" alt="homePageSign"></img>`
-    var htmlElement = `<a href="${baseURL}">${image}</a>`;
-    document.getElementById('link_to_homepage').innerHTML = htmlElement;
 }
 
 function registerSexRatioCallbacks() {
@@ -393,19 +352,4 @@ function getDropdownInnerHTML(arr, presentor, accessor) {
 		innerHTML += "<option value = " + accessor(arr, i) + " >" + presentor(accessor(arr, i)) + " </option>\n";
     }
     return innerHTML;
-}
-
-function getAPIBaseURL() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
-    return baseURL;
-}
-
-function makePresentable(str) {
-   result = str.charAt(0).toUpperCase() + str.slice(1);
-   return result.replaceAll("_", " ");
-}
-
-function toTitleCase(str) {
-	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-  	return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }

@@ -85,14 +85,14 @@ function load_pokemon_cards(typeFilter, abilityFilter){
 
             var rawName = thisPokemon['pokemon_name'];
             var pokemonImageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="sorry, pokemon image missing" class="img-thumbnail">\n`;
-            var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a></div>`
+            var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a></div>`;
 
-            var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`
-            var secondLine = `<h6>${getTypeImagesHTML(thisPokemon['type1'], thisPokemon['type2'])}</h6>\n`;
-            pokemonDisplayDiv += pokeImageLink + firstLine + secondLine + '</div>'
+            var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`;
+            var secondLine = `<h6>${getTypeImageHTML(thisPokemon['type1'])} ${getTypeImageHTML(thisPokemon['type2'])}</h6>\n`;
+            pokemonDisplayDiv += pokeImageLink + firstLine + secondLine + '</div>';
 
             if (i == numPokemonPerRow-1){ //change row every 6 cards
-                pokemonDisplayDiv += '</div>\n<div class="row">'
+                pokemonDisplayDiv += '</div>\n<div class="row">';
             }
         }
         pokemonDisplayDiv += '</div>\n</div>';
@@ -104,21 +104,6 @@ function load_pokemon_cards(typeFilter, abilityFilter){
         newInnerHTML = page_content.innerHTML.replaceAll(load_wating_pic(), " ") + pokemonDisplayDiv;
         page_content.innerHTML = newInnerHTML
     })
-}
-/*
-function makePresentable(str) {
-    result = str.charAt(0).toUpperCase() + str.slice(1);
-    return result.replaceAll("_", " ");
- }
-*/
-function makePresentable(str) {
-    str = str.replaceAll("_", " ")
-    .toLowerCase()
-    .split(' ')
-    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-    .join(' ');
-   //result = str.charAt(0).toUpperCase() + str.slice(1);
-   return str;
 }
 
 function checkReachTheEnd(url, pokedexNum){
@@ -133,48 +118,10 @@ function checkReachTheEnd(url, pokedexNum){
     })
 }
 
-function doesFileExist(urlToFile) {
-    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', urlToFile, false);
-    xhr.send();
-    if (xhr.status == "404") {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 function load_advanced_search(){
     advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
     linkElement = `<a href ="${advancedSearchURL}"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>`;
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
-}
-
-function getPokemonImagePath(pokemonName) {
-    pokemonName = pokemonName.replaceAll("_", "-")
-    var base_path = "../static/pokemon_images/";
-    var jpg_url = base_path + pokemonName + ".jpg";
-    var png_url = base_path + pokemonName + ".png";
-    if (doesFileExist(png_url)) return png_url;
-    if (doesFileExist(jpg_url)) return jpg_url;
-    return "../static/pokemon_images/pokemon_picture_missing.png";
-}
-
-function getTypeImagesHTML(type1, type2){
-    var typeImageLine1 = `<img src="../static/type_images/${type1}.png" alt="something is wrong" class="img-thumbnail" title= "type1 is: ${type1}">\n`;
-    var typeImageLine2 = `<img src="../static/type_images/${type2}.png" alt="something is wrong" class="img-thumbnail" title= "type2 is: ${type2}">\n`;
-    return (typeImageLine1 + typeImageLine2);
-}
-
-function getAPIBaseURL() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
-    return baseURL;
-}
-
-function getPokemonPageURL(pokemon_name){
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
-    return baseURL;
 }
 
 function load_wating_pic(){
