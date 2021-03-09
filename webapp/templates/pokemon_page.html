@@ -16,11 +16,22 @@
     <div id = "pokemon_data">
         <h3 id = "number_and_name"> pokedex_id and pokemon_name go here </h3>
         <img src="../static/pokemon_images/pokemon_ball_square.gif" alt="The image of this pokemon is not available at this time" id = "dynamic_pokemon_image">
-        <h6>Legendary Status: <b id = "legendary_status">legendary status goes here </b></h6>
+        <div class = "effect-table">
+            <p>I am weak attacking: </p>
+            <div id = "type_undereffect_table">type undereffect table...</div>
+        </div>
+        <div class = "effect-table">
+            <p>I am strong attacking: </p>
+            <div id = "type_supereffect_table">type supereffect table...</div>
+        </div>
         <table>
             <tr> <td>Primary Type: </td> <td id = "type1"> type1 goes here </td> <td id = "type1_image"></td></tr>
             <tr> <td>Secondary Type: &nbsp;</td> <td id = "type2"> type2 goes here </td> <td id = "type2_image"></td></tr>
         </table>
+        
+        
+        <h6>Legendary Status: <b id = "legendary_status">legendary status goes here </b></h6>
+
         <p></p>
         <h6>Primary Ability: <b id = "ability1">ability 1 goes here </b></h6>
         <p id = "ability1_description">Description: no descirpiton</p>
@@ -29,10 +40,13 @@
         <h6>Hidden Ability: <b id = "hidden_ability">hidden ability goes here </b></h6>
         <p id = "hidden_ability_description">Description: no descirpiton</p>
         <p></p>
-        <table id = "stats">
-            <tr> <td id = "attack"> attack goes here </td> <td id = "special_attack"> special attack goes here </td> </tr>
-            <tr> <td id = "defense"> defense goes here </td> <td id = "special_defense"> special defense goes here </td> </tr>
-            <tr> <td id = "health"> health goes here </td> <td id = "speed"> speed goes here </td> </tr>
+        <table id = "stats" class = "gridTable">
+            <tr class = "gridTable"> <td id = "attack" class = "gridTable"> attack goes here </td> 
+                <td id = "special_attack" class = "gridTable"> special attack goes here </td> </tr>
+            <tr class = "gridTable"> <td id = "defense" class = "gridTable"> defense goes here </td>
+                <td id = "special_defense" class = "gridTable"> special defense goes here </td> </tr>
+            <tr class = "gridTable"> <td id = "health" class = "gridTable"> health goes here </td>
+                <td id = "speed" class = "gridTable"> speed goes here </td> </tr>
         </table>
         <p></p>
         <table id>

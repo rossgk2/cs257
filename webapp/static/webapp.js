@@ -85,7 +85,7 @@ function load_pokemon_cards(typeFilter, abilityFilter){
 
             var rawName = thisPokemon['pokemon_name'];
             var pokemonImageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="sorry, pokemon image missing" class="img-thumbnail">\n`;
-            var pokeImageLink = `<a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a>`
+            var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a></div>`
 
             var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`
             var secondLine = `<h6>${getTypeImagesHTML(thisPokemon['type1'], thisPokemon['type2'])}</h6>\n`;

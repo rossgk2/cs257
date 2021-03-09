@@ -115,6 +115,37 @@ function loadPokemonData(pokemon_name) {
 
 		// Egg groups
 		document.getElementById("egg_groups").innerHTML = "Egg groups: " + makePresentable(dict["egg_group1"]) + ", " + makePresentable(dict["egg_group2"]);
+
+        //load type supereffect
+        loadTypeInformation(dict["type1"], dict["type2"])
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function loadTypeInformation(type1, type2){
+    url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(nonOneEffects) {
+        var undereffectTable = `<table class = "gridTable">
+        <tr class = "gridTableGray"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
+        var supereffectTable = `<table class = "gridTable">
+        <tr class = "gridTableRed"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
+        for (var i = 0; i < nonOneEffects.length; i++){
+            defendType = nonOneEffects[i][0];
+            effect = nonOneEffects[i][1];
+            if (effect > 1){
+                supereffectTable += `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
+            }else{
+                undereffectTable += `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
+            }
+        }
+        undereffectTable += '</table>';
+        supereffectTable += '</table>';
+        document.getElementById("type_supereffect_table").innerHTML = `${supereffectTable}`;
+        document.getElementById("type_undereffect_table").innerHTML = `${undereffectTable}`;
     })
     .catch(function(error) {
         console.log(error);
@@ -126,7 +157,7 @@ function getAbilityDescription(abilityName, htmlTag){
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(abilityDescription) {
-        abilityDescription = makePresentable(abilityDescription);
+        abilityDescription = abilityDescription.replaceAll("_", " ");
         document.getElementById(htmlTag).innerHTML = `Description: ${abilityDescription}`
     })
     .catch(function(error) {

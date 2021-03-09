@@ -67,12 +67,12 @@ def double_against_single(attack, defend):
 
 def double_against_all_single(attacker):
     # example: double_against_single("fire_fighting", "ice")
-    return_map = {}
+    return_list = []
     for defender in word_maps_col_row_num:
         effect = double_against_single(attacker, defender)
         if effect != 1: # only cares about supereffect, normal effect doesn't count
-            return_map[defender] = effect
-    return return_map
+            return_list.append([defender, effect])
+    return return_list
 
 '''
 According to officical pokemon: double-supereffect => combine effect: 4

@@ -6,6 +6,37 @@
     float: bottom;
 }
 
+.gridTable {
+    border: 1px solid black;
+    white-space: nowrap;
+    overflow: hidden;
+    border-collapse: collapse;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.gridTableGray {
+    background-color: rgb(207, 207, 207);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.gridTableRed {
+    background-color: rgb(248, 139, 139);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+div.right-invisible-vertical-line{
+    width: 10px; 
+    height: 100%; 
+    float: right; 
+}
+
+.effect-table {
+    padding-right: 5%;
+    float: right;
+}
 /* Might be useful: */
 
 /*.menu {
