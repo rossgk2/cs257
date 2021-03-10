@@ -43,20 +43,14 @@ function loadPokemonData(pokemon_name) {
 
 		//Now, use dict to fill in the blanks of pokemon_page.html
 		// Pokemon number and name
-        document.getElementById("number_and_name").innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + makePresentable(dict["pokemon_name"]); 
+        pokemon_name = makePresentable(dict["pokemon_name"]);
+        document.getElementById("number_and_name").innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + pokemon_name; 
 
-		// Types and legendary status
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
         document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
 		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;"
         document.getElementById("type2_image").innerHTML = getTypeImageHTML(dict["type2"]);
-		legendary_status = dict["legendary_status"].toLowerCase();
-		if (legendary_status === "null"){
-            legendary_status = "Not legendary";
-        }else{
-            legendary_status = makePresentable(legendary_status);
-        }
-		document.getElementById("legendary_status").innerHTML = legendary_status;
+        loadSupereffectInfo(dict["type1"], dict["type2"]);
 
 		// Stats
 		stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
@@ -73,25 +67,29 @@ function loadPokemonData(pokemon_name) {
 		document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
         getAbilityDescription(dict["hidden_ability"], "hidden_ability_description");
 
-		// Region, catch rate
-		document.getElementById("region").innerHTML = "Region: " + makePresentable(dict["region"]);
-		document.getElementById("catch_rate").innerHTML = "Catch rate: " + makePresentable(dict["catch_rate"]) + "%";
+        legendary_status = dict["legendary_status"].toLowerCase();
+		if (legendary_status === "null"){
+            legendary_status = `${pokemon_name} is <b> not </b> a legendary pokemon`;
+        }else{
+            legendary_status = `${pokemon_name} is a ${makePresentable(legendary_status)} pokemon`;
+        }
+		document.getElementById("legendary_status").innerHTML = legendary_status;
+		document.getElementById("region").innerHTML = `Region: <b>${makePresentable(dict["region"])}</b>`;
+		document.getElementById("catch_rate").innerHTML = `Catch rate: <b>${makePresentable(dict["catch_rate"])}%</b>`;
 
 		//Game
-		document.getElementById("game").innerHTML = makePresentable(pokemon_name) + " first appeared in the " + makePresentable(dict["game"]) + " edition."
+		document.getElementById("game").innerHTML = `First appeared in: <b>${makePresentable(dict["game"])}</b> edition.`
 
 		// The following fields coorrespond to HTML id's whose names don't exactly match up to the keys in dict (e.g. "sex_ratios" 
 		// is an HTML id but the coorresponding dict key is "male_percent").
 
 		// Sex ratios (some in-line computation is needed)
-		document.getElementById("sex_ratios").innerHTML = dict["male_percent"] + "% of " + makePresentable(pokemon_name) + " are male and " + 
-		(100 - dict["male_percent"]) + "% are female.";
+		document.getElementById("sex_ratios").innerHTML = `<b>${dict["male_percent"]}%</b> of ${pokemon_name} are male and 
+		<b>${100 - dict["male_percent"]}%</b> are female.`;
 
-		// Egg groups
-		document.getElementById("egg_groups").innerHTML = "Egg groups: " + makePresentable(dict["egg_group1"]) + ", " + makePresentable(dict["egg_group2"]);
-
-        //load type supereffect
-        loadTypeInformation(dict["type1"], dict["type2"])
+		eggGroupString = `Egg group(s): <b>${makePresentable(dict["egg_group1"])}</b>`;
+		if (dict["egg_group2"].toLowerCase() !== "null") eggGroupString += ` and <b>${makePresentable(dict["egg_group2"])}</b>`
+		document.getElementById("egg_groups").innerHTML = eggGroupString;
     })
     .catch(function(error) {
         console.log(error);
@@ -115,33 +113,39 @@ function loadPokemonImage(pokemonName) {
 }
 
 
-function loadTypeInformation(type1, type2){
+function loadSupereffectInfo(type1, type2){
     url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(nonOneEffects) {
-        var undereffectTable = `<table class = "gridTable">
-        <tr class = "gridTableGray"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
-        var supereffectTable = `<table class = "gridTable">
-        <tr class = "gridTableRed"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
-        for (var i = 0; i < nonOneEffects.length; i++){
-            defendType = nonOneEffects[i][0];
-            effect = nonOneEffects[i][1];
-            if (effect > 1){
-                supereffectTable += `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
-            }else{
-                undereffectTable += `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
-            }
-        }
-        undereffectTable += '</table>';
-        supereffectTable += '</table>';
-        document.getElementById("type_supereffect_table").innerHTML = `${supereffectTable}`;
-        document.getElementById("type_undereffect_table").innerHTML = `${undereffectTable}`;
+        var undereffectTable = effectTableBuilder(nonOneEffects, false)
+        var supereffectTable = effectTableBuilder(nonOneEffects, true)
+        document.getElementById("type_supereffect_table").innerHTML = supereffectTable;
+        document.getElementById("type_undereffect_table").innerHTML = undereffectTable;
     })
     .catch(function(error) {
         console.log(error);
     });
 }
+
+function effectTableBuilder(nonOneEffects, isSupereffect){
+    color = (isSupereffect) ? "Red" : "Gray";
+    var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
+    var tableHTML = firstRow;
+    for (var i = 0; i < nonOneEffects.length; i++){
+        var defendType = nonOneEffects[i][0];
+        var effect = nonOneEffects[i][1];
+        var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
+        if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
+        if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
+    }
+
+    //if the table is empty
+    if (tableHTML == firstRow) tableHTML = '<tr class = "gridTable"> supereffect is 1 for all types </tr>';
+    tableHTML += '</table>';
+
+    return tableHTML;
+} 
 
 function getAbilityDescription(abilityName, htmlTag){
     var url = getAPIBaseURL() + '/ability_description/' + abilityName;

@@ -123,11 +123,14 @@ def get_supereffect(my_type1, my_type2):
     my_type2 = my_type2.lower()
     from calculate_effect import single_against_all_single
     from calculate_effect import double_against_all_single
+    result = []
     if my_type2 == "null":
-        return json.dumps(single_against_all_single(my_type1))
+        result = single_against_all_single(my_type1)
     else:
-        double_type = my_type1 + "_" + my_type2
-        return json.dumps(double_against_all_single(double_type))
+        result = double_against_all_single(my_type1 + "_" + my_type2)
+
+    result.sort(key = lambda i: i[1]) #sort by effect size
+    return json.dumps(result)
 
 @api.route('advanced_search/<order>')
 def advanced_search(order):

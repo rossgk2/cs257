@@ -29,17 +29,14 @@
             <tr> <td>Primary Type: </td> <td id = "type1"> type1 goes here </td> <td id = "type1_image"></td></tr>
             <tr> <td>Secondary Type: &nbsp;</td> <td id = "type2"> type2 goes here </td> <td id = "type2_image"></td></tr>
         </table>
-        
-        
-        <h6>Legendary Status: <b id = "legendary_status">legendary status goes here </b></h6>
-        <p></p>
-        <h6>Primary Ability: <b id = "ability1">ability 1 goes here </b></h6>
-        <p id = "ability1_description">Description: no descirpiton</p>
-        <h6>Secondary Ability: <b id = "ability2">ability 2 goes here </b></h6>
-        <p id = "ability2_description">Description: no descirpiton</p>
-        <h6>Hidden Ability: <b id = "hidden_ability">hidden ability goes here </b></h6>
-        <p id = "hidden_ability_description">Description: no descirpiton</p>
-        <p></p>
+        <ul>
+            <li>Primary Ability: <b id = "ability1">ability 1 goes here </b></li>
+                <ul><li id = "ability1_description">no descirpiton</li></ul>
+            <li>Secondary Ability: <b id = "ability2">ability 2 goes here </b></li>
+                <ul><li id = "ability2_description">no descirpiton</li></ul>
+            <li>Hidden Ability: <b id = "hidden_ability">hidden ability goes here </b></li>
+                <ul><li id = "hidden_ability_description">no descirpiton</li></ul>
+        </ul>
         <table id = "stats" class = "gridTable">
             <tr class = "gridTable"> <td id = "attack" class = "gridTable"> attack goes here </td> 
                 <td id = "special_attack" class = "gridTable"> special attack goes here </td> </tr>
@@ -48,8 +45,9 @@
             <tr class = "gridTable"> <td id = "health" class = "gridTable"> health goes here </td>
                 <td id = "speed" class = "gridTable"> speed goes here </td> </tr>
         </table>
-
+        <p></p>
         <table>
+            <tr> <td id = "legendary_status"> legendary_status goes here </td> </tr>
             <tr> <td id = "region"> region goes here </td> </tr>
             <tr> <td id = "catch_rate"> catch rate goes here </td> </tr>
             <tr> <td id = "sex_ratios"> male and female ratios go here </td> </tr>

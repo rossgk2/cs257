@@ -89,10 +89,13 @@ function onSearchButtonClicked() {
     .then(function(pokemonList) {
     	var search_results = document.getElementById("search_results");
     	var innerHTML = '<div class = "container">\n';
-    	for (var i = 0; i < pokemonList.length; i ++) {
-			//innerHTML += "<li> " + makePresentable(pokemonList[i]["pokemon_name"]) + " </li>\n";
-			innerHTML += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
-    	}
+		if (pokemonList.length == 0){
+			innerHTML += "sorry, there is no pokemone with your specified criteria"
+		}else{
+			for (var i = 0; i < pokemonList.length; i ++) {
+				innerHTML += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
+			}
+		}
     	innerHTML += "\n</div>";
     	search_results.innerHTML = innerHTML;
     })
@@ -157,7 +160,7 @@ function loadLegendaryStatusDropdown() {
     .then((response) => response.json())
     .then(function(legendaryStatusList) {
     	innerHTML = getDropdownInnerHTML(legendaryStatusList, function(str) {return makePresentable(str) } , null);
-    	innerHTML = innerHTML.replace("Null", "Not legendary");
+    	innerHTML = innerHTML.replace("Null", "Not Legendary");
     	var legendaryStatusDropdown = document.getElementById("legendary_status_dropdown");
 		legendaryStatusDropdown.innerHTML = innerHTML;
     })
