@@ -135,15 +135,13 @@ function load_advanced_search(){
 }
 
 function load_wating_pic(){
-    var single_loading_image = `\n<div class="col-2">
-    <img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
-    <h5>loading</h5>
-    <h6>T1:<img src="../static/type_images/null.png" class="img-thumbnail">
-    T2:<img src="../static/type_images/null.png" class="img-thumbnail"></h6>
-    </div>`;
+    var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
+    var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
+    <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
+    
     var loading_display = '<div class="container">\n<div class="row">';
     for (var i = 0; i < numPokemonPerRow; i++){
-        loading_display += single_loading_image
+        loading_display += '\n<div class="col-2">' + singleBlock + '</div>';
     }
     loading_display += '</div>\n</div>';
     return loading_display;
