@@ -225,3 +225,12 @@ div.invisible-vertical-line{
   padding: 0px 10px;
   height: 25px;
 }
+
+.highlight {
+  display: inline-block;
+}
+.highlight img:hover {
+  opacity: .5;
+  background-color: yellow;
+  color: black;
+}

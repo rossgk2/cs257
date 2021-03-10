@@ -88,12 +88,11 @@ function load_pokemon_cards(typeFilter, abilityFilter){
             pokedexNum = thisPokemon['pokedex_number'];
 
             var rawName = thisPokemon['pokemon_name'];
-            var pokemonImageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="sorry, pokemon image missing" class="img-thumbnail">\n`;
-            var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(rawName)}">${pokemonImageHtml}</a></div>`;
+            var pokemonImageHtml = getPokemonImageWithLink(rawName);
 
             var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`;
             var secondLine = `<h6>${getTypeImageHTML(thisPokemon['type1'])} ${getTypeImageHTML(thisPokemon['type2'])}</h6>\n`;
-            pokemonDisplayDiv += pokeImageLink + firstLine + secondLine + '</div>';
+            pokemonDisplayDiv += pokemonImageHtml + firstLine + secondLine + '</div>';
 
             if (i == numPokemonPerRow-1){ //change row every 6 cards
                 pokemonDisplayDiv += '</div>\n<div class="row">';

@@ -1,16 +1,18 @@
 function getTypeImageHTML(type){
     type = type.toLowerCase();
-    var typeImageLine = `<img src="../static/type_images/${type}.png" alt="something is wrong" class="img-thumbnail" title= "${type}">\n`;
+    var typeImageLine = `<img src="../static/type_images/${type}.png" alt="something is wrong" class="img-thumbnail"`
+    if (type != "null"){
+        typeImageLine += ` title = "type: ${type}, click to see all type supereffects">`;
+        typeImageLine = '<a href = "../static/type_chart_image.jpg" target = "_blank">' + typeImageLine + '</a>';
+        typeImageLine = '<div class = "highlight">' + typeImageLine + '</div>';
+    }else{
+        typeImageLine += ` title = "This pokemone does not have a secondary type">`;
+    }
     return typeImageLine;
 }
 
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
-    return baseURL;
-}
-
-function getPokemonPageURL(pokemon_name){
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
     return baseURL;
 }
 
@@ -26,6 +28,13 @@ function doesFileExist(urlToFile) {
     }
 }
 
+function getPokemonImageWithLink(pokemonName) {
+    var pokemonImageHtml = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
+            class="img-thumbnail" title = "click to know more about this pokemon">\n`;
+    var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHtml}</a></div>`;
+    return pokeImageLink;
+}
+
 function getPokemonImagePath(pokemonName) {
     pokemonName = pokemonName.replaceAll("_", "-")
     var base_path = "../static/pokemon_images/";
@@ -34,6 +43,11 @@ function getPokemonImagePath(pokemonName) {
     if (doesFileExist(png_url)) return png_url;
     if (doesFileExist(jpg_url)) return jpg_url;
     return "../static/pokemon_images/pokemon_picture_missing.png";
+}
+
+function getPokemonPageURL(pokemon_name){
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
+    return baseURL;
 }
 
 function loadLinkToHomePage() {

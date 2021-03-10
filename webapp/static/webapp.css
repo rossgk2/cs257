@@ -17,12 +17,12 @@ select {
 }
 
 .highlight {
-    background-color: yellow;
     display: inline-block;
-
 }
 .highlight img:hover {
     opacity: .5;
+    background-color: yellow;
+    color: black;
 }
 
 #information_sign_content {

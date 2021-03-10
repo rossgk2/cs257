@@ -106,9 +106,7 @@ function onSearchButtonClicked() {
 
 function buildPokemonStatsHTML(pokemonDict){
 	var rawName = pokemonDict["pokemon_name"];
-	var imageHtml = `<img src="${getPokemonImagePath(rawName)}" alt="the image for this pokemon is missing" class="img-thumbnail">\n`;
-	var returnString = `<a href="${getPokemonPageURL(rawName)}">${imageHtml}</a>`;
-
+	returnString = getPokemonImageWithLink(rawName);
 	returnString += '<div class="invisible-vertical-line"></div>';
 	
 	var firstTableHTML = "<table>\n";
