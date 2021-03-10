@@ -70,12 +70,7 @@ function informationSign(){
     }
 }
 
-/*
-function makePresentable(str) {
-    result = str.charAt(0).toUpperCase() + str.slice(1);
-    return result.replaceAll("_", " ");
- }
-function toTitleCase(str) {
+/*function toTitleCase(str) {
 	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
   	return str.replace(/\w\S*/                      /*g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }

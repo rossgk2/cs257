@@ -38,9 +38,21 @@ def get_types():
     output_list.remove("NULL")
     return json.dumps(output_list)
 
+def helper(index):
+    query = "SELECT * FROM types;"
+    db_connection = connect_database()
+    cursor = db_connection.cursor()
+    cursor.execute(query)
+    output_list = []
+    for row in cursor:
+        output_list.append(row[index])
+    # optional: output_list.remove("NULL")
+    # optional: output_list.sort()
+    return json.dumps(output_list)
+
 @api.route('/abilities') 
 def get_abilities():
-    query = "SELECT * FROM abilities;"
+    query = "SELECT * FROM abilities ORDER BY ability;"
     cursor = connect_database().cursor()
     cursor.execute(query)
     output_list = []
@@ -48,7 +60,6 @@ def get_abilities():
         index, ability, ability_description = row
         output_list.append(ability)
     output_list.remove("NULL")
-    output_list.sort()
     return json.dumps(output_list)
 
 @api.route('/ability_description/<ability>') 
@@ -192,8 +203,10 @@ def advanced_search(order):
                 query = query + "\n AND " + sql_condition + " "
                 parameter_list.append(user_api_input) 
 
-    # Modify the query to handle abilities a little differently. That is, given an ability X,
-    # we want to return all pokemon that have X as ability1, ability2, or hidden_ability.
+    # Modify the query to handle abilities a little differently. That is, given an ability X, we want to return all Pokemon
+    # that have X as ability1, ability2, or hidden_ability.
+    #
+    # Note: ILIKE causes case (as in upper case vs. lower case) to be ignored when searching the database.
     if flask.request.args.get('composite_ability'):
         like_arguments = '%' + flask.request.args.get('composite_ability') + '%'
         query = query + "\n AND (ability_table_a.ability ILIKE %s OR ability_table_b.ability ILIKE %s OR ability_table_c.ability ILIKE %s) "
@@ -212,22 +225,25 @@ def advanced_search(order):
             parameter_list.append(lower_bound)
             parameter_list.append(upper_bound)
 
+    # By default, sort the returned rows by their pokedex number. If the user specifies a column on which to sort in their query,
+    # then sort by that column.
     order_by = "pokedex_number"
     user_order_by = flask.request.args.get('order_by')
-    pokemon_info = ["pokedex_number", "pokemon_name", "legendary_status", "type1", "type2", 
+    other_args = ["pokedex_number", "pokemon_name", "legendary_status", "type1", "type2", 
     "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", 
     "special_defense", "speed", "region", "catch_rate", "male_percent", "game", "egg_group1", "egg_group2"]
-    if user_order_by in pokemon_info:
+    if user_order_by in other_args:
         order_by = user_order_by
     
+    # order is the only positional argument for this API endpoint, and should be either "ASC" or "DSC". It determines how
+    # the order_by column is sorted.
     order = order.upper() # only ASC or DESC is allowed
     if order == "ASC":
         query = query + "\n ORDER BY {}".format(order_by)
     elif order == "DESC":
         query = query + "\n ORDER BY {} DESC".format(order_by)
     else:
-        print("yooo, error, your order by must be one of these, and order must be ACS or DESC")
-        print(pokemon_info)
+        print('Error: the positional argument "order" must either be "ASC" or "DSC".')
         return
     
     if flask.request.args.get('limit'):
