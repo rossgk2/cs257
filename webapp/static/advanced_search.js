@@ -34,7 +34,7 @@ function onSearchButtonClicked() {
 	var dict = {};
 	
 	// First load user input from select2 dropdown menus
-	var dropdownInput = ["legendary_status", "type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2"];
+	var dropdownInput = ["legendary_status", "type1", "type2", "ability1", "ability2", "hidden_ability", "region", "egg_group1", "egg_group2", "game"];
 	for (var i = 0; i < dropdownInput.length; i ++) {
 		var key = dropdownInput[i];
 		var id = key + "_dropdown";
