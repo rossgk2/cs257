@@ -9,6 +9,10 @@ function initialize() {
     loadPokemonData(pokemonName);
     loadPokemonImage(pokemonName);
     loadLinkToHomePage();
+    
+    $('#information_sign_button').click(function() {
+        informationSign();
+    });
 }
 
 function loadPokemonData(pokemon_name) {

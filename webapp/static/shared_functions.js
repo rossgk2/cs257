@@ -44,6 +44,17 @@ function loadLinkToHomePage() {
     document.getElementById('link_to_homepage').innerHTML = htmlElement;
 }
 
+function informationSign(){
+    var b = document.getElementById("information_sign_button");
+    var c = document.getElementById("information_sign_content");
+    if (c.style.display === "none") {
+        b.innerHTML = "Hide Help";
+        c.style.display = "block";
+    } else {
+        c.style.display = "none";
+        b.innerHTML = "Need Help?";
+    }
+}
 
 /*
 function makePresentable(str) {

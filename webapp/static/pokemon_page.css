@@ -37,6 +37,14 @@ div.right-invisible-vertical-line{
     padding-right: 5%;
     float: right;
 }
+
+#information_sign_content {
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+    background-color: lightblue;
+    margin-top: 20px;
+}
 /* Might be useful: */
 
 /*.menu {

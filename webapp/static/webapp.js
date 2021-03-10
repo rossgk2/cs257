@@ -31,6 +31,10 @@ function onReady() {
         load_pokemon_cards(typeSelected, abilitySelected);
     });
 
+    $('#information_sign_button').click(function() {
+        informationSign();
+    });
+
     $(window).on("scroll", function() {
         if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
             infinite_user_scroll(typeSelected, abilitySelected);

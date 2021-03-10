@@ -18,17 +18,28 @@
 
 <body>
     <h1><center>Pokemon Database</center></h1>
-    
+
     <div class = "container">
+        <div id="information_sign_content" style="display:none">
+            Write the help content here
+        </div>
+
         <h5 align = "right" id = "link_to_advanced_search">if you see this text, you got a problem</h5>
-        
-        <select id = "type_list_selection" class = "search">
-            <option value = " 1 ">if you see this, it's an error</option>
-        </select>
-        <select id = "ability_list_selection" class = "search">
-            <option value = " 1 "></option>
-        </select>
-        <input type= "button" value="Search!" id="search_button">
+
+        <div class = "row">
+            <select id = "type_list_selection" class = "search">
+                <option value = " 1 ">if you see this, it's an error</option>
+            </select>
+            &ensp;
+            <select id = "ability_list_selection" class = "search">
+                <option value = " 1 "></option>
+            </select>
+            &ensp;
+            <input type= "button" value="Search!" id="search_button">
+            &emsp; 
+            <button id="information_sign_button">Need Help?</button>
+        </div>
+
     </div>
     <p id = "result"> </p>
     <div id = "pokemon_landing_display">

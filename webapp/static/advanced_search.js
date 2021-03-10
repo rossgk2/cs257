@@ -23,6 +23,10 @@ function onReady() {
 	//Load the search button's callback. Simple enough.
 	searchButton = document.getElementById("search_button");
 	searchButton.onclick = onSearchButtonClicked;
+
+	$('#information_sign_button').click(function() {
+        informationSign();
+    });
 }
 
 function onSearchButtonClicked() {
