@@ -9,13 +9,7 @@ function onReady() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
 	$(".search2").select2();
 
-	//loadPokemonNameDropdown();
-	loadLegendaryStatusDropdown();
-	loadTypeDropdowns();
-	loadAbilityDropdowns();
-	loadRegionDropdowns();
-	loadGameDropdown();
-	loadEggGroupsDropdown();
+	loadDropdowns();
 	loadLinkToHomePage();
 	registerSexRatioCallbacks();
 	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
@@ -90,7 +84,7 @@ function onSearchButtonClicked() {
     	var search_results = document.getElementById("search_results");
     	var innerHTML = '<div class = "container">\n';
 		if (pokemonList.length == 0){
-			innerHTML += "sorry, there is no pokemone with your specified criteria"
+			innerHTML += "sorry, there is no Pokemon with your specified criteria"
 		}else{
 			for (var i = 0; i < pokemonList.length; i ++) {
 				innerHTML += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
@@ -104,142 +98,45 @@ function onSearchButtonClicked() {
     });
 }
 
-function buildPokemonStatsHTML(pokemonDict){
-	var rawName = pokemonDict["pokemon_name"];
-	returnString = getPokemonImageWithLink(rawName);
-	returnString += '<div class="invisible-vertical-line"></div>';
+function loadDropdowns() {
+	// Legendary status
+	loadDropdown("legendary_status_dropdown", "legendaries",
+		function(arr, i) { return makePresentable(arr[i]).replace("Null", "Not Legendary"); })
 	
-	var firstTableHTML = "<table>\n";
-	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
-	var displayDict = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
-	for (var i = 0; i < firstTableInfo.length; i++){
-		firstTableHTML += "<tr>\n";
-		firstTableHTML += "<th>" + firstTableInfo[i] + "</th>";
-		internalName = displayDict[firstTableInfo[i]]
-		firstTableHTML += "<th>" + pokemonDict[internalName] + "</th>";
-		firstTableHTML += "</tr>\n";
-	}
-	firstTableHTML += "</table>\n";
-	returnString += firstTableHTML;
+	// Types
+	loadDropdown("type1_dropdown", "types", null)
+	loadDropdown("type2_dropdown", "types", null)
 
-	returnString += '<div class="invisible-vertical-line"></div>';
+	// Abilities
+	abilityAccessor = function(arr, i){ return arr[i]["ability"];}
+	loadDropdown("ability1_dropdown", "abilities", abilityAccessor)
+	loadDropdown("ability2_dropdown", "abilities", abilityAccessor)
+	loadDropdown("hidden_ability_dropdown", "abilities", abilityAccessor)
 
-	var secondTableHTML = "<table>\n";
-	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
-	for (var i = 0; i < secondTableInfo.length; i++){
-		secondTableHTML += "<tr>\n";
-		secondTableHTML += "<th>" + makePresentable(secondTableInfo[i]) + "</th>";
-		secondTableHTML += "<th>" + pokemonDict[secondTableInfo[i]] + "</th>";
-		secondTableHTML += "</tr>\n";
-	}
-	secondTableHTML += "</table>\n";
-	returnString += secondTableHTML;
+	// Regions
+	loadDropdown("region_dropdown", "regions", null)
+	
+	// Game of origin
+	loadDropdown("game_dropdown", "games", null)
 
-	return returnString
+	// Egg groups
+	eggGroupsPresentor = function(arr, i) { return makePresentable(arr[i]); }
+	loadDropdown("egg_group1_dropdown", "egg_groups", eggGroupsPresentor);
+	loadDropdown("egg_group2_dropdown", "egg_groups", eggGroupsPresentor);
 }
 
-function loadPokemonNameDropdown() {
-    var url = getAPIBaseURL() + "/advanced_search/ASC?order_by=pokemon_name"
+function loadDropdown(HtmlId, apiEndpoint, accessor) {
+	if (accessor === null) {
+        accessor = function(arr, i){ return arr[i]; };
+    }
+
+	var url = getAPIBaseURL() + "/" + apiEndpoint
     fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(pokemonList) {
+    .then(function(arr) {
     	// See shared_functions.js for the definition of getDropdownInnerHTML
-    	innerHTML = getDropdownInnerHTML(pokemonList, makePresentable, function(arr, i){ return arr[i]["pokemon_name"]; });
-    	var pokemonNameDropdown = document.getElementById("pokemon_name_dropdown");
-		pokemonNameDropdown.innerHTML = innerHTML;    	
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadLegendaryStatusDropdown() {
-	var url = getAPIBaseURL() + "/legendaries"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(legendaryStatusList) {
-    	innerHTML = getDropdownInnerHTML(legendaryStatusList, function(str) {return makePresentable(str) } , null);
-    	innerHTML = innerHTML.replace("Null", "Not Legendary");
-    	var legendaryStatusDropdown = document.getElementById("legendary_status_dropdown");
-		legendaryStatusDropdown.innerHTML = innerHTML;
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadTypeDropdowns() {
-	var url = getAPIBaseURL() + "/types"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(typesList) {
-    	innerHTML = getDropdownInnerHTML(typesList, makePresentable, null);
-    	var type1Dropdown = document.getElementById("type1_dropdown");
-    	var type2Dropdown = document.getElementById("type2_dropdown");
-		type1Dropdown.innerHTML = innerHTML;
-		type2Dropdown.innerHTML = innerHTML;    	
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadAbilityDropdowns() {
-	var url = getAPIBaseURL() + "/abilities"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(abilitiesList) {
-    	innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, function(arr, i){ return arr[i]["ability"];});
-    	var ability1Dropdown = document.getElementById("ability1_dropdown");
-    	var ability2Dropdown = document.getElementById("ability2_dropdown");
-		var hiddenAbilityDropdown = document.getElementById("hidden_ability_dropdown");
-		ability1Dropdown.innerHTML = innerHTML;
-		ability2Dropdown.innerHTML = innerHTML;  
-		hiddenAbilityDropdown.innerHTML = innerHTML;  	
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadRegionDropdowns() {
-	var url = getAPIBaseURL() + "/regions"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(regionsList) {
-    	innerHTML = getDropdownInnerHTML(regionsList, makePresentable, null);
-    	var regionDropdown = document.getElementById("region_dropdown");
-		regionDropdown.innerHTML = innerHTML;
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadGameDropdown() {
-	var url = getAPIBaseURL() + "/games"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(gamesList) {
-    	innerHTML = getDropdownInnerHTML(gamesList, function(str) {return makePresentable(str)} , null);
-    	var gameDropdown = document.getElementById("game_dropdown");
-		gameDropdown.innerHTML = innerHTML;
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadEggGroupsDropdown() {
-	var url = getAPIBaseURL() + "/egg_groups"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(eggGroupsList) {
-    	innerHTML = getDropdownInnerHTML(eggGroupsList, function(str) {return makePresentable(str)} , null);
-    	var eggGroup1Dropdown = document.getElementById("egg_group1_dropdown");
-		var eggGroup2Dropdown = document.getElementById("egg_group2_dropdown");
-		eggGroup1Dropdown.innerHTML = innerHTML;
-		eggGroup2Dropdown.innerHTML = innerHTML;
+    	innerHTML = getDropdownInnerHTML(arr, makePresentable, function(arr, i){ return accessor(arr, i);});
+		document.getElementById(HtmlId).innerHTML = innerHTML;    	
     })
     .catch(function(error) {
         console.log(error);
@@ -267,7 +164,6 @@ function updateSexRatios(fieldToUpdate) {
 		throw 'fieldToUpdate must be either "male" or "female"'
 	}
 }
-
 
 /* Returns the string that should be stored in the sex ratio field that is the "opposite" of sexRatioField. For example, if
 sexRatioField is "percent_male_search", then this function returns the string that should be be assigned to the .value field of
@@ -311,6 +207,41 @@ function updateSexRatiosHelper(sexRatioField) {
 	 		return 100 - values;
 	 	}
 	 }
+}
+
+
+function buildPokemonStatsHTML(pokemonDict){
+	var rawName = pokemonDict["pokemon_name"];
+	returnString = getPokemonImageWithLink(rawName);
+	returnString += '<div class="invisible-vertical-line"></div>';
+	
+	var firstTableHTML = "<table>\n";
+	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
+	var displayDict = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
+	for (var i = 0; i < firstTableInfo.length; i++){
+		firstTableHTML += "<tr>\n";
+		firstTableHTML += "<th>" + firstTableInfo[i] + "</th>";
+		internalName = displayDict[firstTableInfo[i]]
+		firstTableHTML += "<th>" + pokemonDict[internalName] + "</th>";
+		firstTableHTML += "</tr>\n";
+	}
+	firstTableHTML += "</table>\n";
+	returnString += firstTableHTML;
+
+	returnString += '<div class="invisible-vertical-line"></div>';
+
+	var secondTableHTML = "<table>\n";
+	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
+	for (var i = 0; i < secondTableInfo.length; i++){
+		secondTableHTML += "<tr>\n";
+		secondTableHTML += "<th>" + makePresentable(secondTableInfo[i]) + "</th>";
+		secondTableHTML += "<th>" + pokemonDict[secondTableInfo[i]] + "</th>";
+		secondTableHTML += "</tr>\n";
+	}
+	secondTableHTML += "</table>\n";
+	returnString += secondTableHTML;
+
+	return returnString
 }
 
 function loadStatsButtonCallback() {
