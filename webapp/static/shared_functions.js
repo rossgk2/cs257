@@ -70,14 +70,25 @@ function informationSign(){
     }
 }
 
-/*function toTitleCase(str) {
-	// from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-  	return str.replace(/\w\S*/                      /*g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}
-*/
 function makePresentable(txt) {
     txt = txt.replaceAll("_", " ")
     // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
     .replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
    return txt;
+}
+
+/* Inputs:
+ arr is an array
+ presentor is a function that takes a single string as input and returns a string as output
+ accessor is a function that takes in an array and an integer and returns an element of that array
+*/
+function getDropdownInnerHTML(arr, presentor, accessor) {
+    if (accessor === null) {
+        accessor = function(arr, i){ return arr[i]; };
+    }
+    var innerHTML = "<option value = any> Any </option>\n";
+    for (var i = 0; i < arr.length; i ++) {
+        innerHTML += "<option value = " + accessor(arr, i) + " >" + presentor(accessor(arr, i)) + " </option>\n";
+    }
+    return innerHTML;
 }

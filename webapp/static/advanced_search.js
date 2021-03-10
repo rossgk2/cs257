@@ -143,6 +143,7 @@ function loadPokemonNameDropdown() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
+    	// See shared_functions.js for the definition of getDropdownInnerHTML
     	innerHTML = getDropdownInnerHTML(pokemonList, makePresentable, function(arr, i){ return arr[i]["pokemon_name"]; });
     	var pokemonNameDropdown = document.getElementById("pokemon_name_dropdown");
 		pokemonNameDropdown.innerHTML = innerHTML;    	
@@ -188,7 +189,7 @@ function loadAbilityDropdowns() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(abilitiesList) {
-    	innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, null);
+    	innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, function(arr, i){ return arr[i]["ability"];});
     	var ability1Dropdown = document.getElementById("ability1_dropdown");
     	var ability2Dropdown = document.getElementById("ability2_dropdown");
 		var hiddenAbilityDropdown = document.getElementById("hidden_ability_dropdown");
@@ -341,20 +342,4 @@ function getElementFromArray(arr, id) {
 		}
 	}
 	return null;
-}
-
-/* Inputs:
- arr is an array
- presentor is a function that takes a single string as input and returns a string as output
- accessor is a function that takes in an array and an integer and returns an element of that array
-*/
-function getDropdownInnerHTML(arr, presentor, accessor) {
-	if (accessor === null) {
-		accessor = function(arr, i){ return arr[i]; };
-	}
-	var innerHTML = "<option> Any </option>\n";
-    for (var i = 0; i < arr.length; i ++) {
-		innerHTML += "<option value = " + accessor(arr, i) + " >" + presentor(accessor(arr, i)) + " </option>\n";
-    }
-    return innerHTML;
 }

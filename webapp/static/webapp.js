@@ -12,23 +12,21 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
-    var typeSelected = "all";
-    var abilitySelected = "all";
-
-    load_info("types", "type_list_selection", "all types");
-    load_info("abilities", "ability_list_selection", "all abilities");
-    load_advanced_search();
-    document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
-    load_pokemon_cards("all", "all", "all");
+    loadTypeDropdown();
+    loadAbilityDropdown();
+    loadAdvancedSearch();
+    
+    document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+    loadPokemonCards("any", "any", "any");
 
     // Read selected option
     $('#search_button').click(function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
-        document.getElementById("pokemon_landing_display").innerHTML = load_wating_pic();
+        document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
         curNumPokemonOnThePage = 0;
         document.getElementById("the_end_of_query").innerHTML = "still querying";
-        load_pokemon_cards(typeSelected, abilitySelected);
+        loadPokemonCards(typeSelected, abilitySelected);
     });
 
     $('#information_sign_button').click(function() {
@@ -37,46 +35,74 @@ function onReady() {
 
     $(window).on("scroll", function() {
         if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
-            infinite_user_scroll(typeSelected, abilitySelected);
+            infiniteUserScroll(typeSelected, abilitySelected);
         }
     })
 }
 
-
-function infinite_user_scroll(typeSelected, abilitySelected){
+function infiniteUserScroll(typeSelected, abilitySelected){
     //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
     if (scrollHeight - scrollPos <= 3) {
-        document.getElementById("pokemon_landing_display").innerHTML += load_wating_pic();
-        load_pokemon_cards(typeSelected, abilitySelected);
+        document.getElementById("pokemon_landing_display").innerHTML += loadWaitingPic();
+        loadPokemonCards(typeSelected, abilitySelected);
     }
 }
 
-function load_info(thisTypeOfInfo, htmlID, searchBarText) {
-    var url = getAPIBaseURL() + '/' + thisTypeOfInfo;
+// function loadSearchbarFromApiEndpoint(apiEndpoint, searchbarHtmlId, searchBarDefaultText) {
+//     var url = getAPIBaseURL() + '/' + apiEndpoint;
+//     fetch(url, {method: 'get'})
+//     .then((response) => response.json())
+//     .then(function(info) {
+//         var listBody =`<option value = "all">${searchBarDefaultText}</option>\n`;
+//         for (var i=0; i < info.length; i++){
+//             var rawElement = info[i];
+//             listBody += `<option value = "${rawElement}">${makePresentable(rawElement)}</option>\n`
+//         }
+//         document.getElementById(searchbarHtmlId).innerHTML = listBody
+//     })
+//     .catch(function(error) {
+//         console.log(error);
+//     });
+// }
+
+function loadTypeDropdown() {
+    var url = getAPIBaseURL() + "/types"
     fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(info) {
-        var listBody =`<option value = "all">${searchBarText}</option>\n`;
-        for (var i=0; i < info.length; i++){
-            var rawElement = info[i];
-            listBody += `<option value = "${rawElement}">${makePresentable(rawElement)}</option>\n`
-        }
-        document.getElementById(htmlID).innerHTML = listBody
+    .then(function(typesList) {
+        innerHTML = getDropdownInnerHTML(typesList, makePresentable, null);
+        var typeDropdown = document.getElementById("type_list_selection");
+        typeDropdown.innerHTML = innerHTML;
     })
     .catch(function(error) {
         console.log(error);
     });
 }
 
-function load_pokemon_cards(typeFilter, abilityFilter){
+function loadAbilityDropdown() {
+    var url = getAPIBaseURL() + "/abilities"
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(abilitiesList) {
+        innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, function(arr, i){ return arr[i]["ability"];});
+        var abilityDropdown = document.getElementById("ability_list_selection");
+        abilityDropdown.innerHTML = innerHTML; 
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+
+function loadPokemonCards(typeFilter, abilityFilter){
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
-    if(typeFilter != "all") url += "&composite_type=" + typeFilter;
-    if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter;
+    if(typeFilter != "any") url += "&composite_type=" + typeFilter;
+    if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
     url += `&offset=${curNumPokemonOnThePage}`;
     //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
-    //if(typeFilter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000";
+    //if(typeFilter!="any" || abilityFilter!="any") url += "&pokedex_upper=3000";
 
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
@@ -105,7 +131,7 @@ function load_pokemon_cards(typeFilter, abilityFilter){
         checkReachTheEnd(url, pokedexNum, returnPokemon.length);
 
         page_content = document.getElementById("pokemon_landing_display");
-        newInnerHTML = page_content.innerHTML.replaceAll(load_wating_pic(), " ") + pokemonDisplayDiv;
+        newInnerHTML = page_content.innerHTML.replaceAll(loadWaitingPic(), " ") + pokemonDisplayDiv;
         page_content.innerHTML = newInnerHTML
     })
 }
@@ -128,13 +154,13 @@ function checkReachTheEnd(url, pokedexNum, returnQueryLength){
     })
 }
 
-function load_advanced_search(){
+function loadAdvancedSearch(){
     advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
     linkElement = `<a href ="${advancedSearchURL}"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>`;
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
-function load_wating_pic(){
+function loadWaitingPic(){
     var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
     var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
     <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
