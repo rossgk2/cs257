@@ -71,9 +71,10 @@ function load_info(thisTypeOfInfo, htmlID, searchBarText) {
 }
 
 function load_pokemon_cards(typeFilter, abilityFilter){
-    var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}&offset=${curNumPokemonOnThePage}`;
+    var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
     if(typeFilter != "all") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "all") url += "&composite_ability=" + abilityFilter;
+    url += `&offset=${curNumPokemonOnThePage}`;
     //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
     //if(typeFilter!="all" || abilityFilter!="all") url += "&pokedex_upper=3000";
 
@@ -101,7 +102,7 @@ function load_pokemon_cards(typeFilter, abilityFilter){
         pokemonDisplayDiv += '</div>\n</div>';
 
         curNumPokemonOnThePage += numPokemonEachQuery;
-        checkReachTheEnd(url, pokedexNum);
+        checkReachTheEnd(url, pokedexNum, returnPokemon.length);
 
         page_content = document.getElementById("pokemon_landing_display");
         newInnerHTML = page_content.innerHTML.replaceAll(load_wating_pic(), " ") + pokemonDisplayDiv;
@@ -109,15 +110,21 @@ function load_pokemon_cards(typeFilter, abilityFilter){
     })
 }
 
-function checkReachTheEnd(url, pokedexNum){
-    //see whether we get any pokemon above this pokedexNum given the same filter criteria
-    checkURL = url + "&pokedex_lower=" + (pokedexNum + 1);
-    return fetch(checkURL, {method: 'get'})
+function checkReachTheEnd(url, pokedexNum, returnQueryLength){
+    endIndicator = document.getElementById("the_end_of_query");
+    //empty query result
+    if (returnQueryLength == 0){endIndicator.innerHTML = "Sorry, no pokemon can satisfy your query criteria..."; return;}
+
+    //for short result
+    if (returnQueryLength < numPokemonEachQuery){endIndicator.innerHTML = "It's already the end of the query!"; return;}
+
+    //if result >= 30, see whether we get any pokemon above this pokedexNum given the same filter criteria
+    url = url.replace(/&offset=.*/gi, "");
+    url += "&pokedex_lower=" + (pokedexNum + 1);
+    return fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(returnPokemon) {
-        if (returnPokemon.length == 0){
-            document.getElementById("the_end_of_query").innerHTML = "It's already the end of the query!"
-        }
+        if (returnPokemon.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
     })
 }
 
