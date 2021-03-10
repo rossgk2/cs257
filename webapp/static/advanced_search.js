@@ -99,6 +99,8 @@ function onSearchButtonClicked() {
 }
 
 function loadDropdowns() {
+	// See shared_functions.js for the definition of loadDropdown.
+
 	// Legendary status
 	loadDropdown("legendary_status_dropdown", "legendaries",
 		function(arr, i) { return makePresentable(arr[i]).replace("Null", "Not Legendary"); })
@@ -123,24 +125,6 @@ function loadDropdowns() {
 	eggGroupsPresentor = function(arr, i) { return makePresentable(arr[i]); }
 	loadDropdown("egg_group1_dropdown", "egg_groups", eggGroupsPresentor);
 	loadDropdown("egg_group2_dropdown", "egg_groups", eggGroupsPresentor);
-}
-
-function loadDropdown(HtmlId, apiEndpoint, accessor) {
-	if (accessor === null) {
-        accessor = function(arr, i){ return arr[i]; };
-    }
-
-	var url = getAPIBaseURL() + "/" + apiEndpoint
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(arr) {
-    	// See shared_functions.js for the definition of getDropdownInnerHTML
-    	innerHTML = getDropdownInnerHTML(arr, makePresentable, function(arr, i){ return accessor(arr, i);});
-		document.getElementById(HtmlId).innerHTML = innerHTML;    	
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
 }
 
 function registerSexRatioCallbacks() {

@@ -12,10 +12,9 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
-    loadTypeDropdown();
-    loadAbilityDropdown();
-    loadAdvancedSearch();
-    
+    loadDropdown("type_list_selection", "types", null) // See shared_functions.js for definition of loadDropdown()
+    loadDropdown("ability_list_selection", "abilities", function(arr, i){ return arr[i]["ability"];})
+
     document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
     loadPokemonCards("any", "any", "any");
 
@@ -49,52 +48,6 @@ function infiniteUserScroll(typeSelected, abilitySelected){
         loadPokemonCards(typeSelected, abilitySelected);
     }
 }
-
-// function loadSearchbarFromApiEndpoint(apiEndpoint, searchbarHtmlId, searchBarDefaultText) {
-//     var url = getAPIBaseURL() + '/' + apiEndpoint;
-//     fetch(url, {method: 'get'})
-//     .then((response) => response.json())
-//     .then(function(info) {
-//         var listBody =`<option value = "all">${searchBarDefaultText}</option>\n`;
-//         for (var i=0; i < info.length; i++){
-//             var rawElement = info[i];
-//             listBody += `<option value = "${rawElement}">${makePresentable(rawElement)}</option>\n`
-//         }
-//         document.getElementById(searchbarHtmlId).innerHTML = listBody
-//     })
-//     .catch(function(error) {
-//         console.log(error);
-//     });
-// }
-
-function loadTypeDropdown() {
-    var url = getAPIBaseURL() + "/types"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(typesList) {
-        innerHTML = getDropdownInnerHTML(typesList, makePresentable, null);
-        var typeDropdown = document.getElementById("type_list_selection");
-        typeDropdown.innerHTML = innerHTML;
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function loadAbilityDropdown() {
-    var url = getAPIBaseURL() + "/abilities"
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(abilitiesList) {
-        innerHTML = getDropdownInnerHTML(abilitiesList, makePresentable, function(arr, i){ return arr[i]["ability"];});
-        var abilityDropdown = document.getElementById("ability_list_selection");
-        abilityDropdown.innerHTML = innerHTML; 
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
 
 function loadPokemonCards(typeFilter, abilityFilter){
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;

@@ -77,10 +77,39 @@ function makePresentable(txt) {
    return txt;
 }
 
+
 /* Inputs:
- arr is an array
- presentor is a function that takes a single string as input and returns a string as output
- accessor is a function that takes in an array and an integer and returns an element of that array
+ - arr is an array
+ - accessor is a function that takes in an array and an integer and returns an element of that array. If accessor is null, then it is assumed to be
+ the function: function(arr, i){ return arr[i]; }
+
+ Given the HTML id HtmlId of a HTML element that should contain <option> tags, this function 
+ loads the appropriate inner HTML of that element to be such that inner HTML and value of each option tag
+ is loaded from the API endpoint apiEndpoint.
+*/
+function loadDropdown(HtmlId, apiEndpoint, accessor) {
+    if (accessor === null) {
+        accessor = function(arr, i){ return arr[i]; };
+    }
+
+    var url = getAPIBaseURL() + "/" + apiEndpoint
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(arr) {
+        // See shared_functions.js for the definition of getDropdownInnerHTML
+        innerHTML = getDropdownInnerHTML(arr, makePresentable, function(arr, i){ return accessor(arr, i);});
+        document.getElementById(HtmlId).innerHTML = innerHTML;      
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+/* Inputs:
+ - arr is an array
+ - presentor is a function that takes a single string as input and returns a string as output
+ - accessor is a function that takes in an array and an integer and returns an element of that array. If accessor is null, then it is assumed to be
+ the function: function(arr, i){ return arr[i]; }
 */
 function getDropdownInnerHTML(arr, presentor, accessor) {
     if (accessor === null) {
