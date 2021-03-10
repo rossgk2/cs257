@@ -48,6 +48,7 @@ def get_abilities():
         index, ability, ability_description = row
         output_list.append(ability)
     output_list.remove("NULL")
+    output_list.sort()
     return json.dumps(output_list)
 
 @api.route('/ability_description/<ability>') 
