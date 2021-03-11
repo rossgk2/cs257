@@ -7,6 +7,7 @@ $(document).ready(onReady)
 var numPokemonEachQuery = 24;
 var curNumPokemonOnThePage = 0;
 var numPokemonPerRow = 6;
+var queryStatus = "still_querying"
 
 function onReady() {
     // Initialize the select2 JQuery plugin
@@ -33,7 +34,7 @@ function onReady() {
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
         curNumPokemonOnThePage = 0;
-        document.getElementById("the_end_of_query").innerHTML = "still querying";
+        queryStatus = "still_querying";
         loadPokemonCards(typeSelected, abilitySelected);
     });
 
@@ -43,7 +44,7 @@ function onReady() {
 }
 
 function infiniteUserScroll(typeSelected, abilitySelected) {
-    if (document.getElementById("the_end_of_query").innerHTML == "still querying") {
+    if (queryStatus === "still_querying") {
         //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
         var scrollHeight = $(document).height();
         var scrollPos = $(window).height() + $(window).scrollTop();
@@ -70,8 +71,17 @@ function loadPokemonCards(typeFilter, abilityFilter){
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
+        
+        // pokemonList.sort(function(x, y) {
+        //   var xNum = x["pokedex_number"];
+        //   var yNum = y["pokedex_number"];
+        //   if (xNum < yNum) return -1;
+        //   if (xNum > yNum) return 1;
+        //   return 0;
+        // });
+
         var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
-        for (var i = 0; i < pokemonList.length; i++){
+        for (var i = 0; i < pokemonList.length; i ++){
             // Get info about the current Pokemon.
             var pokemon = pokemonList[i];
             var pokedexNum = pokemon['pokedex_number'];
@@ -91,6 +101,14 @@ function loadPokemonCards(typeFilter, abilityFilter){
         }
         pokemonDisplayDiv += '</div>\n</div>';
 
+        var lastPokedexNumber = 898; // You can verify this is correct by visiting 
+                                     // http://localhost:<port>/api/advanced_search/DESC?order_by=pokedex_number
+        if (pokemonList[pokemonList.length - 1] == lastPokedexNumber) {
+
+        }
+
+        
+
         curNumPokemonOnThePage += numPokemonEachQuery;
         checkReachTheEnd(url, pokedexNum, pokemonList.length);
 
@@ -102,12 +120,11 @@ function loadPokemonCards(typeFilter, abilityFilter){
 }
 
 function checkReachTheEnd(url, pokedexNum, returnQueryLength){
-    endIndicator = document.getElementById("the_end_of_query");
     //empty query result
-    if (returnQueryLength == 0){endIndicator.innerHTML = "Sorry, no pokemon can satisfy your query criteria..."; return;}
+    if (returnQueryLength == 0){ queryStatus = "no_results_satisfy_criteria"; return;}
 
     //for short result
-    if (returnQueryLength < numPokemonEachQuery){endIndicator.innerHTML = "It's already the end of the query!"; return;}
+    if (returnQueryLength < numPokemonEachQuery){ queryStatus = "end_of_query_reached"; return;}
 
     //if result >= 30, see whether we get any pokemon above this pokedexNum given the same filter criteria
     url = url.replace(/&offset=.*/gi, "");
@@ -115,7 +132,7 @@ function checkReachTheEnd(url, pokedexNum, returnQueryLength){
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
-        if (pokemonList.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
+        if (pokemonList.length == 0) queryStatus = "end_of_query_reached";
     })
 }
 
