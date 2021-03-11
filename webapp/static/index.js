@@ -1,5 +1,5 @@
 /*
-    webapp.js
+    index.js
     Jimmy Zhong and Ross Grogan-Kaylor, CS257 Carleton College, Professor Jeff Ondich
     Final Project 2021 Feburary 
 */
@@ -37,10 +37,8 @@ function onReady() {
         loadPokemonCards(typeSelected, abilitySelected);
     });
 
-    // Register the event handler for the "help" button.
+    // Register some more event handlers.
     document.getElementById("information_sign_button").onclick = informationSign;
-    
-    // Register the event handler for the onscroll event. 
     window.onscroll = function() { infiniteUserScroll(typeSelected, abilitySelected); };
 }
 
@@ -67,17 +65,15 @@ function loadPokemonCards(typeFilter, abilityFilter){
     if(typeFilter != "any") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
     url += `&offset=${curNumPokemonOnThePage}`;
-    //don't have pictures of pokemon with pokedex_number > 809; pokemon without images won't show up unless people search for them
-    //if(typeFilter!="any" || abilityFilter!="any") url += "&pokedex_upper=3000";
 
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(returnPokemon) {
+    .then(function(pokemonList) {
         var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
         var pokedexNum = 2000 //need this to each whether reach the end, for infinite scroll
-        for (var i = 0; i < returnPokemon.length; i++){
-            pokemonDisplayDiv += '<div class="col-2">'
-            var thisPokemon = returnPokemon[i];
+        for (var i = 0; i < pokemonList.length; i++){
+            pokemonDisplayDiv += '<div class = "col-2">'
+            var thisPokemon = pokemonList[i];
             pokedexNum = thisPokemon['pokedex_number'];
 
             var rawName = thisPokemon['pokemon_name'];
@@ -87,14 +83,14 @@ function loadPokemonCards(typeFilter, abilityFilter){
             var secondLine = `<h6>${getTypeImageHTML(thisPokemon['type1'])} ${getTypeImageHTML(thisPokemon['type2'])}</h6>\n`;
             pokemonDisplayDiv += pokemonImageHtml + firstLine + secondLine + '</div>';
 
-            if (i == numPokemonPerRow-1){ //change row every 6 cards
+            if (i == numPokemonPerRow - 1){ //change row every 6 cards
                 pokemonDisplayDiv += '</div>\n<div class="row">';
             }
         }
         pokemonDisplayDiv += '</div>\n</div>';
 
         curNumPokemonOnThePage += numPokemonEachQuery;
-        checkReachTheEnd(url, pokedexNum, returnPokemon.length);
+        checkReachTheEnd(url, pokedexNum, pokemonList.length);
 
         page_content = document.getElementById("pokemon_landing_display");
         newInnerHTML = page_content.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
@@ -115,8 +111,8 @@ function checkReachTheEnd(url, pokedexNum, returnQueryLength){
     url += "&pokedex_lower=" + (pokedexNum + 1);
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(returnPokemon) {
-        if (returnPokemon.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
+    .then(function(pokemonList) {
+        if (pokemonList.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
     })
 }
 
