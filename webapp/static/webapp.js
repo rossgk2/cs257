@@ -4,7 +4,7 @@
     Final Project 2021 Feburary 
 */
 $(document).ready(onReady)
-var numPokemonEachQuery = 30;
+var numPokemonEachQuery = 24;
 var curNumPokemonOnThePage = 0;
 var numPokemonPerRow = 6;
 
@@ -12,11 +12,14 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
-    loadDropdown("type_list_selection", "types", null) // See shared_functions.js for definition of loadDropdown()
-    loadDropdown("ability_list_selection", "abilities", function(arr, i){ return arr[i]["ability"];})
+    loadDropdown("type_list_selection", "types", null); // See shared_functions.js for definition of loadDropdown()
+    loadDropdown("ability_list_selection", "abilities", function(arr, i){ return arr[i]["ability"];});
+    loadAdvancedSearch();
 
     document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
-    loadPokemonCards("any", "any", "any");
+    var typeSelected = "any";
+    var abilitySelected = "any";
+    loadPokemonCards(typeSelected, abilitySelected);
 
     // Read selected option
     $('#search_button').click(function() {
@@ -109,7 +112,8 @@ function checkReachTheEnd(url, pokedexNum, returnQueryLength){
 
 function loadAdvancedSearch(){
     advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
-    linkElement = `<a href ="${advancedSearchURL}"> <img src="../static/pokemon_images/searchSign.png" width="50" alt="searchSign">advance search </img></a>`;
+    linkElement = `<div class = "highlight"><a href ="${advancedSearchURL}"> 
+    <img src="../static/pokemon_images/searchSign.png" width="80" alt="searchSign">advance search</img></a></div>`;
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
