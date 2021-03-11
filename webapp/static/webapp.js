@@ -20,7 +20,7 @@ function onReady() {
     loadAdvancedSearch();
 
     // It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
-    document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+    document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
     
     // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
     var typeSelected = "any";
@@ -31,21 +31,21 @@ function onReady() {
     $('#search_button').click(function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
-        document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+        document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
         curNumPokemonOnThePage = 0;
         document.getElementById("the_end_of_query").innerHTML = "still querying";
         loadPokemonCards(typeSelected, abilitySelected);
     });
 
-    $('#information_sign_button').click(function() {
-        informationSign();
-    });
-
-    $(window).on("scroll", function() {
+    // Register the event handler for the "help" button.
+    document.getElementById("information_sign_button").onclick = informationSign;
+    
+    // Register the event handler for the onscroll event. 
+    window.onscroll = function() {
         if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
             infiniteUserScroll(typeSelected, abilitySelected);
         }
-    })
+    };
 }
 
 function infiniteUserScroll(typeSelected, abilitySelected){
@@ -53,7 +53,7 @@ function infiniteUserScroll(typeSelected, abilitySelected){
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
     if (scrollHeight - scrollPos <= 3) {
-        document.getElementById("pokemon_landing_display").innerHTML += loadWaitingPic();
+        document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
         loadPokemonCards(typeSelected, abilitySelected);
     }
 }
@@ -93,7 +93,7 @@ function loadPokemonCards(typeFilter, abilityFilter){
         checkReachTheEnd(url, pokedexNum, returnPokemon.length);
 
         page_content = document.getElementById("pokemon_landing_display");
-        newInnerHTML = page_content.innerHTML.replaceAll(loadWaitingPic(), " ") + pokemonDisplayDiv;
+        newInnerHTML = page_content.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
         page_content.innerHTML = newInnerHTML
     })
 }
@@ -123,7 +123,7 @@ function loadAdvancedSearch(){
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
-function loadWaitingPic(){
+function getLoadingGifInnerHtml(){
     var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
     var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
     <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
