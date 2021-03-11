@@ -44,12 +44,15 @@ function onReady() {
     window.onscroll = function() { infiniteUserScroll(typeSelected, abilitySelected); };
 }
 
+
 function infiniteUserScroll(typeSelected, abilitySelected) {
     if (document.getElementById("the_end_of_query").innerHTML == "still querying") {
         //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
         var scrollHeight = $(document).height();
         var scrollPos = $(window).height() + $(window).scrollTop();
-        if (scrollHeight - scrollPos <= 3) {
+
+        var smallNumber = 3;
+        if (scrollHeight - scrollPos <= smallNumber) {
             document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
             loadPokemonCards(typeSelected, abilitySelected);
         }
