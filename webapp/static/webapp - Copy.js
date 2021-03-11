@@ -9,7 +9,7 @@ var curNumPokemonOnThePage = 0;
 var numPokemonPerRow = 6;
 
 function onReady() {
-    // Initialize the select2 JQuery plugin
+    // Initialize the select2 JQuery plugin.
     $(".search").select2(); //".search" is a CSS selector string
 
     // Set up searchable dropdown menus.
@@ -20,18 +20,16 @@ function onReady() {
     loadAdvancedSearch();
 
     // It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
-    document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+    loadWaitingGif();
     
     // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
-    var typeSelected = "any";
-    var abilitySelected = "any";
-    loadPokemonCards(typeSelected, abilitySelected);
+    loadPokemonCards("any", "any");
 
     // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
     $('#search_button').click(function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
-        document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+        document.getElementById("pokemon_landing_display").innerHTML = loadWaitingGif();
         curNumPokemonOnThePage = 0;
         document.getElementById("the_end_of_query").innerHTML = "still querying";
         loadPokemonCards(typeSelected, abilitySelected);
@@ -53,7 +51,7 @@ function infiniteUserScroll(typeSelected, abilitySelected){
     var scrollHeight = $(document).height();
     var scrollPos = $(window).height() + $(window).scrollTop();
     if (scrollHeight - scrollPos <= 3) {
-        document.getElementById("pokemon_landing_display").innerHTML += loadWaitingPic();
+        document.getElementById("pokemon_landing_display").innerHTML += loadWaitingGif();
         loadPokemonCards(typeSelected, abilitySelected);
     }
 }
@@ -93,7 +91,7 @@ function loadPokemonCards(typeFilter, abilityFilter){
         checkReachTheEnd(url, pokedexNum, returnPokemon.length);
 
         page_content = document.getElementById("pokemon_landing_display");
-        newInnerHTML = page_content.innerHTML.replaceAll(loadWaitingPic(), " ") + pokemonDisplayDiv;
+        newInnerHTML = page_content.innerHTML.replaceAll(loadWaitingGif(), " ") + pokemonDisplayDiv;
         page_content.innerHTML = newInnerHTML
     })
 }
@@ -123,15 +121,15 @@ function loadAdvancedSearch(){
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }
 
-function loadWaitingPic(){
+function loadWaitingGif(){
     var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
     var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
     <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
     
-    var loading_display = '<div class="container">\n<div class="row">';
+    var loadingDisplay = '<div class="container">\n<div class="row">';
     for (var i = 0; i < numPokemonPerRow; i++){
-        loading_display += '\n<div class="col-2">' + singleBlock + '</div>';
+        loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
     }
-    loading_display += '</div>\n</div>';
-    return loading_display;
+    loadingDisplay += '</div>\n</div>';
+    document.getElementById("pokemon_landing_display").innerHTML = loadingDisplay
 }
