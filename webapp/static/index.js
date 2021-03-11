@@ -5,7 +5,7 @@
 */
 $(document).ready(onReady)
 var numPokemonEachQuery = 24;
-var curNumPokemonOnThePage = 0;
+var curNumPokemonOnPage = 0;
 var numPokemonPerRow = 6;
 var stillQuerying = true;
 
@@ -26,16 +26,15 @@ function onReady() {
     // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
     var typeSelected = "any";
     var abilitySelected = "any";
-    loadPokemonCards(typeSelected, abilitySelected);
+    loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
 
     // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
     document.getElementById("search_button").onclick = function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
-        curNumPokemonOnThePage = 0;
         stillQuerying = true;
-        loadPokemonCards(typeSelected, abilitySelected);
+        loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
     };
 
     // Register some more event handlers.
@@ -43,21 +42,7 @@ function onReady() {
     window.onscroll = function() { infiniteUserScroll(typeSelected, abilitySelected); };
 }
 
-function infiniteUserScroll(typeSelected, abilitySelected) {
-    if (stillQuerying) {
-        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
-        var scrollHeight = $(document).height();
-        var scrollPos = $(window).height() + $(window).scrollTop();
-
-        var smallNumber = 3;
-        if (scrollHeight - scrollPos <= smallNumber) {
-            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
-            loadPokemonCards(typeSelected, abilitySelected);
-        }
-    }
-}
-
-function loadPokemonCards(typeFilter, abilityFilter){
+function loadPokemonCards(displayHtmlId, typeFilter, abilityFilter){
     // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
     // Only search for numPokemonEachQuery many Pokemon.
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
@@ -65,7 +50,7 @@ function loadPokemonCards(typeFilter, abilityFilter){
     // Pass the specified type and ability to the API query.
     if(typeFilter != "any") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
-    url += `&offset=${curNumPokemonOnThePage}`;
+    url += `&offset=${curNumPokemonOnPage}`;
 
     // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
     return fetch(url, {method: 'get'})
@@ -91,7 +76,7 @@ function loadPokemonCards(typeFilter, abilityFilter){
             }
         }
         pokemonDisplayDiv += '</div>\n</div>';
-        curNumPokemonOnThePage += numPokemonEachQuery;
+        curNumPokemonOnPage += numPokemonEachQuery;
         
         // Update stillQuerying.
         var noResultsSatisfyCriteria = pokemonList.length == 0;
@@ -99,10 +84,24 @@ function loadPokemonCards(typeFilter, abilityFilter){
         stillQuerying = !(noResultsSatisfyCriteria || endOfQueryReached);
 
         // Update the page with the inner HTML we constructed.
-        pokemonLandingDisplay = document.getElementById("pokemon_landing_display");
+        pokemonLandingDisplay = document.getElementById(displayHtmlId);
         innerHTML = pokemonLandingDisplay.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
         pokemonLandingDisplay.innerHTML = innerHTML;
     })
+}
+
+function infiniteUserScroll(typeSelected, abilitySelected) {
+    if (stillQuerying) {
+        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+        var scrollHeight = $(document).height();
+        var scrollPos = $(window).height() + $(window).scrollTop();
+
+        var smallNumber = 3;
+        if (scrollHeight - scrollPos <= smallNumber) {
+            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
+            loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
+        }
+    }
 }
 
 function loadAdvancedSearch(){
