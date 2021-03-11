@@ -29,14 +29,14 @@ function onReady() {
     loadPokemonCards(typeSelected, abilitySelected);
 
     // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
-    $('#search_button').click(function() {
+    document.getElementById("search_button").onclick = function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
         curNumPokemonOnThePage = 0;
         stillQuerying = true;
         loadPokemonCards(typeSelected, abilitySelected);
-    });
+    };
 
     // Register some more event handlers.
     document.getElementById("information_sign_button").onclick = informationSign;
