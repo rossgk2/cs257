@@ -41,20 +41,19 @@ function onReady() {
     document.getElementById("information_sign_button").onclick = informationSign;
     
     // Register the event handler for the onscroll event. 
-    window.onscroll = function() {
-        if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
-            infiniteUserScroll(typeSelected, abilitySelected);
-        }
-    };
+    window.onscroll = infiniteUserScroll;
 }
 
 function infiniteUserScroll(typeSelected, abilitySelected){
-    //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
-    var scrollHeight = $(document).height();
-    var scrollPos = $(window).height() + $(window).scrollTop();
-    if (scrollHeight - scrollPos <= 3) {
-        document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
-        loadPokemonCards(typeSelected, abilitySelected);
+    if (document.getElementById("the_end_of_query").innerHTML == "still querying") {
+        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+        var scrollHeight = $(document).height();
+        var scrollPos = $(window).height() + $(window).scrollTop();
+        var smallNumber = 3;
+        if (scrollHeight - scrollPos <= smallNumber) {
+            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
+            loadPokemonCards(typeSelected, abilitySelected);
+        }
     }
 }
 
