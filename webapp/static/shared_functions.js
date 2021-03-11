@@ -60,13 +60,13 @@ function loadLinkToHomePage() {
 
 function informationSign(){
     var b = document.getElementById("information_sign_button");
-    var c = document.getElementById("information_sign_content");
-    if (c.style.display === "none") {
-        b.innerHTML = "Hide Help";
+    var c = document.getElementById("information_sign_content"); 
+    if (b.value == "Show Help") {
         c.style.display = "block";
-    } else {
+        b.value = "Hide Help";
+    }else{
         c.style.display = "none";
-        b.innerHTML = "Need Help?";
+        b.value = "Show Help";
     }
 }
 

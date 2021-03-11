@@ -19,33 +19,31 @@
 <body>
     <h1><center>Pokemon Database</center></h1>
     <div class = "container">
-        <div id="information_sign_content" style="display:none">
-            Write the help content here
-        </div>
-
         <div class = "tool-bar">
             <div class = "left-align">
-                <select id = "type_list_selection" class = "search">
-                    <option value = " 1 ">if you see this, it's an error</option>
-                </select>
-                &ensp;
-                <select id = "ability_list_selection" class = "search">
-                    <option value = " 1 "></option>
-                </select>
-                &ensp;
-                <input type= "button" value="Search!" id="search_button">
-                &emsp; 
-                <button id="information_sign_button">Need Help?</button>
+                <h6>Filter Pokemon with:</h6>
+                <h6>Ability: <select id = "ability_list_selection" class = "search"><option value = " 1 "></option></select> </h6>
+                <h6>Type: <select id = "type_list_selection" class = "search"><option value = " 1 ">error</option></select>
+                    &nbsp; <input type= "button" value="Search!" id="search_button">
+                </h6>
+                
             </div>
+            
+            <div class = "center-align">
+                <input type= "button" value="Show Help" id="information_sign_button">
+            </div>
+
             <div class = "right-align">
                 <h5 id = "link_to_advanced_search">if you see this text, you got a problem</h5>
             </div>
         </div>
-
+        <div id="information_sign_content">
+            Write the help content here
+        </div>
     </div>
     <div id = "pokemon_landing_display">
         <p>waiting for the javascript</p>
     </div>
-    <div id = "the_end_of_query" align = "center">still querying</div>
+    <div id = "the_end_of_query" class = "center-align">still querying</div>
 </body>
 </html>
