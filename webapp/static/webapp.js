@@ -1,5 +1,5 @@
 /*
-    index.js
+    webapp.js
     Jimmy Zhong and Ross Grogan-Kaylor, CS257 Carleton College, Professor Jeff Ondich
     Final Project 2021 Feburary 
 */
@@ -42,6 +42,7 @@ function onReady() {
     window.onscroll = function() { infiniteUserScroll(typeSelected, abilitySelected); };
 }
 
+
 function infiniteUserScroll(typeSelected, abilitySelected) {
     if (document.getElementById("the_end_of_query").innerHTML == "still querying") {
         //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
@@ -58,7 +59,6 @@ function infiniteUserScroll(typeSelected, abilitySelected) {
 
 function loadPokemonCards(typeFilter, abilityFilter){
     // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
-    // Only search for numPokemonEachQuery many Pokemon.
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
     
     // Pass the specified type and ability to the API query.
@@ -66,26 +66,24 @@ function loadPokemonCards(typeFilter, abilityFilter){
     if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
     url += `&offset=${curNumPokemonOnThePage}`;
 
-    // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
         var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
+        var pokedexNum = 2000 //need this to each whether reach the end, for infinite scroll
         for (var i = 0; i < pokemonList.length; i++){
-            // Get info about the current Pokemon.
-            var pokemon = pokemonList[i];
-            var pokedexNum = pokemon['pokedex_number'];
-            var name = pokemon['pokemon_name'];
-            var pokemonImageHtml = getPokemonImageWithLink(name);
-            
-            // Add the "card" corresponding to the current Pokemon (two <h6> tags and a <div class = "col-2">) to
-            // the current row of cards.
-            var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
-            var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
-            pokemonDisplayDiv += '<div class = "col-2">' + pokemonImageHtml + firstLine + secondLine + '</div>';
+            pokemonDisplayDiv += '<div class = "col-2">'
+            var thisPokemon = pokemonList[i];
+            pokedexNum = thisPokemon['pokedex_number'];
 
-            // Go to the next row every 6 cards.
-            if (i == numPokemonPerRow - 1){
+            var rawName = thisPokemon['pokemon_name'];
+            var pokemonImageHtml = getPokemonImageWithLink(rawName);
+
+            var firstLine = `<h6>${makePresentable(rawName)} (ID:${pokedexNum})</h>\n`;
+            var secondLine = `<h6>${getTypeImageHTML(thisPokemon['type1'])} ${getTypeImageHTML(thisPokemon['type2'])}</h6>\n`;
+            pokemonDisplayDiv += pokemonImageHtml + firstLine + secondLine + '</div>';
+
+            if (i == numPokemonPerRow - 1){ //change row every 6 cards
                 pokemonDisplayDiv += '</div>\n<div class="row">';
             }
         }
@@ -94,10 +92,9 @@ function loadPokemonCards(typeFilter, abilityFilter){
         curNumPokemonOnThePage += numPokemonEachQuery;
         checkReachTheEnd(url, pokedexNum, pokemonList.length);
 
-        // Update the page with the inner HTML we constructed.
-        pokemonLandingDisplay = document.getElementById("pokemon_landing_display");
-        innerHTML = pokemonLandingDisplay.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
-        pokemonLandingDisplay.innerHTML = innerHTML;
+        page_content = document.getElementById("pokemon_landing_display");
+        newInnerHTML = page_content.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
+        page_content.innerHTML = newInnerHTML
     })
 }
 
