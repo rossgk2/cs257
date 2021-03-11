@@ -41,25 +41,26 @@ function onReady() {
     document.getElementById("information_sign_button").onclick = informationSign;
     
     // Register the event handler for the onscroll event. 
-    window.onscroll = function() {
-        if (document.getElementById("the_end_of_query").innerHTML == "still querying"){
-            infiniteUserScroll(typeSelected, abilitySelected);
-        }
-    };
+    window.onscroll = function() { infiniteUserScroll(typeSelected, abilitySelected); };
 }
 
-function infiniteUserScroll(typeSelected, abilitySelected){
-    //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
-    var scrollHeight = $(document).height();
-    var scrollPos = $(window).height() + $(window).scrollTop();
-    if (scrollHeight - scrollPos <= 3) {
-        document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
-        loadPokemonCards(typeSelected, abilitySelected);
+function infiniteUserScroll(typeSelected, abilitySelected) {
+    if (document.getElementById("the_end_of_query").innerHTML == "still querying") {
+        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+        var scrollHeight = $(document).height();
+        var scrollPos = $(window).height() + $(window).scrollTop();
+        if (scrollHeight - scrollPos <= 3) {
+            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
+            loadPokemonCards(typeSelected, abilitySelected);
+        }
     }
 }
 
 function loadPokemonCards(typeFilter, abilityFilter){
+    // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
+    
+    // Pass the specified type and ability to the API query.
     if(typeFilter != "any") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
     url += `&offset=${curNumPokemonOnThePage}`;
