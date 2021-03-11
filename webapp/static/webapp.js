@@ -90,7 +90,7 @@ function loadPokemonCards(typeFilter, abilityFilter){
         pokemonDisplayDiv += '</div>\n</div>';
 
         curNumPokemonOnThePage += numPokemonEachQuery;
-        checkReachTheEnd(url, pokedexNum, pokemonList.length);
+        checkReachTheEnd(curNumPokemonOnThePage, returnPokemon.length);
 
         page_content = document.getElementById("pokemon_landing_display");
         newInnerHTML = page_content.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
@@ -98,22 +98,12 @@ function loadPokemonCards(typeFilter, abilityFilter){
     })
 }
 
-function checkReachTheEnd(url, pokedexNum, returnQueryLength){
+function checkReachTheEnd(curNumPokemonOnThePage, returnQueryLength){
     endIndicator = document.getElementById("the_end_of_query");
-    //empty query result
-    if (returnQueryLength == 0){endIndicator.innerHTML = "Sorry, no pokemon can satisfy your query criteria..."; return;}
-
-    //for short result
-    if (returnQueryLength < numPokemonEachQuery){endIndicator.innerHTML = "It's already the end of the query!"; return;}
-
-    //if result >= 30, see whether we get any pokemon above this pokedexNum given the same filter criteria
-    url = url.replace(/&offset=.*/gi, "");
-    url += "&pokedex_lower=" + (pokedexNum + 1);
-    return fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(pokemonList) {
-        if (pokemonList.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
-    })
+    if (returnQueryLength < numPokemonEachQuery){
+        if(curNumPokemonOnThePage == 0) {endIndicator.innerHTML = "Sorry, no pokemon can satisfy your query criteria..."; return;}
+        else{endIndicator.innerHTML = "It's already the end of the query!"; return;}
+    }
 }
 
 function loadAdvancedSearch(){

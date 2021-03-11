@@ -6,7 +6,21 @@ sudo -u postgres psql -U postgres grading
 
 pg_dump --no-owner --no-privileges -U postgres grading > data.sql
 
+sudo -u postgres createdb pokemon_db -W 
+postgres
+cat data.sql | psql -U postgres pokemon_db
+
 python3 app.py localhost 5000
+
+
+    //if result >= 30, see whether we get any pokemon above this pokedexNum given the same filter criteria
+    url = url.replace(/&offset=.*/gi, "");
+    url += "&pokedex_lower=" + (pokedexNum + 1);
+    return fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(returnPokemon) {
+        if (returnPokemon.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
+    })
 
 <----- select pokemon with fire as type1 -------->
 SELECT DISTINCT pokemon_name, pokedex_number, type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, legendary_status, health, attack, special_attack AS s_attack, defense,
