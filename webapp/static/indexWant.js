@@ -5,9 +5,10 @@
 */
 $(document).ready(onReady)
 var numPokemonEachQuery = 24;
-var curNumPokemonOnThePage = 0;
+var numPokemonDisplayed = 0;
 var numPokemonPerRow = 6;
-var queryStatus = "still_querying"
+var queryStatus; // We will only ever allow queryStatus to be one of the following strings: "still_querying",
+                 // "no_results_satisfy_criteria", "end_of_query_reached"
 
 function onReady() {
     // Initialize the select2 JQuery plugin
@@ -33,7 +34,7 @@ function onReady() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
-        curNumPokemonOnThePage = 0;
+        numPokemonDisplayed = 0;
         queryStatus = "still_querying";
         loadPokemonCards(typeSelected, abilitySelected);
     });
@@ -65,12 +66,21 @@ function loadPokemonCards(typeFilter, abilityFilter){
     // Pass the specified type and ability to the API query.
     if(typeFilter != "any") url += "&composite_type=" + typeFilter;
     if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
-    url += `&offset=${curNumPokemonOnThePage}`;
+    url += `&offset=${numPokemonDisplayed}`;
 
     // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
     return fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
+        
+        // pokemonList.sort(function(x, y) {
+        //   var xNum = x["pokedex_number"];
+        //   var yNum = y["pokedex_number"];
+        //   if (xNum < yNum) return -1;
+        //   if (xNum > yNum) return 1;
+        //   return 0;
+        // });
+
         var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
         for (var i = 0; i < pokemonList.length; i ++){
             // Get info about the current Pokemon.
@@ -91,17 +101,17 @@ function loadPokemonCards(typeFilter, abilityFilter){
             }
         }
         pokemonDisplayDiv += '</div>\n</div>';
-        curNumPokemonOnThePage += numPokemonEachQuery;
+        numPokemonDisplayed += numPokemonEachQuery;
         
         // Update queryStatus.
         if (pokemonList.length == 0){ queryStatus = "no_results_satisfy_criteria"; return;}
         if (pokemonList.length < numPokemonEachQuery){ queryStatus = "end_of_query_reached"; return;}
-
+        
         // Update the page with the inner HTML we constructed.
         pokemonLandingDisplay = document.getElementById("pokemon_landing_display");
         innerHTML = pokemonLandingDisplay.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
         pokemonLandingDisplay.innerHTML = innerHTML;
-    })
+    });
 }
 
 function loadAdvancedSearch(){
