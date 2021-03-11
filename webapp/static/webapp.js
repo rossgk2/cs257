@@ -12,16 +12,21 @@ function onReady() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
+    // Set up searchable dropdown menus
     loadDropdown("type_list_selection", "types", null); // See shared_functions.js for definition of loadDropdown()
     loadDropdown("ability_list_selection", "abilities", function(arr, i){ return arr[i]["ability"];});
+    
+    // Set up the icon that leads to the advanced search page
     loadAdvancedSearch();
 
-    document.getElementById("pokemon_landing_display").innerHTML = loadWaitingPic();
+    loadWaitingPic();
+    
+    //
     var typeSelected = "any";
     var abilitySelected = "any";
     loadPokemonCards(typeSelected, abilitySelected);
 
-    // Read selected option
+    // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards
     $('#search_button').click(function() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
@@ -122,10 +127,10 @@ function loadWaitingPic(){
     var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
     <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
     
-    var loading_display = '<div class="container">\n<div class="row">';
+    var loadingDisplay = '<div class="container">\n<div class="row">';
     for (var i = 0; i < numPokemonPerRow; i++){
-        loading_display += '\n<div class="col-2">' + singleBlock + '</div>';
+        loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
     }
-    loading_display += '</div>\n</div>';
-    return loading_display;
+    loadingDisplay += '</div>\n</div>';
+    document.getElementById("pokemon_landing_display").innerHTML = loadingDisplay
 }
