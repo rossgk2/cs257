@@ -20,7 +20,7 @@ function onReady() {
     display = document.getElementById("pokemon_landing_display");
     searchButton = document.getElementById("search_button");
 
-    getQueryURL = function() { 
+    getQueryURLOnUpdate = function() { 
 	    var url = `advanced_search/ASC?order_by=pokedex_number`;
   		var typeSelected = $("#type_list_selection").val();
 	    var abilitySelected = $("#ability_list_selection").val();
@@ -28,7 +28,7 @@ function onReady() {
 	    if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
 	    return url;
     }
-    let infiniteScroller = new InfiniteScroller(display, searchButton, getQueryURL, 24, 6);
+    let infiniteScroller = new InfiniteScroller(display, searchButton, getQueryURLOnUpdate, 24, 6);
     infiniteScroller.onReady();
 
     // Set up the "help" button's event handler.

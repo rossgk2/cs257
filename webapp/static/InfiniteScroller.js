@@ -1,7 +1,7 @@
-function InfiniteScroller(display, searchButton, getQueryURL, numPokemonEachQuery, numPokemonPerRow) {
+function InfiniteScroller(display, searchButton, getQueryURLOnUpdate, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
 	this.searchButton = searchButton;
-	this.getQueryURL = getQueryURL;
+	this.getQueryURLOnUpdate = getQueryURLOnUpdate;
 	this.numPokemonEachQuery = numPokemonEachQuery;
 	this.numPokemonPerRow = numPokemonPerRow;
 	this.curNumPokemonOnPage = 0;
@@ -72,7 +72,7 @@ function InfiniteScroller(display, searchButton, getQueryURL, numPokemonEachQuer
 	        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
 	        var scrollHeight = $(document).height();
 	        var scrollPos = $(window).height() + $(window).scrollTop();
-	        this.query = this.getQueryURL();
+	        this.query = this.getQueryURLOnUpdate();
 	        var smallNumber = 3;
 	        if (scrollHeight - scrollPos <= smallNumber) {
 	            display.innerHTML += this.getLoadingGifInnerHtml();
@@ -94,7 +94,7 @@ function InfiniteScroller(display, searchButton, getQueryURL, numPokemonEachQuer
 	        display.innerHTML = oldThis.getLoadingGifInnerHtml();
 	        oldThis.morePokemon = true;
 	        oldThis.curNumPokemonOnPage = 0;
-	        oldThis.query = oldThis.getQueryURL();
+	        oldThis.query = oldThis.getQueryURLOnUpdate();
 	        oldThis.loadPokemonCards(display, false);
     	};
 
