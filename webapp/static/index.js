@@ -74,9 +74,7 @@ function loadPokemonCards(displayHtmlId, typeFilter, abilityFilter){
             pokemonDisplayDiv += '<div class = "col-2">' + pokemonImageHtml + firstLine + secondLine + '</div>';
 
             // Go to the next row every 6 cards.
-            if (i == numPokemonPerRow - 1){
-                pokemonDisplayDiv += '</div>\n<div class="row">';
-            }
+            if (i == numPokemonPerRow - 1) pokemonDisplayDiv += '</div>\n<div class="row">';
         }
         pokemonDisplayDiv += '</div>\n</div>';
         curNumPokemonOnPage += numPokemonEachQuery;
