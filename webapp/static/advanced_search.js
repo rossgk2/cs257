@@ -119,11 +119,9 @@ function onSearchButtonClicked() {
 		}else{
 			appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
 			curNumPokemonOnPage += numPokemonEachQuery;
-			document.getElementById("search_results").classList.remove("mystyle");;
-			var newstring = appending;
-			var finalHTML = search_results.innerHTML + appending;
-			var cleanfinalHTML = finalHTML.replaceAll(loadingPokemonBall(null, null, true), " ");
-			search_results.innerHTML = cleanfinalHTML;
+			var oldHTML = search_results.innerHTML.replaceAll(loadingPokemonBall(null, null, true), " ");
+			var finalHTML = oldHTML + appending;
+			search_results.innerHTML = finalHTML;
 		}
     })
     .catch(function(error) {
