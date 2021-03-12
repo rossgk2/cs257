@@ -3,8 +3,14 @@
   float: left;
 }
 
-#search_results {
-  float: left;
+#pokemon_landing_display {
+  /* float: left; */
+  position: absolute;
+  left: 50%;
+  top: 8%; 
+  height: 680px;
+  width: 650px;
+  overflow-y: auto;
 }
 
 /* 
@@ -163,15 +169,6 @@ div.invisible-vertical-line{
   opacity: .5;
   background-color: yellow;
   color: black;
-}
-
-.scrollable {
-  position: absolute;
-  left: 50%;
-  top: 8%; 
-  height: 680px;
-  width: 650px;
-  overflow-y: auto;
 }
 
 .loading-pokemon-ball{

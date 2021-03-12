@@ -1,5 +1,6 @@
-function InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, numPokemonEachQuery, numPokemonPerRow) {
+function InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
+	this.scrollContainer = scrollContainer;
 	this.searchButton = searchButton;
 	this.getQueryURLOnUpdate = getQueryURLOnUpdate;
 	this.getPokemonCard = getPokemonCard;
@@ -90,8 +91,8 @@ function InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate,
 	        oldThis.loadPokemonCards(display, false);
     	};
 
-	    // Register the onscroll event handler.
+	    // Register the onscroll event handler.  For some reason, doing "this.scrollContainer.onscroll = this.infiniteUserScroll;" doesn't work
 	    var oldThis = this;
-	    window.onscroll = function() { oldThis.infiniteUserScroll(); };
+	    this.scrollContainer.onscroll = function() { oldThis.infiniteUserScroll(); };
 	};	
 }

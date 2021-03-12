@@ -25,8 +25,9 @@ function initialize() {
 }
 
 function loadInfinitePokemonCardScroller() {
-    display = document.getElementById("pokemon_landing_display");
-    searchButton = document.getElementById("search_button");
+    var display = document.getElementById("pokemon_landing_display");
+    var scrollContainer = display;
+    var searchButton = document.getElementById("search_button");
 
     getPokemonCard = function(pokemon) {
         var pokedexNum = pokemon['pokedex_number'];
@@ -37,7 +38,7 @@ function loadInfinitePokemonCardScroller() {
         return pokemonImageHtml + firstLine + secondLine;
     }
 
-    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);
+    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);
     infinitePokemonCardScroller.onReady();
 }
 
