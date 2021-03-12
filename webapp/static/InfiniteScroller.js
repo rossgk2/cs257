@@ -1,7 +1,7 @@
-function InfiniteScroller(display, searchButton, getQuery, numPokemonEachQuery, numPokemonPerRow) {
+function InfiniteScroller(display, searchButton, getQueryURL, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
 	this.searchButton = searchButton;
-	this.getQuery = getQuery;
+	this.getQueryURL = getQueryURL;
 	this.numPokemonEachQuery = numPokemonEachQuery;
 	this.numPokemonPerRow = numPokemonPerRow;
 	this.curNumPokemonOnPage = 0;
@@ -28,7 +28,7 @@ function InfiniteScroller(display, searchButton, getQuery, numPokemonEachQuery, 
 	    this.loading = true;
 	    var url;
 	    if (all) { url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`; }
-	    else { url = getAPIBaseURL() + "/" + this.query + `&limit=${numPokemonEachQuery}`; } 
+	    else { url = getAPIBaseURL() + "/" + this.query + `&limit=${numPokemonEachQuery}&offset=${this.curNumPokemonOnPage}`; } 
 
 	    // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
 	    var oldThis = this; // "this" changes inside each .then statement
@@ -72,7 +72,7 @@ function InfiniteScroller(display, searchButton, getQuery, numPokemonEachQuery, 
 	        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
 	        var scrollHeight = $(document).height();
 	        var scrollPos = $(window).height() + $(window).scrollTop();
-	        this.query = this.getQuery();
+	        this.query = this.getQueryURL();
 	        var smallNumber = 3;
 	        if (scrollHeight - scrollPos <= smallNumber) {
 	            display.innerHTML += this.getLoadingGifInnerHtml();
@@ -94,7 +94,7 @@ function InfiniteScroller(display, searchButton, getQuery, numPokemonEachQuery, 
 	        display.innerHTML = oldThis.getLoadingGifInnerHtml();
 	        oldThis.morePokemon = true;
 	        oldThis.curNumPokemonOnPage = 0;
-	        this.query = this.getQuery();
+	        oldThis.query = oldThis.getQueryURL();
 	        oldThis.loadPokemonCards(display, false);
     	};
 

@@ -20,7 +20,14 @@ function onReady() {
     display = document.getElementById("pokemon_landing_display");
     searchButton = document.getElementById("search_button");
 
-    getQuery = function() { return "advanced_search/ASC?order_by=pokedex_number&type1=water"; }
+    getQuery = function() { 
+	    var url = `advanced_search/ASC?order_by=pokedex_number`;
+  		var typeSelected = $("#type_list_selection").val();
+	    var abilitySelected = $("#ability_list_selection").val();
+	    if (typeSelected != "any") url += "&composite_type=" + typeSelected;
+	    if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
+	    return url;
+    }
     let infiniteScroller = new InfiniteScroller(display, searchButton, getQuery, 24, 6);
     infiniteScroller.onReady();
 
