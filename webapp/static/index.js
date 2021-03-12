@@ -16,9 +16,11 @@ function onReady() {
     // Set up the icon that leads to the advanced search page.
     loadAdvancedSearch();
 
+    // Set 
     let infiniteScroller = new InfiniteScroller("pokemon_landing_display", 24, 6);
-    infiniteScroller.scrollerOnReady();
+    infiniteScroller.onReady();
 
+    // Set up the "help" button's event handler.
    	document.getElementById("information_sign_button").onclick = informationSign;
 }
 
@@ -30,7 +32,7 @@ function InfiniteScroller(displayHtmlId, numPokemonEachQuery, numPokemonPerRow) 
 	this.morePokemon = true;
 	this.loading = false;
 	
-	this.scrollerOnReady = function() {
+	this.onReady = function() {
 		// It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
     	var display = document.getElementById(displayHtmlId);
     	display.innerHTML = getLoadingGifInnerHtml();
