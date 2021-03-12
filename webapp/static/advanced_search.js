@@ -26,30 +26,31 @@ function onReady() {
 	$('#information_sign_button').click(function() {
         informationSign();
     });
-	document.getElementById("scrollable").onscroll = function(){console.log("I was scrolled"); infiniteUserScroll(); };
+	document.getElementById("scrollable").onscroll = function(){infiniteUserScroll(); };
 }
 
 function infiniteUserScroll() {
     if (morePokemon && !loading) {
+		loading = true;
         //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
         var scrollHeight = $("#search_results").height();
-		var scrollTop = $("#scrollable").scrollTop() + $("#scrollable").height();
+		var scrollPos = $("#scrollable").scrollTop() + $("#scrollable").height();
 
 		document.getElementById("document_height").innerHTML = scrollHeight;
-		document.getElementById("scrollPos").innerHTML = scrollTop;
-		/*
+		document.getElementById("scrollPos").innerHTML = scrollPos;
+
         var smallNumber = 3;
         if (scrollHeight - scrollPos <= smallNumber) {
-            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
-            loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
-        }*/
+            onSearchButtonClicked();
+		}
+		loading = false;
     }
 }
 
 
 function onSearchButtonClicked() {
 	var search_results = document.getElementById("search_results");
-	loadingPokemonBall(search_results, true);
+	loadingPokemonBall(search_results, (curNumPokemonOnPage == 0));
 	// This dict will store all the search data input by the user.
 	var dict = {};
 	
@@ -107,16 +108,23 @@ function onSearchButtonClicked() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
-    	var innerHTML = '<div class = "container">\n';
-		if (pokemonList.length == 0){
-			innerHTML += "sorry, there is no Pokemon with your specified criteria"
-		}else{
-			for (var i = 0; i < pokemonList.length; i ++) {
-				innerHTML += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
+		var appending = '';
+		if (curNumPokemonOnPage == 0){
+			if (pokemonList.length == 0){appending = "sorry, there is no Pokemon with your specified criteria";
+			}else{
+				appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
+				curNumPokemonOnPage += numPokemonEachQuery;
 			}
+			search_results.innerHTML = appending;
+		}else{
+			appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
+			curNumPokemonOnPage += numPokemonEachQuery;
+			var oldstring = document.getElementById("search_results").innerHTML;
+			var newstring = appending;
+			var finalHTML = search_results.innerHTML + appending;
+			var cleanfinalHTML = finalHTML.replaceAll('<img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">', " ");
+			search_results.innerHTML = cleanfinalHTML;
 		}
-    	innerHTML += "\n</div>";
-    	search_results.innerHTML = innerHTML;
     })
     .catch(function(error) {
         console.log(error);
@@ -225,6 +233,16 @@ function updateSexRatiosHelper(sexRatioField) {
 	 }
 }
 
+function pokemonStatsLoop(offset, numEachQuery, pokemonList){
+	addingHtml = '';
+	var stop = Math.min(pokemonList.length, offset + numEachQuery);
+	if (stop == offset) addingHtml = "end of query";
+	for (var i = offset; i < stop; i ++) {
+		addingHtml += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
+	}
+	return addingHtml;
+}
+
 function buildPokemonStatsHTML(pokemonDict){
 	var rawName = pokemonDict["pokemon_name"];
 	returnString = getPokemonImageWithLink(rawName);
@@ -251,17 +269,16 @@ function loadStatsButtonCallback() {
 	  };
 }
 
-function loadingPokemonBall(searchResultDiv, firstSearch){
-	var pokemonBallPic = '<img src="../static/pokemon_images/pokemon_ball.gif" class = "loading-pokemon-ball">';
-	var previousHtml = searchResultDiv.innerHTML;
+function loadingPokemonBall(searchResultDiv, firstSearch, justReturn){
+	var pokemonBallPic = ' <img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">';
+	if (justReturn) return pokemonBallPic;
 	finalHtml = '';
 	if (firstSearch){
 		finalHtml = pokemonBallPic;
 	}else{
-		finalHtml = previousHtml + pokemonBallPic;
+		finalHtml = searchResultDiv.innerHTML + pokemonBallPic;
 	}
 	searchResultDiv.innerHTML = finalHtml;
-	return pokemonBallPic;
 }
 
 function initalAskForQuery(){
