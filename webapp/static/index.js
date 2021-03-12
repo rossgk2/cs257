@@ -17,15 +17,18 @@ function onReady() {
     loadAdvancedSearch();
 
     // Set 
-    let infiniteScroller = new InfiniteScroller("pokemon_landing_display", 24, 6);
+    display = document.getElementById("pokemon_landing_display");
+    searchButton = document.getElementById("search_button");
+    let infiniteScroller = new InfiniteScroller(display, searchButton, 24, 6);
     infiniteScroller.onReady();
 
     // Set up the "help" button's event handler.
    	document.getElementById("information_sign_button").onclick = informationSign;
 }
 
-function InfiniteScroller(displayHtmlId, numPokemonEachQuery, numPokemonPerRow) {
-	this.displayHtmlId = displayHtmlId;
+function InfiniteScroller(display, searchButton, numPokemonEachQuery, numPokemonPerRow) {
+	this.display = display;
+	this.searchButton = searchButton;
 	this.numPokemonEachQuery = numPokemonEachQuery;
 	this.numPokemonPerRow = numPokemonPerRow;
 	this.curNumPokemonOnPage = 0;
@@ -45,7 +48,7 @@ function InfiniteScroller(displayHtmlId, numPokemonEachQuery, numPokemonPerRow) 
 	    return loadingDisplay;
 	};
 
-	this.loadPokemonCards = function(displayHtmlId, typeFilter, abilityFilter) {
+	this.loadPokemonCards = function(display, typeFilter, abilityFilter) {
 	    // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
 	    // Only search for numPokemonEachQuery many Pokemon.
 	    this.loading = true;
@@ -87,9 +90,8 @@ function InfiniteScroller(displayHtmlId, numPokemonEachQuery, numPokemonPerRow) 
 	        oldThis.morePokemon = !(noResultsSatisfyCriteria || endOfQueryReached);
 
 	        // Update the page with the inner HTML we constructed.
-	        pokemonLandingDisplay = document.getElementById(displayHtmlId);
-	        innerHTML = pokemonLandingDisplay.innerHTML.replaceAll(oldThis.getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
-	        pokemonLandingDisplay.innerHTML = innerHTML;
+	        innerHTML = display.innerHTML.replaceAll(oldThis.getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
+	        display.innerHTML = innerHTML;
 	        oldThis.loading = false;
 	    })
 	};
@@ -102,31 +104,30 @@ function InfiniteScroller(displayHtmlId, numPokemonEachQuery, numPokemonPerRow) 
 
 	        var smallNumber = 3;
 	        if (scrollHeight - scrollPos <= smallNumber) {
-	            document.getElementById(this.displayHtmlId).innerHTML += this.getLoadingGifInnerHtml();
-	            this.loadPokemonCards(this.displayHtmlId, typeSelected, abilitySelected);
+	            display.innerHTML += this.getLoadingGifInnerHtml();
+	            this.loadPokemonCards(display, typeSelected, abilitySelected);
 	        }
 	    }
 	};
 
 	this.onReady = function() {
 		// It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
-    	var display = document.getElementById(displayHtmlId);
     	display.innerHTML = this.getLoadingGifInnerHtml();
     
 	    // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
 	    var typeSelected = "any";
 	    var abilitySelected = "any";
-	    this.loadPokemonCards(displayHtmlId, typeSelected, abilitySelected);
+	    this.loadPokemonCards(display, typeSelected, abilitySelected);
 
 	    // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
 	    var oldThis = this; // "this" will change inside the anonymous function
-	    document.getElementById("search_button").onclick = function() {
+	    this.searchButton.onclick = function() {
 	        typeSelected = $("#type_list_selection").val();
 	        abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
 	        display.innerHTML = oldThis.getLoadingGifInnerHtml();
 	        oldThis.morePokemon = true;
 	        oldThis.curNumPokemonOnPage = 0;
-	        oldThis.loadPokemonCards(displayHtmlId, typeSelected, abilitySelected);
+	        oldThis.loadPokemonCards(display, typeSelected, abilitySelected);
     	};
 
 	    // Register the onscroll event handler.
