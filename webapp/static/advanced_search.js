@@ -4,6 +4,10 @@
 
 // The anonymous function inside $(document).ready() is called after the document has been loaded.
 $(document).ready(onReady)
+var numPokemonEachQuery = 6;
+var curNumPokemonOnPage = 0;
+var morePokemon = true;
+var loading = false;
 
 function onReady() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
@@ -22,7 +26,26 @@ function onReady() {
 	$('#information_sign_button').click(function() {
         informationSign();
     });
+	document.getElementById("scrollable").onscroll = function(){console.log("I was scrolled"); infiniteUserScroll(); };
 }
+
+function infiniteUserScroll() {
+    if (morePokemon && !loading) {
+        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+        var scrollHeight = $("#search_results").height();
+		var scrollTop = $("#scrollable").scrollTop() + $("#scrollable").height();
+
+		document.getElementById("document_height").innerHTML = scrollHeight;
+		document.getElementById("scrollPos").innerHTML = scrollTop;
+		/*
+        var smallNumber = 3;
+        if (scrollHeight - scrollPos <= smallNumber) {
+            document.getElementById("pokemon_landing_display").innerHTML += getLoadingGifInnerHtml();
+            loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
+        }*/
+    }
+}
+
 
 function onSearchButtonClicked() {
 	var search_results = document.getElementById("search_results");
