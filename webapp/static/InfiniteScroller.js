@@ -1,7 +1,8 @@
-function InfiniteScroller(display, searchButton, getQueryURLOnUpdate, numPokemonEachQuery, numPokemonPerRow) {
+function InfiniteScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
 	this.searchButton = searchButton;
 	this.getQueryURLOnUpdate = getQueryURLOnUpdate;
+	this.getPokemonCard = getPokemonCard;
 	this.numPokemonEachQuery = numPokemonEachQuery;
 	this.numPokemonPerRow = numPokemonPerRow;
 	this.curNumPokemonOnPage = 0;
@@ -38,18 +39,9 @@ function InfiniteScroller(display, searchButton, getQueryURLOnUpdate, numPokemon
 	        var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
 	        for (var i = 0; i < pokemonList.length; i ++){
 	            // Get info about the current Pokemon.
-	            var pokemon = pokemonList[i];
-	            var pokedexNum = pokemon['pokedex_number'];
-	            var name = pokemon['pokemon_name'];
-	            var pokemonImageHtml = getPokemonImageWithLink(name);
-	            
-	            // Add the "card" corresponding to the current Pokemon (two <h6> tags and a <div class = "col-2">) to
-	            // the current row of cards.
-	            var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
-	            var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
-	            pokemonDisplayDiv += '<div class = "col-2">' + pokemonImageHtml + firstLine + secondLine + '</div>';
+	            pokemonDisplayDiv += '<div class = "col-2">' + oldThis.getPokemonCard(pokemonList[i]) + '</div>';
 
-	            // Go to the next row every 6 cards.
+	            // Go to the next row every numPokemonPerRow cards.
 	            if (i == oldThis.numPokemonPerRow - 1) pokemonDisplayDiv += '</div>\n<div class="row">';
 	        }
 	        pokemonDisplayDiv += '</div>\n</div>';

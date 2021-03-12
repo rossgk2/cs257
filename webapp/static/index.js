@@ -28,7 +28,20 @@ function onReady() {
 	    if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
 	    return url;
     }
-    let infiniteScroller = new InfiniteScroller(display, searchButton, getQueryURLOnUpdate, 24, 6);
+
+    getPokemonCard = function(pokemon) {
+    	var pokedexNum = pokemon['pokedex_number'];
+        var name = pokemon['pokemon_name'];
+        var pokemonImageHtml = getPokemonImageWithLink(name);
+        
+        // Add the "card" corresponding to the current Pokemon (two <h6> tags and a <div class = "col-2">) to
+        // the current row of cards.
+        var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
+        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
+        return pokemonImageHtml + firstLine + secondLine;
+    }
+
+    let infiniteScroller = new InfiniteScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 24, 6);
     infiniteScroller.onReady();
 
     // Set up the "help" button's event handler.
