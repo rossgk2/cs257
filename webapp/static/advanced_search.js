@@ -119,10 +119,10 @@ function onSearchButtonClicked() {
 		}else{
 			appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
 			curNumPokemonOnPage += numPokemonEachQuery;
-			var oldstring = document.getElementById("search_results").innerHTML;
+			document.getElementById("search_results").classList.remove("mystyle");;
 			var newstring = appending;
 			var finalHTML = search_results.innerHTML + appending;
-			var cleanfinalHTML = finalHTML.replaceAll('<img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">', " ");
+			var cleanfinalHTML = finalHTML.replaceAll(loadingPokemonBall(null, null, true), " ");
 			search_results.innerHTML = cleanfinalHTML;
 		}
     })
@@ -270,7 +270,7 @@ function loadStatsButtonCallback() {
 }
 
 function loadingPokemonBall(searchResultDiv, firstSearch, justReturn){
-	var pokemonBallPic = ' <img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">';
+	var pokemonBallPic = '\n<img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">\n';
 	if (justReturn) return pokemonBallPic;
 	finalHtml = '';
 	if (firstSearch){
