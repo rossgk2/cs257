@@ -42,7 +42,7 @@ function InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate,
 	            pokemonDisplayDiv += '<div class = "col-2">' + oldThis.getPokemonCard(pokemonList[i]) + '</div>';
 
 	            // Go to the next row every numPokemonPerRow cards.
-	            if (i % oldThis.numPokemonPerRow == 0) pokemonDisplayDiv += '</div>\n<div class="row">';
+	            if ((i + 1) % oldThis.numPokemonPerRow == 0) pokemonDisplayDiv += '</div>\n<div class="row">';
 	        }
 	        pokemonDisplayDiv += '</div>\n</div>';
 	        oldThis.curNumPokemonOnPage += numPokemonEachQuery;
