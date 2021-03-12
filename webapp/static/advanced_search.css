@@ -173,3 +173,8 @@ div.invisible-vertical-line{
   width: 650px;
   overflow-y: auto;
 }
+
+.loading-pokemon-ball{
+  width : 350px;
+  margin: auto;
+}

@@ -13,6 +13,7 @@ function onReady() {
 	loadLinkToHomePage();
 	registerSexRatioCallbacks();
 	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
+	initalAskForQuery();
 
 	//Load the search button's callback. Simple enough.
 	searchButton = document.getElementById("search_button");
@@ -24,6 +25,8 @@ function onReady() {
 }
 
 function onSearchButtonClicked() {
+	var search_results = document.getElementById("search_results");
+	loadingPokemonBall(search_results, true);
 	// This dict will store all the search data input by the user.
 	var dict = {};
 	
@@ -81,7 +84,6 @@ function onSearchButtonClicked() {
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(pokemonList) {
-    	var search_results = document.getElementById("search_results");
     	var innerHTML = '<div class = "container">\n';
 		if (pokemonList.length == 0){
 			innerHTML += "sorry, there is no Pokemon with your specified criteria"
@@ -210,33 +212,6 @@ function buildPokemonStatsHTML(pokemonDict){
 	returnString += '<div class="invisible-vertical-line"></div>';
 	returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemonDict, null); //second table
 	return returnString;
-
-	/*
-	var firstTableHTML = "<table>\n";
-	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
-	var displayDict = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
-	for (var i = 0; i < firstTableInfo.length; i++){
-		internalName = displayDict[firstTableInfo[i]]
-		firstTableHTML += `<tr><th>${firstTableInfo[i]}</th>`;
-		firstTableHTML += "<th>" + pokemonDict[internalName] + "</th>";
-		firstTableHTML += "</tr>\n";
-	}
-	firstTableHTML += "</table>\n";
-	returnString += firstTableHTML;
-
-	returnString += '<div class="invisible-vertical-line"></div>';
-
-	var secondTableHTML = "<table>\n";
-	var secondTableInfo = ["attack", "special_attack", "defense", "special_defense", "health", "speed"];
-	for (var i = 0; i < secondTableInfo.length; i++){
-		secondTableHTML += "<tr>\n";
-		secondTableHTML += "<th>" + makePresentable(secondTableInfo[i]) + "</th>";
-		secondTableHTML += "<th>" + pokemonDict[secondTableInfo[i]] + "</th>";
-		secondTableHTML += "</tr>\n";
-	}
-	secondTableHTML += "</table>\n";
-	returnString += secondTableHTML;
-	*/
 }
 
 function loadStatsButtonCallback() {
@@ -251,6 +226,44 @@ function loadStatsButtonCallback() {
 	      content.style.display = "block";
 	    }
 	  };
+}
+
+function loadingPokemonBall(searchResultDiv, firstSearch){
+	var pokemonBallPic = '<img src="../static/pokemon_images/pokemon_ball.gif" class = "loading-pokemon-ball">';
+	var previousHtml = searchResultDiv.innerHTML;
+	finalHtml = '';
+	if (firstSearch){
+		finalHtml = pokemonBallPic;
+	}else{
+		finalHtml = previousHtml + pokemonBallPic;
+	}
+	searchResultDiv.innerHTML = finalHtml;
+	return pokemonBallPic;
+}
+
+function initalAskForQuery(){
+	var initialImage =`<div class = "row">
+		<div class = "col-2"><img src="../static/pokemon_images/click_search.png" alt="we are doing the query" class="img-thumbnail"></div>
+		<div class="invisible-vertical-line"></div>
+		<table>
+			<tr><th>Name</th><th>NA</th></tr>
+			<tr><th>ID: </th><th>NA </th></tr>
+			<tr><th>Type1</th><th>Null</th></tr>
+			<tr><th>Type2</th><th>Null</th>
+			</tr>
+		</table>
+		<div class="invisible-vertical-line"></div>
+		<table>
+			<tr><th>Attack</th><th>NA </th></tr><tr>
+			<th>Special Attack</th><th>NA </th></tr>
+			<tr><th>Defense</th><th>NA </th></tr>
+			<tr><th>Special Defense</th><th>NA </th>
+			</tr><tr><th>speed</th><th>NA </th></tr>
+			<tr><th>health</th><th>NA </th></tr>
+		</table>
+	</div>`
+	document.getElementById("search_results").innerHTML = (initialImage + initialImage);
+	return initialImage;
 }
 
 // Helper functions
