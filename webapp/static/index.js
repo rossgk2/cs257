@@ -41,8 +41,8 @@ function onReady() {
         return pokemonImageHtml + firstLine + secondLine;
     }
 
-    let infiniteScroller = new InfiniteScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 24, 6);
-    infiniteScroller.onReady();
+    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 24, 6);
+    infinitePokemonCardScroller.onReady();
 
     // Set up the "help" button's event handler.
    	document.getElementById("information_sign_button").onclick = informationSign;

@@ -1,4 +1,4 @@
-function InfiniteScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, numPokemonEachQuery, numPokemonPerRow) {
+function InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
 	this.searchButton = searchButton;
 	this.getQueryURLOnUpdate = getQueryURLOnUpdate;
