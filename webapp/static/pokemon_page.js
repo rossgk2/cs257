@@ -61,11 +61,12 @@ function loadPokemonData(pokemon_name) {
 
 		// Abilities
 		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
-        getAbilityDescription(dict["ability1"], "ability1_description");
 		document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
-        getAbilityDescription(dict["ability2"], "ability2_description");
+        //getAbilityDescription(dict["ability2"], "ability2_description");
 		document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
-        getAbilityDescription(dict["hidden_ability"], "hidden_ability_description");
+        abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
+        htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
+        getAbilityDescriptions(abilities, htmlTags);
 
         legendary_status = dict["legendary_status"].toLowerCase();
 		if (legendary_status === "null"){
@@ -133,20 +134,21 @@ function effectTableBuilder(nonOneEffects, isSupereffect){
     var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
     var tableHTML = firstRow;
     for (var i = 0; i < nonOneEffects.length; i++){
+        //from api, the nonOneEffects table is a sorted list
         var defendType = nonOneEffects[i][0];
         var effect = nonOneEffects[i][1];
         var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
         if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
         if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
     }
-
     //if the table is empty
     if (tableHTML == firstRow) tableHTML = '<tr class = "gridTable"> supereffect is 1 for all types </tr>';
+
     tableHTML += '</table>';
-
     return tableHTML;
-} 
+}
 
+/* archive because the api endpoint archived
 function getAbilityDescription(abilityName, htmlTag){
     var url = getAPIBaseURL() + '/ability_description/' + abilityName;
     fetch(url, {method: 'get'})
@@ -154,6 +156,25 @@ function getAbilityDescription(abilityName, htmlTag){
     .then(function(abilityDescription) {
         abilityDescription = abilityDescription.replaceAll("_", " ");
         document.getElementById(htmlTag).innerHTML = `Description: ${abilityDescription}`
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+*/
+function getAbilityDescriptions(abilityNames, htmlTags){
+    var url = getAPIBaseURL() + '/abilities';
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(allAbilities) {
+        for (var i = 0; i < allAbilities.length; i++){
+            for (var j = 0; j < abilityNames.length; j++){
+                if (allAbilities[i]["ability"] == abilityNames[j]){
+                    abilityDescription = allAbilities[i]["ability_description"].replaceAll("_", " ");
+                    document.getElementById(htmlTags[j]).innerHTML = `Description: ${abilityDescription}`;
+                }
+            }
+        }
     })
     .catch(function(error) {
         console.log(error);

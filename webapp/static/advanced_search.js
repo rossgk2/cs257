@@ -103,28 +103,35 @@ function loadDropdowns() {
 
 	// Legendary status
 	loadDropdown("legendary_status_dropdown", "legendaries",
-		function(arr, i) { return makePresentable(arr[i]).replace("Null", "Not Legendary"); })
+		function(arr, i) { return arr[i].replace("null", "not legendary"); });
 	
 	// Types
-	loadDropdown("type1_dropdown", "types", null)
-	loadDropdown("type2_dropdown", "types", null)
+	loadDropdown("type1_dropdown", "types", null);
+	loadDropdown("type2_dropdown", "types", null);
 
 	// Abilities
-	abilityAccessor = function(arr, i){ return arr[i]["ability"];}
-	loadDropdown("ability1_dropdown", "abilities", abilityAccessor)
-	loadDropdown("ability2_dropdown", "abilities", abilityAccessor)
-	loadDropdown("hidden_ability_dropdown", "abilities", abilityAccessor)
+	abilityAccessor = function(arr, i){ return arr[i]["ability"];};
+	loadDropdown("ability1_dropdown", "abilities", abilityAccessor);
+	loadDropdown("ability2_dropdown", "abilities", abilityAccessor);
+	loadDropdown("hidden_ability_dropdown", "abilities", abilityAccessor);
 
 	// Regions
-	loadDropdown("region_dropdown", "regions", null)
+	loadDropdown("region_dropdown", "regions", null);
 	
 	// Game of origin
-	loadDropdown("game_dropdown", "games", null)
+	loadDropdown("game_dropdown", "games", null);
 
 	// Egg groups
+	/* eggGroupsPresentor in the place of accessor? 
+	This version does not work because we get api query like: /api/advanced_search/ASC?egg_group2=Amorphous
+	api query does not take in capitalized letters. "A"
 	eggGroupsPresentor = function(arr, i) { return makePresentable(arr[i]); }
 	loadDropdown("egg_group1_dropdown", "egg_groups", eggGroupsPresentor);
 	loadDropdown("egg_group2_dropdown", "egg_groups", eggGroupsPresentor);
+	*/
+
+	loadDropdown("egg_group1_dropdown", "egg_groups", null);
+	loadDropdown("egg_group2_dropdown", "egg_groups", null);
 }
 
 function registerSexRatioCallbacks() {
@@ -193,19 +200,24 @@ function updateSexRatiosHelper(sexRatioField) {
 	 }
 }
 
-
 function buildPokemonStatsHTML(pokemonDict){
 	var rawName = pokemonDict["pokemon_name"];
 	returnString = getPokemonImageWithLink(rawName);
 	returnString += '<div class="invisible-vertical-line"></div>';
-	
+
+	var keyDisplayConversion = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
+	returnString += dualColTableBuilder(["Name", "ID", "Type1", "Type2"], pokemonDict, keyDisplayConversion); //first tabl
+	returnString += '<div class="invisible-vertical-line"></div>';
+	returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemonDict, null); //second table
+	return returnString;
+
+	/*
 	var firstTableHTML = "<table>\n";
 	var firstTableInfo = ["Name", "ID", "Type1", "Type2"];
 	var displayDict = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
 	for (var i = 0; i < firstTableInfo.length; i++){
-		firstTableHTML += "<tr>\n";
-		firstTableHTML += "<th>" + firstTableInfo[i] + "</th>";
 		internalName = displayDict[firstTableInfo[i]]
+		firstTableHTML += `<tr><th>${firstTableInfo[i]}</th>`;
 		firstTableHTML += "<th>" + pokemonDict[internalName] + "</th>";
 		firstTableHTML += "</tr>\n";
 	}
@@ -224,8 +236,7 @@ function buildPokemonStatsHTML(pokemonDict){
 	}
 	secondTableHTML += "</table>\n";
 	returnString += secondTableHTML;
-
-	return returnString
+	*/
 }
 
 function loadStatsButtonCallback() {

@@ -71,7 +71,7 @@ def get_abilities():
     return sql_query_helper(sql_table_name = "abilities", 
         row_accessor = lambda row : {"ability" : row[1], "ability_description" : row[2]},
         remove_null = lambda output_list : [x for x in output_list if x["ability"] != "NULL"], 
-         extra_query_text = "ORDER BY ability")
+        extra_query_text = "ORDER BY ability")
 
 @api.route("/legendaries")
 def get_legendaries():
@@ -147,6 +147,10 @@ def advanced_search(order):
         parameter_list[0] = flask.request.args.get('pokedex_lower')
     if flask.request.args.get('pokedex_upper'):
         parameter_list[1] = flask.request.args.get('pokedex_upper')
+    if flask.request.args.get('id'):
+        lower_bound, upper_bound = flask.request.args.get('id').split("-")
+        parameter_list[0] = lower_bound
+        parameter_list[1] = upper_bound
 
     # Now add the API arguments to the SQL query.
     api_arg_to_sql_condition = {"pokemon_name" : "pokemon_name ILIKE %s", "legendary_status" : "legendaries.legendary_status = %s",
@@ -184,6 +188,9 @@ def advanced_search(order):
         argument = flask.request.args.get(stat)
         if argument:
             lower_bound, upper_bound = argument.split("-")
+            if not upper_bound : upper_bound = 2000
+            if not lower_bound : lower_bound = 0
+
             query = query + "\n AND " + stat + " BETWEEN %s AND %s "
             parameter_list.append(lower_bound)
             parameter_list.append(upper_bound)
