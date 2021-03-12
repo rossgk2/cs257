@@ -17,40 +17,31 @@ function initialize() {
 	loadLinkToHomePage();
 	registerSexRatioCallbacks();
 	loadStatsButtonCallback(); // Adapted from https://www.w3schools.com/howto/howto_js_collapsible.asp
-	initalAskForQuery();
+	//initalAskForQuery();
 
-	//Load the search button's callback. Simple enough.
-	searchButton = document.getElementById("search_button");
-	searchButton.onclick = onSearchButtonClicked;
+	loadInfinitePokemonCardScroller();
 
-	$('#information_sign_button').click(function() {
-        informationSign();
-    });
-	document.getElementById("scrollable").onscroll = function(){infiniteUserScroll(); };
+	document.getElementById("information_sign_button").onclick = informationSign; // informationSign is from shared_functions.js
 }
 
-function infiniteUserScroll() {
-    if (morePokemon && !loading) {
-		loading = true;
-        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
-        var scrollHeight = $("#search_results").height();
-		var scrollPos = $("#scrollable").scrollTop() + $("#scrollable").height();
+function loadInfinitePokemonCardScroller() {
+    display = document.getElementById("pokemon_landing_display");
+    searchButton = document.getElementById("search_button");
 
-		document.getElementById("document_height").innerHTML = scrollHeight;
-		document.getElementById("scrollPos").innerHTML = scrollPos;
-
-        var smallNumber = 3;
-        if (scrollHeight - scrollPos <= smallNumber) {
-            onSearchButtonClicked();
-		}
-		loading = false;
+    getPokemonCard = function(pokemon) {
+        var pokedexNum = pokemon['pokedex_number'];
+        var name = pokemon['pokemon_name'];
+        var pokemonImageHtml = getPokemonImageWithLink(name);
+        var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
+        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
+        return pokemonImageHtml + firstLine + secondLine;
     }
+
+    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);
+    infinitePokemonCardScroller.onReady();
 }
 
-
-function onSearchButtonClicked() {
-	var search_results = document.getElementById("search_results");
-	loadingPokemonBall(search_results, (curNumPokemonOnPage == 0));
+function getQueryURLOnUpdate() {
 	// This dict will store all the search data input by the user.
 	var dict = {};
 	
@@ -78,11 +69,11 @@ function onSearchButtonClicked() {
 	}
 
 	// Query the API using the user input in order to display the pokemon that satisfy the search criteria.
-	// First, we form the query.
+	// First, we need to form the query URL.
 	// If the user passed in arguments, the query needs to start with "ASC?".
-	var query = "ASC";
+	var url = "advanced_search/ASC?order_by=pokedex_number";
 	if (keys.length > 0) {
-		query += "?";
+		url += "&";
 	}
 
 	// Add the user input to the query.
@@ -93,40 +84,17 @@ function onSearchButtonClicked() {
 
 		//Only include arguments in the query that coorrespond to fields filled out by the user.
 		if (userInputProcessed !== "any" && userInputProcessed !== "") { 
-			query += key + "=" + userInput;
-			query += "&";
+			url += key + "=" + userInput;
+			url += "&";
 		}
 	}
 
 	// If the last character in query is "&", remove that "&" from the query.
-	if (query[query.length - 1] == "&") {
-		query = query.substring(0, query.length - 1)
+	if (url[url.length - 1] == "&") {
+		url = url.substring(0, url.length - 1)
 	}
 
-	// Now, use the query.
-	var url = getAPIBaseURL() + "/advanced_search/" + query;
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(pokemonList) {
-		var appending = '';
-		if (curNumPokemonOnPage == 0){
-			if (pokemonList.length == 0){appending = "sorry, there is no Pokemon with your specified criteria";
-			}else{
-				appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
-				curNumPokemonOnPage += numPokemonEachQuery;
-			}
-			search_results.innerHTML = appending;
-		}else{
-			appending = pokemonStatsLoop(curNumPokemonOnPage, numPokemonEachQuery, pokemonList);
-			curNumPokemonOnPage += numPokemonEachQuery;
-			var oldHTML = search_results.innerHTML.replaceAll(loadingPokemonBall(null, null, true), " ");
-			var finalHTML = oldHTML + appending;
-			search_results.innerHTML = finalHTML;
-		}
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
+	return url;
 }
 
 function loadDropdowns() {
@@ -265,43 +233,6 @@ function loadStatsButtonCallback() {
 	      content.style.display = "block";
 	    }
 	  };
-}
-
-function loadingPokemonBall(searchResultDiv, firstSearch, justReturn){
-	var pokemonBallPic = '\n<img src="../static/pokemon_images/pokemon_ball.gif" class="loading-pokemon-ball">\n';
-	if (justReturn) return pokemonBallPic;
-	finalHtml = '';
-	if (firstSearch){
-		finalHtml = pokemonBallPic;
-	}else{
-		finalHtml = searchResultDiv.innerHTML + pokemonBallPic;
-	}
-	searchResultDiv.innerHTML = finalHtml;
-}
-
-function initalAskForQuery(){
-	var initialImage =`<div class = "row">
-		<div class = "col-2"><img src="../static/pokemon_images/click_search.png" alt="we are doing the query" class="img-thumbnail"></div>
-		<div class="invisible-vertical-line"></div>
-		<table>
-			<tr><th>Name</th><th>NA</th></tr>
-			<tr><th>ID: </th><th>NA </th></tr>
-			<tr><th>Type1</th><th>Null</th></tr>
-			<tr><th>Type2</th><th>Null</th>
-			</tr>
-		</table>
-		<div class="invisible-vertical-line"></div>
-		<table>
-			<tr><th>Attack</th><th>NA </th></tr><tr>
-			<th>Special Attack</th><th>NA </th></tr>
-			<tr><th>Defense</th><th>NA </th></tr>
-			<tr><th>Special Defense</th><th>NA </th>
-			</tr><tr><th>speed</th><th>NA </th></tr>
-			<tr><th>health</th><th>NA </th></tr>
-		</table>
-	</div>`
-	document.getElementById("search_results").innerHTML = (initialImage + initialImage);
-	return initialImage;
 }
 
 // Helper functions

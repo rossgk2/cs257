@@ -41,8 +41,6 @@ function loadInfinitePokemonCardScroller() {
         var name = pokemon['pokemon_name'];
         var pokemonImageHtml = getPokemonImageWithLink(name);
         
-        // Add the "card" corresponding to the current Pokemon (two <h6> tags and a <div class = "col-2">) to
-        // the current row of cards.
         var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
         var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
         return pokemonImageHtml + firstLine + secondLine;
