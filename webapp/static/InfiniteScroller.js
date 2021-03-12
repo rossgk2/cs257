@@ -1,11 +1,13 @@
-function InfiniteScroller(display, searchButton, numPokemonEachQuery, numPokemonPerRow) {
+function InfiniteScroller(display, searchButton, getQuery, numPokemonEachQuery, numPokemonPerRow) {
 	this.display = display;
 	this.searchButton = searchButton;
+	this.getQuery = getQuery;
 	this.numPokemonEachQuery = numPokemonEachQuery;
 	this.numPokemonPerRow = numPokemonPerRow;
 	this.curNumPokemonOnPage = 0;
 	this.morePokemon = true;
 	this.loading = false;
+	this.query = "";
 	
 	this.getLoadingGifInnerHtml = function() {
 	    var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
@@ -20,16 +22,13 @@ function InfiniteScroller(display, searchButton, numPokemonEachQuery, numPokemon
 	    return loadingDisplay;
 	};
 
-	this.loadPokemonCards = function(display, typeFilter, abilityFilter) {
+	this.loadPokemonCards = function(display, all) {
 	    // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
 	    // Only search for numPokemonEachQuery many Pokemon.
 	    this.loading = true;
-	    var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
-	    
-	    // Pass the specified type and ability to the API query.
-	    if(typeFilter != "any") url += "&composite_type=" + typeFilter;
-	    if(abilityFilter != "any") url += "&composite_ability=" + abilityFilter;
-	    url += `&offset=${this.curNumPokemonOnPage}`;
+	    var url;
+	    if (all) { url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`; }
+	    else { url = getAPIBaseURL() + "/" + this.query + `&limit=${numPokemonEachQuery}`; } 
 
 	    // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
 	    var oldThis = this; // "this" changes inside each .then statement
@@ -68,16 +67,16 @@ function InfiniteScroller(display, searchButton, numPokemonEachQuery, numPokemon
 	    })
 	};
 
-	this.infiniteUserScroll = function(typeSelected, abilitySelected) {
+	this.infiniteUserScroll = function() {
 	    if (this.morePokemon && !this.loading) {
 	        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
 	        var scrollHeight = $(document).height();
 	        var scrollPos = $(window).height() + $(window).scrollTop();
-
+	        this.query = this.getQuery();
 	        var smallNumber = 3;
 	        if (scrollHeight - scrollPos <= smallNumber) {
 	            display.innerHTML += this.getLoadingGifInnerHtml();
-	            this.loadPokemonCards(display, typeSelected, abilitySelected);
+	            this.loadPokemonCards(display, false);
 	        }
 	    }
 	};
@@ -87,23 +86,20 @@ function InfiniteScroller(display, searchButton, numPokemonEachQuery, numPokemon
     	display.innerHTML = this.getLoadingGifInnerHtml();
     
 	    // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
-	    var typeSelected = "any";
-	    var abilitySelected = "any";
-	    this.loadPokemonCards(display, typeSelected, abilitySelected);
+	    this.loadPokemonCards(display, true);
 
 	    // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
 	    var oldThis = this; // "this" will change inside the anonymous function
 	    this.searchButton.onclick = function() {
-	        typeSelected = $("#type_list_selection").val();
-	        abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
 	        display.innerHTML = oldThis.getLoadingGifInnerHtml();
 	        oldThis.morePokemon = true;
 	        oldThis.curNumPokemonOnPage = 0;
-	        oldThis.loadPokemonCards(display, typeSelected, abilitySelected);
+	        this.query = this.getQuery();
+	        oldThis.loadPokemonCards(display, false);
     	};
 
 	    // Register the onscroll event handler.
 	    var oldThis = this;
-	    window.onscroll = function() { oldThis.infiniteUserScroll(typeSelected, abilitySelected); };
+	    window.onscroll = function() { oldThis.infiniteUserScroll(); };
 	};	
 }

@@ -19,7 +19,9 @@ function onReady() {
     // Set up the InfiniteScroller. (See InfiniteScroller.js).
     display = document.getElementById("pokemon_landing_display");
     searchButton = document.getElementById("search_button");
-    let infiniteScroller = new InfiniteScroller(display, searchButton, 24, 6);
+
+    getQuery = function() { return "advanced_search/ASC?order_by=pokedex_number&type1=water"; }
+    let infiniteScroller = new InfiniteScroller(display, searchButton, getQuery, 24, 6);
     infiniteScroller.onReady();
 
     // Set up the "help" button's event handler.
