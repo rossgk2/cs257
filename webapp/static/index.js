@@ -16,21 +16,28 @@ function initialize() {
     // Set up the icon that leads to the advanced search page.
     loadAdvancedSearch();
 
-    // Set up the InfiniteScroller. (See InfiniteScroller.js).
+    // Set up the InfinitePokemonCardScroller. (See InfinitePokemonCardScroller.js).
+    loadInfinitePokemonCardScroller();
+
+    // Set up the "help" button's event handler.
+   	document.getElementById("information_sign_button").onclick = informationSign;
+}
+
+function loadInfinitePokemonCardScroller() {
     display = document.getElementById("pokemon_landing_display");
     searchButton = document.getElementById("search_button");
 
     getQueryURLOnUpdate = function() { 
-	    var url = `advanced_search/ASC?order_by=pokedex_number`;
-  		var typeSelected = $("#type_list_selection").val();
-	    var abilitySelected = $("#ability_list_selection").val();
-	    if (typeSelected != "any") url += "&composite_type=" + typeSelected;
-	    if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
-	    return url;
+        var url = `advanced_search/ASC?order_by=pokedex_number`;
+        var typeSelected = $("#type_list_selection").val();
+        var abilitySelected = $("#ability_list_selection").val();
+        if (typeSelected != "any") url += "&composite_type=" + typeSelected;
+        if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
+        return url;
     }
 
     getPokemonCard = function(pokemon) {
-    	var pokedexNum = pokemon['pokedex_number'];
+        var pokedexNum = pokemon['pokedex_number'];
         var name = pokemon['pokemon_name'];
         var pokemonImageHtml = getPokemonImageWithLink(name);
         
@@ -43,9 +50,6 @@ function initialize() {
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, searchButton, getQueryURLOnUpdate, getPokemonCard, 24, 6);
     infinitePokemonCardScroller.onReady();
-
-    // Set up the "help" button's event handler.
-   	document.getElementById("information_sign_button").onclick = informationSign;
 }
 
 function loadAdvancedSearch() {
