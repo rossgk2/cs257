@@ -7,7 +7,8 @@ $(document).ready(onReady)
 var numPokemonEachQuery = 24;
 var curNumPokemonOnPage = 0;
 var numPokemonPerRow = 6;
-var stillQuerying = true;
+var morePokemon = true;
+var loading = false;
 
 function onReady() {
     // Initialize the select2 JQuery plugin
@@ -33,7 +34,8 @@ function onReady() {
         typeSelected = $("#type_list_selection").val();
         abilitySelected = $("#ability_list_selection").val(); //search in all ability1, 2, hidden
         document.getElementById("pokemon_landing_display").innerHTML = getLoadingGifInnerHtml();
-        stillQuerying = true;
+        morePokemon = true;
+        curNumPokemonOnPage = 0;
         loadPokemonCards("pokemon_landing_display", typeSelected, abilitySelected);
     };
 
@@ -45,6 +47,7 @@ function onReady() {
 function loadPokemonCards(displayHtmlId, typeFilter, abilityFilter){
     // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
     // Only search for numPokemonEachQuery many Pokemon.
+    loading = true;
     var url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`;
     
     // Pass the specified type and ability to the API query.
@@ -78,20 +81,21 @@ function loadPokemonCards(displayHtmlId, typeFilter, abilityFilter){
         pokemonDisplayDiv += '</div>\n</div>';
         curNumPokemonOnPage += numPokemonEachQuery;
         
-        // Update stillQuerying.
+        // Update morePokemon.
         var noResultsSatisfyCriteria = pokemonList.length == 0;
         var endOfQueryReached = pokemonList.length < numPokemonEachQuery;
-        stillQuerying = !(noResultsSatisfyCriteria || endOfQueryReached);
+        morePokemon = !(noResultsSatisfyCriteria || endOfQueryReached);
 
         // Update the page with the inner HTML we constructed.
         pokemonLandingDisplay = document.getElementById(displayHtmlId);
         innerHTML = pokemonLandingDisplay.innerHTML.replaceAll(getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
         pokemonLandingDisplay.innerHTML = innerHTML;
+        loading = false;
     })
 }
 
 function infiniteUserScroll(typeSelected, abilitySelected) {
-    if (stillQuerying) {
+    if (morePokemon && !loading) {
         //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
         var scrollHeight = $(document).height();
         var scrollPos = $(window).height() + $(window).scrollTop();
