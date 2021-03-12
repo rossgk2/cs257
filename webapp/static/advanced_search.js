@@ -3,13 +3,13 @@
 */
 
 // The anonymous function inside $(document).ready() is called after the document has been loaded.
-$(document).ready(onReady)
+window.onload = initialize;
 var numPokemonEachQuery = 6;
 var curNumPokemonOnPage = 0;
 var morePokemon = true;
 var loading = false;
 
-function onReady() {
+function initialize() {
 	// Initialize the select2 JQuery plugin. Functionality is added to HTML elements with class "search2". 
 	$(".search2").select2();
 

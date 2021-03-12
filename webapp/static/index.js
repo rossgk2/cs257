@@ -3,9 +3,9 @@
     Jimmy Zhong and Ross Grogan-Kaylor, CS257 Carleton College, Professor Jeff Ondich
     Final Project 2021 Feburary 
 */
-$(document).ready(onReady)
+window.onload = initialize;
 
-function onReady() {
+function initialize() {
     // Initialize the select2 JQuery plugin
     $(".search").select2(); //".search" is a CSS selector string
 
