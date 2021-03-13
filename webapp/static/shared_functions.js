@@ -50,18 +50,12 @@ function getPokemonPageURL(pokemon_name){
     return baseURL;
 }
 
-function dualColTableBuilder(leftKey, valueDict, optionalKeyDict){
-	var leftKeyDisplay = [];
-	for (var i = 0; i < leftKey.length; i++){
-		leftKeyDisplay.push(leftKey[i]);
-		if (optionalKeyDict) leftKey[i] = optionalKeyDict[leftKey[i]];
-	}
+function dualColTableBuilder(leftKey, valueDict){
 	var tableHtml = "<table>\n";
 	for (var i = 0; i < leftKey.length; i++){
-		infoTitle = makePresentable(leftKeyDisplay[i]);
+		infoTitle = makePresentable(leftKey[i]);
 		infoValue = valueDict[leftKey[i]];
 		if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
-
 		tableHtml += `<tr><th>${infoTitle}</th><th>${infoValue}</th></tr>\n`;
 	}
 	tableHtml += "</table>\n";
