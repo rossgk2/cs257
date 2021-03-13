@@ -39,7 +39,7 @@ function loadInfinitePokemonCardScroller() {
     }
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);
-    infinitePokemonCardScroller.onReady();
+    infinitePokemonCardScroller.initialize();
 }
 
 function getQueryURLOnUpdate() {

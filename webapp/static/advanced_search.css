@@ -29,6 +29,11 @@ label {
   margin-right: 1em;
 }
 
+.sex_label {
+  clear: top;
+  float: top;
+}
+
 input[type="text"] {
   width: 25em;
 }
@@ -39,9 +44,9 @@ input[type="text"] {
 }
 
 .container > div {
-  /* width: 50%;
+  width: 50%;
   float: left;
-  padding-right: 1% */
+  padding-right: 1%
 }
 
 /* 

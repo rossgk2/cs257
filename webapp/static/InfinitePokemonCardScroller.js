@@ -74,7 +74,7 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	    }
 	};
 
-	this.onReady = function() {
+	this.initialize = function() {
 		// It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
     	display.innerHTML = this.getLoadingGifInnerHtml();
     
