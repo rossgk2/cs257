@@ -116,6 +116,10 @@ table, th, td {
   padding-right: 10px;
 }
 
+table {
+  float: left;
+}
+
 .container {
   width: 100%;
   padding-right: 15px;
