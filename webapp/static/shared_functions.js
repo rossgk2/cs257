@@ -56,7 +56,7 @@ function dualColTableBuilder(leftKey, valueDict){
 		infoTitle = makePresentable(leftKey[i]);
 		infoValue = valueDict[leftKey[i]];
 		if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
-		tableHtml += `<tr><th>${infoTitle}</th><th>${infoValue}</th></tr>\n`;
+		tableHtml += `<tr><td>${infoTitle}</td><td><b>${infoValue}</b></td></tr>\n`;
 	}
 	tableHtml += "</table>\n";
 	return tableHtml;
