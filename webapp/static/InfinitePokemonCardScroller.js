@@ -18,11 +18,11 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	    
 	    // In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
 	    // actual images, we put the loading icons inside a <div class = "container">.
-	    var loadingDisplay = '<div class="container">\n<div class="row">';
+	    var loadingDisplay = '<div class="container">\n<div class="row">\n';
 	    for (var i = 0; i < this.numPokemonPerRow; i ++){
 	        loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
 	    }
-	    loadingDisplay += '</div>\n</div>';
+	    loadingDisplay += '</div>\n</div>\n';
 	    return loadingDisplay;
 	};
 

@@ -20,15 +20,13 @@ function initialize() {
 	//initalAskForQuery();
 
 	loadInfinitePokemonCardScroller();
-
-	document.getElementById("information_sign_button").onclick = informationSign; // informationSign is from shared_functions.js
 }
 
 function loadInfinitePokemonCardScroller() {
     var display = document.getElementById("pokemon_landing_display");
     var scrollContainer = display;
     var searchButton = document.getElementById("search_button");
-
+	/*
     getSimplePokemonCard = function(pokemon) {
     	var pokedexNum = pokemon['pokedex_number'];
         var name = pokemon['pokemon_name'];
@@ -46,8 +44,27 @@ function loadInfinitePokemonCardScroller() {
 		returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon, null); //second table
 		return returnString;
     }
+	*/
+	getAllPokemonImages = function(pokemon){
+		var returnImages = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"])}</div>`;
+		returnImages += `<div class = "type-image1">${getTypeImageHTML(pokemon['type1'])}</div>`;
+		returnImages += `<div class = "type-image2">${getTypeImageHTML(pokemon['type2'])}</div>`;
+		return returnImages
+	}
 
-    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);
+	getPokemonCard = function(pokemon) {
+		returnString = `<ul class = "row-parent">\n<li>${getAllPokemonImages(pokemon)}</li>`;
+		//returnString += '<div class="invisible-vertical-line"></div>';
+		//var keyDisplayConversion = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
+		var keyDisplayConversion = {"Name" : "pokemon_name", "Pokemon ID" : "pokedex_number", "Ability1" : "ability1", "Ability2" : "ability2", "Hidden Abty" : "hidden_ability"}
+		returnString += `<li> ${dualColTableBuilder(["Name", "Pokemon ID", "Ability1", "Ability2", "Hidden Abty"], pokemon, keyDisplayConversion)} </li>`; //first tabl
+		//returnString += '<div class="invisible-vertical-line"></div>';
+		returnString += `<li> ${dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon, null)} </li>`; //second table
+		returnString += '</ul>';
+		return returnString;
+	}
+
+    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 6, 1);
     infinitePokemonCardScroller.initialize();
 }
 
