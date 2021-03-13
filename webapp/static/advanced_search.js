@@ -30,12 +30,15 @@ function loadInfinitePokemonCardScroller() {
     var searchButton = document.getElementById("search_button");
 
     getPokemonCard = function(pokemon) {
-        var pokedexNum = pokemon['pokedex_number'];
-        var name = pokemon['pokemon_name'];
-        var pokemonImageHtml = getPokemonImageWithLink(name);
-        var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
-        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
-        return pokemonImageHtml + firstLine + secondLine;
+        var rawName = pokemon["pokemon_name"];
+		var returnString = getPokemonImageWithLink(rawName);
+		returnString += '<div class="invisible-vertical-line"></div>';
+
+		var keyDisplayConversion = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
+		returnString += dualColTableBuilder(["Name", "ID", "Type1", "Type2"], pokemon, keyDisplayConversion); //first tabl
+		returnString += '<div class="invisible-vertical-line"></div>';
+		returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon, null); //second table
+		return returnString;
     }
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 4, 1);

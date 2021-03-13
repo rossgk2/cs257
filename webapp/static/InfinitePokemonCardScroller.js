@@ -16,6 +16,8 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	    var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
 	    <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
 	    
+	    // In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
+	    // actual images, we put the loading icons inside a <div class = "container">.
 	    var loadingDisplay = '<div class="container">\n<div class="row">';
 	    for (var i = 0; i < this.numPokemonPerRow; i ++){
 	        loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
@@ -37,10 +39,17 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	    return fetch(url, {method: 'get'})
 	    .then((response) => response.json())
 	    .then(function(pokemonList) {
+	    	// In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
+	   	 	// actual images, we put the loading icons inside a <div class = "container">.
 	        var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
 	        for (var i = 0; i < pokemonList.length; i ++){
 	            // Get info about the current Pokemon.
-	            pokemonDisplayDiv += '<div class = "col-2">' + oldThis.getPokemonCard(pokemonList[i]) + '</div>';
+	            
+	            var appendThis = oldThis.getPokemonCard(pokemonList[i]);
+	            if (numPokemonPerRow > 1) // If there's more than one item per row, then each item goes in its own <div class = "col-2">.
+	            	 appendThis = '<div class = "col-2">' + appendThis + '</div>';
+
+	            pokemonDisplayDiv += appendThis;
 
 	            // Go to the next row every numPokemonPerRow cards.
 	            if ((i + 1) % oldThis.numPokemonPerRow == 0) pokemonDisplayDiv += '</div>\n<div class="row">';
