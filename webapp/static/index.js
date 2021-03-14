@@ -42,7 +42,10 @@ function loadInfinitePokemonCardScroller() {
         var pokemonImageHtml = getPokemonImageWithLink(name);
         
         var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
-        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
+        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])}`
+        if (pokemon['type2'] !== "NULL")
+            secondLine += ` ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
+        
         return pokemonImageHtml + firstLine + secondLine;
     }
 

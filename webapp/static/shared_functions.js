@@ -1,11 +1,12 @@
 function getTypeImageHTML(type){
     type = type.toLowerCase();
     var typeImageLine = `<img src="../static/type_images/${type}.png" alt="something is wrong" class="img-thumbnail"`
-    if (type != "null"){
+    if (type !== "null") {
         typeImageLine += ` title = "type: ${type}, click to see all type supereffects">`;
         typeImageLine = '<a href = "../static/type_chart_image.jpg" target = "_blank">' + typeImageLine + '</a>';
         typeImageLine = '<div class = "highlight">' + typeImageLine + '</div>';
-    }else{
+    } 
+    else {
         typeImageLine += ` title = "This pokemone does not have a secondary type">`;
     }
     return typeImageLine;
@@ -21,7 +22,7 @@ function doesFileExist(urlToFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', urlToFile, false);
     xhr.send();
-    if (xhr.status == "404") {
+    if (xhr.status === "404") {
         return false;
     } else {
         return true;

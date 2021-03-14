@@ -26,40 +26,23 @@ function loadInfinitePokemonCardScroller() {
     var display = document.getElementById("pokemon_landing_display");
     var scrollContainer = display;
     var searchButton = document.getElementById("search_button");
-	/*
-    getSimplePokemonCard = function(pokemon) {
-    	var pokedexNum = pokemon['pokedex_number'];
-        var name = pokemon['pokemon_name'];
-        var pokemonImageHtml = getPokemonImageWithLink(name);
-        
-        var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
-        var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])} ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
-        return pokemonImageHtml + firstLine + secondLine;
-    }
 
-    getPokemonCard = function(pokemon) {
-        var rawName = pokemon["pokemon_name"];
-		var returnString = '<div class = "simple_card">' + getSimplePokemonCard(pokemon) + '</div>';
-		returnString += '<div class="invisible-vertical-line"></div>';
-		returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon, null); //second table
-		return returnString;
-    }
-	*/
-	getAllPokemonImages = function(pokemon){
-		var returnImages = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"])}</div>`;
-		returnImages += `<div class = "type-image1">${getTypeImageHTML(pokemon['type1'])}</div>`;
-		returnImages += `<div class = "type-image2">${getTypeImageHTML(pokemon['type2'])}</div>`;
-		returnImages += `<div class = "name-and-id"> (ID: ${pokemon["pokedex_number"]}) ${makePresentable(pokemon["pokemon_name"])} </div>`;
-		return returnImages
+	getPartOfPokemonCard = function(pokemon){
+		var innerHTML = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"])}</div>`;
+		innerHTML += `<div class = "type-image1">${getTypeImageHTML(pokemon['type1'])}</div>`;
+		if (pokemon['type2'] !== "NULL")
+			innerHTML += `<div class = "type-image2">${getTypeImageHTML(pokemon['type2'])}</div>`;
+		innerHTML += `<div class = "name-and-id"> <h4> (ID: ${pokemon["pokedex_number"]}) ${makePresentable(pokemon["pokemon_name"])} </h4> </div>`;
+		return innerHTML
 	}
 
 	getPokemonCard = function(pokemon) {
-		returnString = `<ul class = "row-parent">\n<li>${getAllPokemonImages(pokemon)}</li>`;
+		innerHTML = `<ul class = "row-parent">\n<li>${getPartOfPokemonCard(pokemon)}</li>`;
 		//var keyDisplayConversion = {"Ability1" : "ability1", "Ability2" : "ability2", "Hidden Abty" : "hidden_ability"}
-		returnString += `<li> ${dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon)} </li>`; //second table
-		returnString += `<li> ${dualColTableBuilder(["ability1", "ability2", "hidden_ability"], pokemon)} </li>`; //first tabl
-		returnString += '</ul>';
-		return returnString;
+		innerHTML += `<li> ${dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon)} </li>`; //second table
+		innerHTML += `<li> ${dualColTableBuilder(["ability1", "ability2", "hidden_ability"], pokemon)} </li>`; //first tabl
+		innerHTML += '</ul>';
+		return innerHTML;
 	}
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 6, 1);
@@ -236,14 +219,14 @@ function pokemonStatsLoop(offset, numEachQuery, pokemonList){
 
 function buildPokemonStatsHTML(pokemonDict){
 	var rawName = pokemonDict["pokemon_name"];
-	returnString = getPokemonImageWithLink(rawName);
-	returnString += '<div class="invisible-vertical-line"></div>';
+	innerHTML = getPokemonImageWithLink(rawName);
+	innerHTML += '<div class="invisible-vertical-line"></div>';
 
 	var keyDisplayConversion = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
-	returnString += dualColTableBuilder(["Name", "ID", "Type1", "Type2"], pokemonDict, keyDisplayConversion); //first tabl
-	returnString += '<div class="invisible-vertical-line"></div>';
-	returnString += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemonDict, null); //second table
-	return returnString;
+	innerHTML += dualColTableBuilder(["Name", "ID", "Type1", "Type2"], pokemonDict, keyDisplayConversion); //first tabl
+	innerHTML += '<div class="invisible-vertical-line"></div>';
+	innerHTML += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemonDict, null); //second table
+	return innerHTML;
 }
 
 function loadStatsButtonCallback() {
