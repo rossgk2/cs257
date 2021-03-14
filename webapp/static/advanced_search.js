@@ -49,7 +49,7 @@ function loadInfinitePokemonCardScroller() {
 		var returnImages = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"])}</div>`;
 		returnImages += `<div class = "type-image1">${getTypeImageHTML(pokemon['type1'])}</div>`;
 		returnImages += `<div class = "type-image2">${getTypeImageHTML(pokemon['type2'])}</div>`;
-		returnImages += `<div class = "name-and-id"><h4>${makePresentable(pokemon["pokemon_name"])} &nbsp ID: ${pokemon["pokedex_number"]}</h4></div>`;
+		returnImages += `<div class = "name-and-id"> (ID: ${pokemon["pokedex_number"]}) ${makePresentable(pokemon["pokemon_name"])} </div>`;
 		return returnImages
 	}
 

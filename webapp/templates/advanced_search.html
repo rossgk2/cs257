@@ -21,9 +21,9 @@
 
 <body>
 	<div id = "advanced_search">
-		<h3> Advanced search</h3>
+		<h1> Advanced search</h1>
 
-		<div>
+		<div class = "container">
 			<input type="text" id = "id_search" placeholder='Default: any (e.g. "7", "50-60", "50-", "-60")'> </input>
 			<label for="id_search"> Pokedex ID </label>
 		</div>
@@ -33,7 +33,7 @@
 			<label for="pokemon_name_search"> Substring of Pokemon name </label>
 		</div>
 
-		<div>
+		<div class = "container">
 			<select id="legendary_status_dropdown" class = "search2"> </select>
 			<label for="legendary_status_dropdown"> Legendary status </label>
 		</div>
@@ -144,10 +144,11 @@
 		</div>
 
 		<div class = "container">
-			<div> <select id="game_dropdown" class = "search2"> </select> </div>
-			<div> <label for="game_dropdown"> Game of origin </label> </div>
+			<div> 
+				<select id="game_dropdown" class = "search2"> </select> 
+				<label for="game_dropdown"> Game of origin </label> 
+			</div>
 		</div>
-
 		<input type= "button" value="Search" id="search_button">
 	</div>
 	<h3 id = "link_to_homepage">this should be a link; if you see this you get a problem</h3> <!-- This is temporary, so that the bulleted list will be on the right half of the page for turning in the first draft. Move this h3 outside the div with id "advanced_search" later. !-->
