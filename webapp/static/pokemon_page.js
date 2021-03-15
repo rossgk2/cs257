@@ -134,20 +134,6 @@ function effectTableBuilder(nonOneEffects, isSupereffect){
     return tableHTML;
 }
 
-/* archive because the api endpoint archived
-function getAbilityDescription(abilityName, htmlTag){
-    var url = getAPIBaseURL() + '/ability_description/' + abilityName;
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(abilityDescription) {
-        abilityDescription = abilityDescription.replaceAll("_", " ");
-        document.getElementById(htmlTag).innerHTML = `Description: ${abilityDescription}`
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-*/
 function getAbilityDescriptions(abilityNames, htmlTags){
     var url = getAPIBaseURL() + '/abilities';
     fetch(url, {method: 'get'})

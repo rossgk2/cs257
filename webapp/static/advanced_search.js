@@ -28,12 +28,13 @@ function loadInfinitePokemonCardScroller() {
     var searchButton = document.getElementById("search_button");
 
 	getPartOfPokemonCard = function(pokemon){
-		var innerHTML = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"])}</div>`;
+		//this pokemon image has a line of name and id at its bottom
+		var innerHTML = `<div class = "pokemon-image">${getPokemonImageWithLink(pokemon["pokemon_name"], true, pokemon["pokedex_number"])}</div>`;
 		innerHTML += `<div class = "type-image1">${getTypeImageHTML(pokemon['type1'])}</div>`;
 		if (pokemon['type2'] !== "NULL")
 			innerHTML += `<div class = "type-image2">${getTypeImageHTML(pokemon['type2'])}</div>`;
-		innerHTML += `<div class = "name-and-id"> <h4> (ID: ${pokemon["pokedex_number"]}) ${makePresentable(pokemon["pokemon_name"])} </h4> </div>`;
-		return innerHTML
+		//innerHTML += `<div class = "name-and-id"> <h4> (ID: ${pokemon["pokedex_number"]}) ${makePresentable(pokemon["pokemon_name"])} </h4> </div>`;
+		return innerHTML;
 	}
 
 	getPokemonCard = function(pokemon) {
