@@ -42,6 +42,13 @@ function loadPokemonData(pokemonName) {
         }
 
         // Type 1
+        // Type 1 will be labeled as "Primary Type" if Type 2 is present, and just "Type" otherwise
+        var type1Label = "#type1_outer td:first-child";
+        if (hasType2)
+            $(type1Label).html("Primary Type: ");
+        else
+            $(type1Label).html("Type: ");
+
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
         document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
 
@@ -55,29 +62,34 @@ function loadPokemonData(pokemonName) {
 			document.getElementById(key).innerHTML = `${makePresentable(stats[i])}: <b>${dict[key]} </b> `;
 		}
 
-        //??
-        var abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
-        var htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
-        getAbilityDescriptions(abilities, htmlTags);
-
         // Hidden ability (only display if it exists)
         var hasHiddenAbility = dict["hidden_ability"] !== "NULL"; 
-        if (hasHiddenAbility) {
+        if (hasHiddenAbility)
             document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
-        }
-        else {
-            document.getElementById("hidden_ability_outer").outerHTML = "";
-        }
+        else
+            clearOuterHTML("hidden_ability_outer");
 
         // Ability 2 (only display it if it exists)
         var hasAbility2 = dict["ability2"] !== "NULL";
         if (hasAbility2)
             document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
         else
-            document.getElementById("ability2_outer").outerHTML = "";
+            clearOuterHTML("ability2_outer");
 
-		// Ability1
+		// Ability 1
+        // Ability 1 will be called "Primary Ability" if either the hidden ability or ability 2 are present, and just "Ability" otherwise
+        var ability1Label = "#ability1_outer > span";
+        if (hasHiddenAbility || hasAbility2)
+            $(ability1Label).html("Primary Ability: ");
+        else
+            $(ability1Label).html("Type: ");
+        
 		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
+
+        // Ability descriptions
+        var abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
+        var htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
+        loadAbilityDescriptions(abilities, htmlTags);
 
         // Legendary status
         legendaryStatus = dict["legendary_status"].toLowerCase();
@@ -109,6 +121,12 @@ function loadPokemonData(pokemonName) {
     });
 }
 
+function clearOuterHTML(className) {
+    var elements = document.getElementsByClassName(className);
+    for (var i = 0; i < elements.length; i ++) {
+        elements[i].outerHTML = "";
+    }
+}
 
 function loadPokemonImage(pokemonName) {
     var pokemonImagePath = getPokemonImagePath(pokemonName.replaceAll("_", "-"));
@@ -156,14 +174,14 @@ function effectTableBuilder(effectivenessTuples, isSupereffect){
     return tableHTML;
 }
 
-function getAbilityDescriptions(abilityNames, htmlTags){
+function loadAbilityDescriptions(abilityNames, htmlTags){
     var url = getAPIBaseURL() + '/abilities';
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(allAbilities) {
         for (var i = 0; i < allAbilities.length; i++){
             for (var j = 0; j < abilityNames.length; j++){
-                if (allAbilities[i]["ability"] == abilityNames[j]){
+                if (abilityNames[j] != "NULL" && allAbilities[i]["ability"] == abilityNames[j]){
                     abilityDescription = allAbilities[i]["ability_description"].replaceAll("_", " ");
                     document.getElementById(htmlTags[j]).innerHTML = `Description: ${abilityDescription}`;
                 }
