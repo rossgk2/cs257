@@ -1,0 +1,204 @@
+sudo service postgresql start
+sudo -u postgres dropdb grading
+sudo -u postgres createdb grading
+cat data.sql | psql -U postgres grading
+sudo -u postgres psql -U postgres grading
+
+pg_dump --no-owner --no-privileges -U postgres grading > data.sql
+
+sudo -u postgres createdb pokemon_db -W 
+postgres
+cat data.sql | psql -U postgres pokemon_db
+
+python3 app.py localhost 5000
+
+
+    //if result >= 30, see whether we get any pokemon above this pokedexNum given the same filter criteria
+    url = url.replace(/&offset=.*/gi, "");
+    url += "&pokedex_lower=" + (pokedexNum + 1);
+    return fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(returnPokemon) {
+        if (returnPokemon.length == 0) endIndicator.innerHTML = "It's already the end of the query!";
+    })
+
+<----- select pokemon with fire as type1 -------->
+SELECT DISTINCT pokemon_name, pokedex_number, type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, legendary_status, health, attack, special_attack AS s_attack, defense,
+special_defense AS s_defense, speed, region, catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
+FROM pokemon 
+JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
+JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
+
+JOIN egg_groups AS egg_table_a ON pokemon.egg_group1_id = egg_table_a.id
+JOIN egg_groups AS egg_table_b ON pokemon.egg_group2_id = egg_table_b.id
+
+JOIN abilities AS ability_table_a ON pokemon.ability1_id = ability_table_a.id
+JOIN abilities AS ability_table_b ON pokemon.ability2_id = ability_table_b.id
+JOIN abilities AS ability_table_c ON pokemon.hidden_ability = ability_table_c.id
+
+JOIN legendaries ON legendaries.id = pokemon.is_legendary
+JOIN regions ON regions.id = pokemon.region_id
+JOIN games ON games.id = pokemon.game_id
+
+ORDER BY pokedex_number DESC
+;
+
+echo "SELECT pokemon_name, type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, legendary_status, region, catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
+
+FROM pokemon
+
+JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
+JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
+
+JOIN egg_groups AS egg_table_a ON pokemon.egg_group1_id = egg_table_a.id
+JOIN egg_groups AS egg_table_b ON pokemon.egg_group2_id = egg_table_b.id
+
+JOIN abilities AS ability_table_a ON pokemon.ability1_id = ability_table_a.id
+JOIN abilities AS ability_table_b ON pokemon.ability2_id = ability_table_b.id
+JOIN abilities AS ability_table_c ON pokemon.hidden_ability = ability_table_c.id
+
+JOIN legendaries ON legendaries.id = pokemon.is_legendary
+JOIN regions ON regions.id = pokemon.region_id
+JOIN games ON games.id = pokemon.game_id" | psql -U postgres grading > correctness_test_output.csv
+
+
+echo "SELECT pokemon_name, type_table_a.pokemon_type AS type1, type_table_b.pokemon_type AS type2, ability_table_a.ability AS ability1, ability_table_b.ability AS ability2, ability_table_c.ability AS hidden_ability, legendary_status, region, catch_rate, male_percent, game, egg_table_a.egg_group AS egg_group1, egg_table_b.egg_group AS egg_group2
+
+FROM pokemon
+
+FULL JOIN types AS type_table_a ON pokemon.type1_id = type_table_a.id
+FULL JOIN types AS type_table_b ON pokemon.type2_id = type_table_b.id
+
+FULL JOIN egg_groups AS egg_table_a ON pokemon.egg_group1_id = egg_table_a.id
+FULL JOIN egg_groups AS egg_table_b ON pokemon.egg_group2_id = egg_table_b.id
+
+FULL JOIN abilities AS ability_table_a ON pokemon.ability1_id = ability_table_a.id
+FULL JOIN abilities AS ability_table_b ON pokemon.ability2_id = ability_table_b.id
+FULL JOIN abilities AS ability_table_c ON pokemon.hidden_ability = ability_table_c.id
+
+FULL JOIN legendaries ON legendaries.id = pokemon.is_legendary
+FULL JOIN regions ON regions.id = pokemon.region_id
+FULL JOIN games ON games.id = pokemon.game_id" | psql -U postgres grading > correctness_test_output2.csv
+<------ LOADING DATA COMMANDS --------> 
+
+
+DROP TABLE IF EXISTS pokemon;
+CREATE TABLE pokemon(
+    id SERIAL,
+    pokedex_number integer,
+    pokemon_name text,
+    is_legendary integer,
+    type1_id integer,
+    type2_id integer,
+    ability1_id integer,
+    ability2_id integer,
+    hidden_ability integer,
+    health integer,
+    attack integer,
+    defense integer,
+    special_attack integer,
+    special_defense integer,
+    speed integer,
+    region_id integer,
+    catch_rate numeric,
+    male_percent numeric,
+    game_id integer,
+    egg_group1_id integer,
+    egg_group2_id integer
+);
+\copy pokemon from 'static/pokemon_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS types;
+create TABLE types (
+    id SERIAL,
+    pokemon_type text
+);
+\copy types from 'static/types_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS abilities;
+create TABLE abilities (
+    id SERIAL,
+    ability text,
+    ability_description text
+);
+\copy abilities from 'static/abilities_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS regions;
+create TABLE regions (
+    id SERIAL,
+    region text
+);
+\copy regions from './static/regions_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS games;
+create TABLE games (
+    id SERIAL,
+    game text
+);
+\copy games from './static/games_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS egg_groups;
+create TABLE egg_groups (
+    id SERIAL,
+    egg_group text
+);
+\copy egg_groups from 'static/egg_groups_pandas.csv' DELIMITER ',' CSV
+
+DROP TABLE IF EXISTS legendaries;
+create TABLE legendaries (
+    id SERIAL,
+    legendary_status text
+);
+\copy legendaries from 'static/legendaries_pandas.csv' DELIMITER ',' CSV
+
+
+0	NULL
+1	legendary
+2	mythical
+3	sub-legendary
+
+
+
+SELECT pokedex_number, pokemon_name, b.pokemon_type AS type1, c.pokemon_type AS type2
+FROM pokemon AS a
+JOIN types AS b ON a.type1_id = b.id
+JOIN types AS c ON a.type2_id = c.id
+WHERE pokemon_name LIKE '%mander%'
+WHERE b.pokemon_type = 'fire'
+;
+
+
+-- this one has the abilities 
+
+SELECT pokedex_number, pokemon_name, b.pokemon_type AS type1, c.pokemon_type AS type2, d.ability AS ability1, e.ability AS ability2, f.ability AS hidden_ability
+FROM pokemon AS a
+JOIN types AS b ON a.type1_id = b.id
+JOIN types AS c ON a.type2_id = c.id
+
+JOIN abilities AS d ON a.ability1_id = d.id
+JOIN abilities AS e ON a.ability2_id = e.id
+JOIN abilities AS f ON a.hidden_ability = f.id
+
+WHERE b.pokemon_type = 'fire'
+;
+
+
+<-----------trash code ------------------>
+
+ types AS a
+WHERE pokemon_name LIKE '%mander%'
+AND types.id = type1_id 
+JOIN pokedex_number, pokemon_type AS type2
+FROM pokemon, types AS b
+WHERE types.id = type2_id 
+ON a.pokedex_number = b.pokedex_number
+;
+
+SELECT pokedex_number, pokemon_name, type2_id, c1.pokemon_type AS type1, c2.pokemon_type AS type2
+JOIN contacts AS c1 ON m.sender_id  = c1.id
+JOIN contacts AS c2 ON m.replier_id = c2.id;
+
+types, abilities, regions, growth_types, games, egg_groups
+
+"Charmander"	NULL	"Fire"	NULL	"Blaze"	"Powers up Fire-type moves when the Pokémon's HP is low. "	NULL	NULL	"Solar Power"	"Boosts the Sp. Atk stat in harsh sunlight, but HP decreases every turn."	87.5	12.5	"Red / Blue / Yellow"	"Kanto"	39	52	43	50	0	65	249	45	"Medium Slow"	"Monster"	"Dragon"
+
