@@ -4,7 +4,6 @@ function initialize() {
     var URL = window.location.href;
     URLSplit = URL.split("/");
     var pokemonName = URLSplit[URLSplit.length - 1];
-    console.log(pokemonName);
 
     loadPokemonData(pokemonName);
     loadPokemonImage(pokemonName);
@@ -59,7 +58,7 @@ function loadPokemonData(pokemonName) {
 		var stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
 		for (var i = 0; i < stats.length; i ++) {
 			key = stats[i];
-			document.getElementById(key).innerHTML = `${makePresentable(stats[i])}: <b>${dict[key]} </b> `;
+			document.getElementById(key).innerHTML = `<b> ${makePresentable(stats[i])} </b>: ${dict[key]}`;
 		}
 
         // Ability descriptions
@@ -88,6 +87,7 @@ function loadPokemonData(pokemonName) {
         if (hasHiddenAbility || hasAbility2)
             $(ability1Label).html("Primary Ability: ");
         else { // "Metapod" is a Pokemon that only has a primary ability and triggers this else case
+            $(ability1Label).html("Ability: ");
             var abilityInnerHTML = document.getElementById("ability1_outer").innerHTML;
             var abilityDescInnerHTML = document.getElementById("ability1_description").innerHTML;
             var abilitiesList = document.getElementById("ability_ul");
@@ -145,8 +145,7 @@ function loadSupereffectInfo(pokemonName, type1, type2){
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(effectivenessTuples) {
-        // (Each element of effectivenessTuples is an array of the form [type, effectiveness], where type is something like
-        // "Fire" and effectivness is a positive real number).
+        // See the comment effectTableBuilder() to understand the format of effectivenessTuples.
 
         // Load the "not very effective" table and its introductory text.
         $("#undereffect_info > p").html(makePresentable(pokemonName) + " is not very effective against...");
@@ -163,13 +162,15 @@ function loadSupereffectInfo(pokemonName, type1, type2){
 
 function effectTableBuilder(effectivenessTuples, isSupereffect){
     color = (isSupereffect) ? "Red" : "Gray";
-    var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
+    var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <th class = "gridTable"> Type </th> <th class = "gridTable"> Effect</th> </tr>`;
     var tableHTML = firstRow;
     for (var i = 0; i < effectivenessTuples.length; i++){
-        //from api, the effectivenessTuples table is a sorted list
-        var defendType = effectivenessTuples[i][0];
+        // Each element of effectivenessTuples is an array of the form [type, effectiveness], where type is something like
+        // "Fire" and effectivness is a positive real number. If effectiveness > 1, then the Pokemon is considered to be "supereffective"
+        // against type; if effectiveness < 1, then the Pokemon is considered to be "not very effective" against type.
+        var type = makePresentable(effectivenessTuples[i][0]);        
         var effect = effectivenessTuples[i][1];
-        var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
+        var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${type} </td> <td class = "gridTable"> ${effect}</td></tr>`;
         if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
         if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
     }
