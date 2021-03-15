@@ -79,10 +79,12 @@ function informationSign(){
 }
 
 function makePresentable(txt) {
-    txt = txt.replaceAll("_", " ")
     // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-    .replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-   return txt;
+    var result = txt.replaceAll("_", " ")
+    result = result.replace(/\w\S*/g, function(x) { return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();});
+    var firstDigitIndex = result.indexOf(result.match(/\d/));
+    result = result.substring(0, firstDigitIndex) + " " + result.substring(firstDigitIndex, result.length);
+    return result;
 }
 
 
