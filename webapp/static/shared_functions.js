@@ -31,10 +31,14 @@ function loadLinkToHomePage() {
 /* Functions for loading images */
 /* ============================================================ */
 
-function getPokemonImageWithLink(pokemonName) {
+function getPokemonImageWithLink(pokemonName, textBottom = false, pokedex_number = 0) {
     var pokemonImageHTML = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
             class="img-thumbnail" title = "click to know more about this pokemon">\n`;
-    var pokeImageLink = `<div class = "highlight">\n<a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHTML}</a>\n</div>`;
+    if (textBottom){
+        var bottomText = `<div class = "name-and-id"> <h4> (ID: ${pokedex_number}) ${makePresentable(pokemonName)} </h4> </div>`;
+        pokemonImageHTML = bottomText + pokemonImageHTML;
+    }
+    var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHTML}</a></div>`;
     return pokeImageLink;
 }
 

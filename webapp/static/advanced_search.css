@@ -123,7 +123,7 @@ CSS for query results
 .name-and-id{
   z-index: 2;
   position: absolute;
-  padding-top: 100px;
+  top: 100px;
 }
 
 
@@ -173,6 +173,9 @@ div.invisible-vertical-line{
 .highlight img:hover {
   opacity: .5;
   background-color: yellow;
+  color: black;
+}
+.highlight a {
   color: black;
 }
 
