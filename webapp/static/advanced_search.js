@@ -56,12 +56,19 @@ function getQueryURLOnUpdate() {
 	}
 
 	// Now get user input from search fields (i.e. <input type = "text"> tags). This includes all of the stats.
-	var searchInput = ["id", "pokemon_name", "health", "attack", "defense", "special_attack", "special_defense", "speed", 
-	"catch_rate", "percent_male", "percent_female"];
+	var searchInput = ["id", "pokemon_name", "health", "attack", "defense", "special_attack", "special_defense", "speed",
+	 "catch_rate", "percent_male", "percent_female"];
 	for (var i = 0; i < searchInput.length; i ++) { 
 		var key = searchInput[i];
 		var id = key + "_search";
 		dict[key] = document.getElementById(id).value.replaceAll(" ", "");
+	}
+
+	// The API endpoint for catch_rate requires that the optional argument be of the form "x-y", where x and y are integers. So, when the
+	// user enters an integer z, we must put it into the form "z-z". This isn't a very good check because it assumes that there are no other 
+	// special characters in the user input.
+	if (!dict["catch_rate"].includes("-")) {
+	 	dict["catch_rate"] = dict["catch_rate"] + "-" + dict["catch_rate"]; 
 	}
 	
 	// Get an array of all the names of the user input fields
@@ -157,7 +164,7 @@ function updateSexRatiosHelper(sexRatioField) {
 	values = sexRatioField.value === null ? "" : sexRatioField.value;
 	values = values.replace(/\s+/g, ""); //remove all whitespace from string
 	 if (values.includes("-")) {
-	 	valuesSplit = values.split(/\D/);
+	 	valuesSplit = values.split(/\D/); // split around anything that's not a digit
 	 	
 	 	onlyDigitsBefore = values.indexOf("-") == (values.length - 1); // true if values is of the form "x-", where x is a string of digits
 	 	onlyDigitsAfter = values.indexOf("-") == 0; // true if values is of the form "-x"
