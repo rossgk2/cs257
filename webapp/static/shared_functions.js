@@ -35,7 +35,7 @@ function getPokemonImageWithLink(pokemonName, textBottom = false, pokedex_number
     var pokemonImageHTML = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
             class="img-thumbnail" title = "click to know more about this pokemon">\n`;
     if (textBottom){
-        var bottomText = `<div class = "name-and-id"> <h4> (ID: ${pokedex_number}) ${makePresentable(pokemonName)} </h4> </div>`;
+        var bottomText = `<div class = "name-and-id"><b>(ID: ${pokedex_number}) ${makePresentable(pokemonName)}</b></div>`;
         pokemonImageHTML = bottomText + pokemonImageHTML;
     }
     var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHTML}</a></div>`;
