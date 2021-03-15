@@ -64,12 +64,28 @@ function getQueryURLOnUpdate() {
 		dict[key] = document.getElementById(id).value.replaceAll(" ", "");
 	}
 
-	// The API endpoint for catch_rate requires that the optional argument be of the form "x-y", where x and y are integers. So, when the
-	// user enters an integer z, we must put it into the form "z-z". This isn't a very good check because it assumes that there are no other 
-	// special characters in the user input.
+	// The optional argument for catch rate in our URL must be of the form "-x", "y-", or "x-y", where x and y are integers. 
+	// So, when the user enters an integer z, we must put it into the form "z-z". This isn't a very good check because it assumes
+	// that there are no other special characters in the user input.
 	if (!dict["catch_rate"].includes("-")) {
 	 	dict["catch_rate"] = dict["catch_rate"] + "-" + dict["catch_rate"]; 
 	}
+
+	// The optional argument for pokemon_id in our URL must be of the form "x-y", where x and y are integers. 
+	// So, when we get input of the form "-x" or "y-", we convert it to the form "x-y".
+	pokemonID = dict["id"].replace(/\s+/g, ""); //remove all whitespace
+	if (pokemonID.includes("-")) {
+	 	idSplit = pokemonID.split(/\D/); // Split around anything that's not a digit
+	 	onlyDigitsBefore = pokemonID.indexOf("-") == (pokemonID.length - 1); // true if values is of the form "x-", where x is a string of digits
+	 	onlyDigitsAfter = pokemonID.indexOf("-") == 0;
+	 	if (onlyDigitsBefore) {
+	 		var maxPokemonID = 898; // This can be verified by visiting /api/advanced_search/DESC?order_by=pokedex_number
+	 		dict["id"] = idSplit[0] + "-" + maxPokemonID;
+	 	}
+	 	else if (onlyDigitsAfter) {
+	 		dict["id"] = 1 + "-" + idSplit[1];
+	 	}
+	 }
 	
 	// Get an array of all the names of the user input fields
 	var keys = dropdownInput;
