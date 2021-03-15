@@ -12,28 +12,27 @@ import api
 app = flask.Flask(__name__, static_folder='static', template_folder='templates')
 app.register_blueprint(api.api, url_prefix='/api')
 
-# This route delivers the user your site's home page.
 @app.route('/')
 def home():
+    '''route to main page'''
     return flask.render_template('index.html')
 
-@app.route('/types')
-def types():
+@app.route('/help')
+def show_help():
+    '''route to help page, a list of api end-points'''
     return flask.render_template('types.html')
-
-# This route supports relative links among your web pages, assuming those pages
-# are stored in the templates/ directory or one of its descendant directories,
-# without requiring you to have specific routes for each page.
-
-@app.route('/pokemon_page/<string:path>')
-def individual_pokemon_page(path):
-    # http://localhost:5000/pokemon_page/araquanid
-    query_pokemon = path.lower()
-    return flask.render_template('pokemon_page.html', pokemon = query_pokemon)
 
 @app.route('/advanced_search')
 def advanced_search():
+    '''route to advance search page'''
     return flask.render_template('advanced_search.html')
+
+@app.route('/pokemon_page/<string:path>')
+def individual_pokemon_page(path):
+    '''route to the page of an individual pokemon. for example: 
+    http://localhost:5000/pokemon_page/araquanid'''
+    query_pokemon = path.lower()
+    return flask.render_template('pokemon_page.html', pokemon = query_pokemon)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Ross and Jimmy Pokemon application, including API')
