@@ -36,10 +36,21 @@ function loadPokemonData(pokemonName) {
         pokemonName = makePresentable(dict["pokemon_name"]);
         document.getElementById("number_and_name").innerHTML = "(Pokedex ID: " + dict["pokedex_number"] + ") " + pokemonName; 
 
+        // Type 2 (only display it if it exists)
+        var hasType2 = dict["type2"] !== "NULL";
+        if (hasType2) {
+            document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;";
+            document.getElementById("type2_image").innerHTML = getTypeImageHTML(dict["type2"]);
+        }
+        else {
+            document.getElementById("type2_outer").outerHTML = "";
+        }
+
+        // Type 1
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
         document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
-		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;"
-        document.getElementById("type2_image").innerHTML = getTypeImageHTML(dict["type2"]);
+
+        // Supereffectiveness and not-very-effective-ness
         loadSupereffectInfo(pokemonName, dict["type1"], dict["type2"]);
 
 		// Stats
@@ -49,13 +60,29 @@ function loadPokemonData(pokemonName) {
 			document.getElementById(key).innerHTML = `${makePresentable(stats[i])}: <b>${dict[key]} </b> `;
 		}
 
-		// Abilities
-		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
-		document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
-		document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
+        //??
         var abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
         var htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
         getAbilityDescriptions(abilities, htmlTags);
+
+        // Hidden ability (only display if it exists)
+        var hasHiddenAbility = dict["hidden_ability"] !== "NULL"; 
+        if (hasHiddenAbility) {
+            document.getElementById("hidden_ability").innerHTML = makePresentable(dict["hidden_ability"]);
+        }
+        else {
+            document.getElementById("hidden_ability_outer").outerHTML = "";
+        }
+
+        // Ability 2 (only display it if it exists)
+        var hasAbility2 = dict["ability2"] !== "NULL";
+        if (hasAbility2)
+            document.getElementById("ability2").innerHTML = makePresentable(dict["ability2"]);
+        else
+            document.getElementById("ability2_outer").outerHTML = "";
+
+		// Ability1
+		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
 
         // Legendary status
         legendaryStatus = dict["legendary_status"].toLowerCase();
