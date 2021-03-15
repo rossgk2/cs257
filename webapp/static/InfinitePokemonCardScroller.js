@@ -33,97 +33,103 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	this.query = "";
 	
 	this.getLoadingGifInnerHtml = function() {
-	    var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
-	    var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
-	    <h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
-	    
-	    // In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
-	    // actual images, we put the loading icons inside a <div class = "container">.
-	    var loadingDisplay = '<div class="container">\n<div class="row">\n';
-	    for (var i = 0; i < this.numPokemonPerRow; i ++){
-	        loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
-	    }
-	    loadingDisplay += '</div>\n</div>\n';
-	    return loadingDisplay;
+		var nullTypeImage = '<img src="../static/type_images/null.png" class="img-thumbnail">';
+		var singleBlock = `<img src="../static/pokemon_images/pokemon_ball_square.gif" class="img-thumbnail">
+		<h5>loading</h5> <h6>T1:${nullTypeImage} T2:${nullTypeImage}</h6>`;
+		
+		// In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
+		// actual images, we put the loading icons inside a <div class = "container">.
+		var loadingDisplay = '<div class="container">\n<div class="row">\n';
+		for (var i = 0; i < this.numPokemonPerRow; i ++){
+			loadingDisplay += '\n<div class="col-2">' + singleBlock + '</div>';
+		}
+		loadingDisplay += '</div>\n</div>\n';
+		return loadingDisplay;
 	};
 
 	this.loadPokemonCards = function(display, all) {
-	    // Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
-	    // Only search for numPokemonEachQuery many Pokemon.
-	    this.loading = true;
-	    var url;
-	    if (all) { url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`; }
-	    else { url = getAPIBaseURL() + "/" + this.query + `&limit=${numPokemonEachQuery}&offset=${this.curNumPokemonOnPage}`; } 
+		// Use the advanced search API endpoint to search for the Pokemon that will be displayed as cards.
+		// Only search for numPokemonEachQuery many Pokemon.
+		this.loading = true;
+		var url;
+		if (all) { url = getAPIBaseURL() + `/advanced_search/ASC?order_by=pokedex_number&limit=${numPokemonEachQuery}`; }
+		else { url = getAPIBaseURL() + "/" + this.query + `&limit=${numPokemonEachQuery}&offset=${this.curNumPokemonOnPage}`; } 
 
-	    // Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
-	    var oldThis = this; // "this" changes inside each .then statement
-	    return fetch(url, {method: 'get'})
-	    .then((response) => response.json())
-	    .then(function(pokemonList) {
-	    	// In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
-	   	 	// actual images, we put the loading icons inside a <div class = "container">.
-	        var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
-	        for (var i = 0; i < pokemonList.length; i ++){
-	            // Get info about the current Pokemon.
-	            
-	            var appendThis = oldThis.getPokemonCard(pokemonList[i]);
-	            if (numPokemonPerRow > 1) // If there's more than one item per row, then each item goes in its own <div class = "col-2">.
-	            	 appendThis = '<div class = "col-2">' + appendThis + '</div>';
+		// Query the API and construct the inner HTML which represents each queried Pokemon as a "card". 
+		var oldThis = this; // "this" changes inside each .then statement
+		return fetch(url, {method: 'get'})
+		.then((response) => response.json())
+		.then(function(pokemonList) {
+			// In order to ensure that Pokemon cards don't slightly shift position when loading images are replaced with
+			// actual images, we put the loading icons inside a <div class = "container">.
+			var pokemonDisplayDiv = '<div class="container">\n<div class="row">';
+			for (var i = 0; i < pokemonList.length; i ++){
+				// Get info about the current Pokemon.
+				
+				var appendThis = oldThis.getPokemonCard(pokemonList[i]);
+				if (numPokemonPerRow > 1) // If there's more than one item per row, then each item goes in its own <div class = "col-2">.
+					 appendThis = '<div class = "col-2">' + appendThis + '</div>';
 
-	            pokemonDisplayDiv += appendThis;
+				pokemonDisplayDiv += appendThis;
 
-	            // Go to the next row every numPokemonPerRow cards.
-	            if ((i + 1) % oldThis.numPokemonPerRow == 0) pokemonDisplayDiv += '</div>\n<div class="row">';
-	        }
-	        pokemonDisplayDiv += '</div>\n</div>';
-	        oldThis.curNumPokemonOnPage += numPokemonEachQuery;
-	        
-	        // Update this.morePokemon.
-	        var noResultsSatisfyCriteria = pokemonList.length == 0;
-	        var endOfQueryReached = pokemonList.length < numPokemonEachQuery;
-	        oldThis.morePokemon = !(noResultsSatisfyCriteria || endOfQueryReached);
+				// Go to the next row every numPokemonPerRow cards.
+				if ((i + 1) % oldThis.numPokemonPerRow == 0) pokemonDisplayDiv += '</div>\n<div class="row">';
+			}
+			pokemonDisplayDiv += '</div>\n</div>';
+			oldThis.curNumPokemonOnPage += numPokemonEachQuery;
+			
+			// Update this.morePokemon.
+			var noResultsSatisfyCriteria = pokemonList.length == 0;
+			var endOfQueryReached = pokemonList.length < numPokemonEachQuery;
+			oldThis.morePokemon = !(noResultsSatisfyCriteria || endOfQueryReached);
 
-	        // Update the page with the inner HTML we constructed.
-	        innerHTML = display.innerHTML.replaceAll(oldThis.getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
-	        display.innerHTML = innerHTML;
-	        oldThis.loading = false;
-	    })
+			// Update the page with the inner HTML we constructed.
+			var innerHTML = display.innerHTML.replaceAll(oldThis.getLoadingGifInnerHtml(), " ") + pokemonDisplayDiv;
+
+			if (pokemonList.length == 0 && oldThis.curNumPokemonOnPage == numPokemonEachQuery){
+				display.innerHTML = `<div class="container"> Sorry, there is no pokemon with the criteria that you specified</div>`;
+			}else{
+				//normal case
+				display.innerHTML = innerHTML;
+			}
+			oldThis.loading = false;
+		})
 	};
 
 	this.infiniteUserScroll = function() {
-	    if (this.morePokemon && !this.loading) {
-	        //from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
-	        var scrollHeight = $(document).height();
-	        var scrollPos = $(window).height() + $(window).scrollTop();
-	        this.query = this.getQueryURLOnUpdate();
-	        var smallNumber = 3;
-	        if (scrollHeight - scrollPos <= smallNumber) {
-	            display.innerHTML += this.getLoadingGifInnerHtml();
-	            this.loadPokemonCards(display, false);
-	        }
-	    }
+		if (this.morePokemon && !this.loading) {
+			//from https://dev.to/sakun/a-super-simple-implementation-of-infinite-scrolling-3pnd
+			var scrollHeight = $(document).height();
+			var scrollPos = $(window).height() + $(window).scrollTop();
+			this.query = this.getQueryURLOnUpdate();
+			var smallNumber = 3;
+			if (scrollHeight - scrollPos <= smallNumber) {
+				display.innerHTML += this.getLoadingGifInnerHtml();
+				this.loadPokemonCards(display, false);
+			}
+		}
 	};
 
 	this.initialize = function() {
 		// It will take a second or two for the effects of loadPokemonCards() (below) to register, so set up some "loading" GIFs.
-    	display.innerHTML = this.getLoadingGifInnerHtml();
-    
-	    // Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
-	    this.loadPokemonCards(display, true);
+		display.innerHTML = this.getLoadingGifInnerHtml();
+	
+		// Display all Pokemon (initially, don't restrict Pokemon that are shown by type or ability).
+		this.loadPokemonCards(display, true);
 
-	    // Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
-	    var oldThis = this; // "this" will change inside the anonymous function
-	    this.searchButton.onclick = function() {
-	        display.innerHTML = oldThis.getLoadingGifInnerHtml();
-	        oldThis.morePokemon = true;
-	        oldThis.curNumPokemonOnPage = 0;
-	        oldThis.query = oldThis.getQueryURLOnUpdate();
-	        oldThis.loadPokemonCards(display, false);
-    	};
+		// Get the type and ability selected by the user and use them to load the appropriate Pokemon cards.
+		var oldThis = this; // "this" will change inside the anonymous function
+		this.searchButton.onclick = function() {
+			display.innerHTML = oldThis.getLoadingGifInnerHtml();
+			oldThis.morePokemon = true;
+			oldThis.curNumPokemonOnPage = 0;
+			oldThis.query = oldThis.getQueryURLOnUpdate();
+			oldThis.loadPokemonCards(display, false);
+		};
 
-	    // Register the onscroll event handler.  For some reason, doing "this.scrollContainer.onscroll = this.infiniteUserScroll;" doesn't work
-	    var oldThis = this;
-	    this.scrollContainer.onscroll = function() { oldThis.infiniteUserScroll(); };
+		// Register the onscroll event handler.  For some reason, doing "this.scrollContainer.onscroll = this.infiniteUserScroll;" doesn't work
+		var oldThis = this;
+		this.scrollContainer.onscroll = function() { oldThis.infiniteUserScroll(); };
 	};	
 
 	this.initialize();

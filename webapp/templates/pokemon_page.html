@@ -1,61 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pokemon_page.css') }}" />
-    <script type="text/javascript" src="{{ url_for('static', filename='pokemon_page.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='shared_functions.js') }}"></script>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pokemon_page.css') }}" />
+	<script type="text/javascript" src="{{ url_for('static', filename='pokemon_page.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='shared_functions.js') }}"></script>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" />
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <title>Pokemon page</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<title>Pokemon page</title>
 </head>
 
 <body>
-    <h3 id = "link_to_homepage" class = "link_to_homepage"> this should be a link; if you see this you get a problem </h3>
-    <div class = container>
-    <div id = "pokemon_data">
-        <h3 id = "number_and_name"> pokedex_id and pokemon_name go here </h3>
-        <img src="../static/pokemon_images/pokemon_ball_square.gif" alt="The image of this pokemon is not available at this time" id = "dynamic_pokemon_image">
-        <div id = "undereffect_info" class = "right-aligned">
-            <p> Text that introduces the table in the next div goes here </p>
-            <div id = "type_undereffect_table">type undereffect table...</div>
-        </div>
-        <div id = "supereffect_info" class = "right-aligned">
-            <p> Text that introduces the table in the next div goes here </p>
-            <div id = "type_supereffect_table">type supereffect table...</div>
-        </div>
-        <table>
-            <tr id = "type1_outer"> <td> Primary Type: </td> <td id = "type1"> type1 goes here </td> <td id = "type1_image"></td></tr>
-            <tr id = "type2_outer"> <td> <b> Secondary Type: </b> &nbsp;</td> <td id = "type2"> type2 goes here </td> <td id = "type2_image"></td></tr>
-        </table>
-        <ul id = "ability_ul">
-            <li id = "ability1_outer"> <b> Primary Ability: </b> <span id = "ability1"> ability 1 goes here </span> </li>
-            <ul><li id = "ability1_description"> ability 1 description goes here </li></ul>
-            <li class = "ability2_outer"> <b> Secondary Ability: </b> <span id = "ability2">ability 2 goes here </span></li>
-            <ul class = "ability2_outer"><li id = "ability2_description"> ability 2 description goes here </li></ul>
-            <li class = "hidden_ability_outer"> <b> Hidden Ability: </b> <span id = "hidden_ability">hidden ability goes here </span></li>
-            <ul class = "hidden_ability_outer"><li id = "hidden_ability_description"> hidden ability description goes here </li></ul>
-        </ul>
-        <table id = "stats" class = "gridTable">
-            <tr class = "gridTable"> <td id = "attack" class = "gridTable"> attack goes here </td> 
-                <td id = "special_attack" class = "gridTable"> special attack goes here </td> </tr>
-            <tr class = "gridTable"> <td id = "defense" class = "gridTable"> defense goes here </td>
-                <td id = "special_defense" class = "gridTable"> special defense goes here </td> </tr>
-            <tr class = "gridTable"> <td id = "health" class = "gridTable"> health goes here </td>
-                <td id = "speed" class = "gridTable"> speed goes here </td> </tr>
-        </table>
-        <p></p>
-        <table>
-            <tr> <td id = "legendary_status"> legendary_status goes here </td> </tr>
-            <tr> <td id = "region"> region goes here </td> </tr>
-            <tr> <td id = "catch_rate"> catch rate goes here </td> </tr>
-            <tr> <td id = "sex_ratios"> male and female ratios go here </td> </tr>
-            <tr> <td id = "game"> game goes here </td> </tr>
-            <tr> <td id = "egg_groups"> egg groups go here </td> </tr>
-        </table>
-    </div>
-    </div>
+	<h3 id = "link_to_homepage" class = "link_to_homepage"> this should be a link; if you see this you get a problem </h3>
+	<div class = container>
+	<div id = "pokemon_data">
+		<h3 id = "number_and_name"> pokedex_id and pokemon_name go here </h3>
+		<img src="../static/pokemon_images/pokemon_ball_square.gif" alt="The image of this pokemon is not available at this time" id = "dynamic_pokemon_image">
+		<div id = "undereffect_info" class = "right-aligned">
+			<p> Text that introduces the table in the next div goes here </p>
+			<div id = "type_undereffect_table">type undereffect table...</div>
+		</div>
+		<div id = "supereffect_info" class = "right-aligned">
+			<p> Text that introduces the table in the next div goes here </p>
+			<div id = "type_supereffect_table">type supereffect table...</div>
+		</div>
+		<table>
+			<tr id = "type1_outer"> <td> Primary Type: </td> <td id = "type1"> type1 goes here </td> <td id = "type1_image"></td></tr>
+			<tr id = "type2_outer"> <td> <b> Secondary Type: </b> &nbsp;</td> <td id = "type2"> type2 goes here </td> <td id = "type2_image"></td></tr>
+		</table>
+		<ul id = "ability_ul">
+			<li id = "ability1_outer"> <b> Primary Ability: </b> <span id = "ability1"> ability 1 goes here </span> </li>
+			<ul><li id = "ability1_description"> ability 1 description goes here </li></ul>
+			<li class = "ability2_outer"> <b> Secondary Ability: </b> <span id = "ability2">ability 2 goes here </span></li>
+			<ul class = "ability2_outer"><li id = "ability2_description"> ability 2 description goes here </li></ul>
+			<li class = "hidden_ability_outer"> <b> Hidden Ability: </b> <span id = "hidden_ability">hidden ability goes here </span></li>
+			<ul class = "hidden_ability_outer"><li id = "hidden_ability_description"> hidden ability description goes here </li></ul>
+		</ul>
+		<table id = "stats" class = "gridTable">
+			<tr class = "gridTable"> <td id = "attack" class = "gridTable"> attack goes here </td> 
+				<td id = "special_attack" class = "gridTable"> special attack goes here </td> </tr>
+			<tr class = "gridTable"> <td id = "defense" class = "gridTable"> defense goes here </td>
+				<td id = "special_defense" class = "gridTable"> special defense goes here </td> </tr>
+			<tr class = "gridTable"> <td id = "health" class = "gridTable"> health goes here </td>
+				<td id = "speed" class = "gridTable"> speed goes here </td> </tr>
+		</table>
+		<p></p>
+		<table>
+			<tr> <td id = "legendary_status"> legendary_status goes here </td> </tr>
+			<tr> <td id = "region"> region goes here </td> </tr>
+			<tr> <td id = "catch_rate"> catch rate goes here </td> </tr>
+			<tr> <td id = "sex_ratios"> male and female ratios go here </td> </tr>
+			<tr> <td id = "game"> game goes here </td> </tr>
+			<tr> <td id = "egg_groups"> egg groups go here </td> </tr>
+		</table>
+	</div>
+	</div>
 </body>
 </html>

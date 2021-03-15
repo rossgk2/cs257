@@ -18,9 +18,9 @@ function initialize() {
 }
 
 function loadInfinitePokemonCardScroller() {
-    var display = document.getElementById("pokemon_landing_display");
-    var scrollContainer = display;
-    var searchButton = document.getElementById("search_button");
+	var display = document.getElementById("pokemon_landing_display");
+	var scrollContainer = display;
+	var searchButton = document.getElementById("search_button");
 
 	getPartOfPokemonCard = function(pokemon){
 		//this pokemon image has a line of name and id at its bottom
@@ -40,7 +40,7 @@ function loadInfinitePokemonCardScroller() {
 		return innerHTML;
 	}
 
-    let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 6, 1);
+	let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 6, 1);
 }
 
 function getQueryURLOnUpdate() {
@@ -219,14 +219,14 @@ function updateSexRatiosHelper(sexRatioField) {
 function loadStatsButtonCallback() {
 	var button = getStatsCollapsibleContainerChild("stats_collapsible_button")
 	button.onclick = function() {
-	    this.classList.toggle("active");
-	    var content = getStatsCollapsibleContainerChild("content");
-	    if (content.style.display === "block") {
-	      content.style.display = "none";
-	    } 
-	    else {
-	      content.style.display = "block";
-	    }
+		this.classList.toggle("active");
+		var content = getStatsCollapsibleContainerChild("content");
+		if (content.style.display === "block") {
+		  content.style.display = "none";
+		} 
+		else {
+		  content.style.display = "block";
+		}
 	  };
 }
 
