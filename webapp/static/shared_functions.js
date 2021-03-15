@@ -40,9 +40,13 @@ function getPokemonImagePath(pokemonName) {
     var base_path = "../static/pokemon_images/";
     var jpg_url = base_path + pokemonName + ".jpg";
     var png_url = base_path + pokemonName + ".png";
-    if (doesFileExist(png_url)) return png_url;
-    if (doesFileExist(jpg_url)) return jpg_url;
-    return "../static/pokemon_images/pokemon_picture_missing.png";
+    if (doesFileExist(png_url)){
+        return png_url;
+    }else if (doesFileExist(jpg_url)){
+        return jpg_url;
+    }else{
+        return "../static/pokemon_images/pokemon_picture_missing.png";
+    }
 }
 
 function doesFileExist(urlToFile) {
@@ -50,7 +54,7 @@ function doesFileExist(urlToFile) {
     var xhr = new XMLHttpRequest();
     xhr.open('HEAD', urlToFile, false);
     xhr.send();
-    if (xhr.status === "404") {
+    if (xhr.status == "404") {
         return false;
     } else {
         return true;
