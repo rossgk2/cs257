@@ -25,9 +25,9 @@ function doesFileExist(urlToFile) {
 }
 
 function getPokemonImageWithLink(pokemonName) {
-    var pokemonImageHtml = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
+    var pokemonImageHTML = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
             class="img-thumbnail" title = "click to know more about this pokemon">\n`;
-    var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHtml}</a></div>`;
+    var pokeImageLink = `<div class = "highlight"><a href="${getPokemonPageURL(pokemonName)}">${pokemonImageHTML}</a></div>`;
     return pokeImageLink;
 }
 
@@ -47,15 +47,15 @@ function getPokemonPageURL(pokemon_name){
 }
 
 function dualColTableBuilder(leftKey, valueDict){
-	var tableHtml = "<table>\n";
+	var tableHTML = "<table>\n";
 	for (var i = 0; i < leftKey.length; i++){
 		infoTitle = makePresentable(leftKey[i]);
 		infoValue = valueDict[leftKey[i]];
 		if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
-		tableHtml += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
+		tableHTML += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
 	}
-	tableHtml += "</table>\n";
-	return tableHtml;
+	tableHTML += "</table>\n";
+	return tableHTML;
 }
 
 function loadLinkToHomePage() {
@@ -78,48 +78,50 @@ function informationSign(){
     }
 }
 
+// Prettifies strings. E.g., makePresentable("pokemon_name") === "Pokemon Name".
 function makePresentable(txt) {
-    txt = txt.replaceAll("_", " ")
     // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-    .replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-   return txt;
+    // Replace underscores with spaces.
+    var result = txt.replaceAll("_", " ") 
+
+    // Convert to Title Case.
+    result = result.replace(/\w\S*/g, function(x) { return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();}); 
+    
+    // Put a space between word and the number contained the word. (We assume only one number is contained in the word).
+    var firstDigitIndex = result.indexOf(result.match(/\d/));
+    result = result.substring(0, firstDigitIndex) + " " + result.substring(firstDigitIndex, result.length);
+    return result;
 }
 
 
-/* Inputs:
- - arr is an array
- - accessor is a function that takes in an array and an integer and returns an element of that array. If accessor is null, then it is assumed to be
- the function: function(arr, i){ return arr[i]; }
+/* Reads the contents of the JSON list at the specified API endpoint into the inner HTML of the element with HTML ID HTMLid. 
 
- Given the HTML id HtmlId of a HTML element that should contain <option> tags, this function 
- loads the appropriate inner HTML of that element to be such that inner HTML and value of each option tag
- is loaded from the API endpoint apiEndpoint.
+    accessor is the function used to access elements of the JSON list at the API endpoint. More specifically, accessor must
+    be a function with the signature "function(arr, i)", where arr is an array and i is an integer, and it must return a string.
 */
-function loadDropdown(HtmlId, apiEndpoint, accessor) {
-    if (accessor === null) {
-        accessor = function(arr, i){ return arr[i]; };
-    }
-
-    var url = getAPIBaseURL() + "/" + apiEndpoint
+function loadDropdown(HTMLid, APIendpoint, accessor) {
+    var url = getAPIBaseURL() + "/" + APIendpoint
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(arr) {
-        // See shared_functions.js for the definition of getDropdownInnerHTML
-        innerHTML = getDropdownInnerHTML(arr, makePresentable, function(arr, i){ return accessor(arr, i);});
-        document.getElementById(HtmlId).innerHTML = innerHTML;      
+        innerHTML = getDropdownInnerHTML(arr, accessor, makePresentable);
+        document.getElementById(HTMLid).innerHTML = innerHTML;      
     })
     .catch(function(error) {
         console.log(error);
     });
 }
 
-/* Inputs:
- - arr is an array
- - presentor is a function that takes a single string as input and returns a string as output
- - accessor is a function that takes in an array and an integer and returns an element of that array. If accessor is null, then it is assumed to be
- the function: function(arr, i){ return arr[i]; }
+/* Returns the inner HTML required to fill a searchable dropdown menu (i.e. a <select class = "select2">) with the contents of the array arr.
+
+ accessor is a function that specifies how to access a string from the array arr. (We need this generality because arr might be an array of dicts, 
+ or maybe something even crazier). accessor must have the signature "function (arr, i)", where arr is an array and i is an integer, and it 
+ must return a string. If accessor is null, then it is assumed to be the function "function(arr, i){ return arr[i]; }". 
+
+ presentor is a function that is used to "prettify" the strings that are returned by accessor() before they are put into
+ the final inner HTML. It must have the signature "function(str)", and it must return a string.
 */
-function getDropdownInnerHTML(arr, presentor, accessor) {
+function getDropdownInnerHTML(arr, accessor, presentor) {
     if (accessor === null) {
         accessor = function(arr, i){ return arr[i]; };
     }
