@@ -11,6 +11,11 @@ function initialize() {
     loadLinkToHomePage();
 }
 
+function loadPokemonImage(pokemonName) {
+    var pokemonImagePath = getPokemonImagePath(pokemonName.replaceAll("_", "-"));
+    document.getElementById('dynamic_pokemon_image').src = pokemonImagePath;
+}
+
 function loadPokemonData(pokemonName) {
     var url = getAPIBaseURL() + '/advanced_search/ASC?pokemon_name=' + pokemonName;
     fetch(url, {method: 'get'})
@@ -82,67 +87,6 @@ function loadPokemonData(pokemonName) {
     });
 }
 
-
-function loadPokemonImage(pokemonName) {
-    var pokemonImagePath = getPokemonImagePath(pokemonName.replaceAll("_", "-"));
-    document.getElementById('dynamic_pokemon_image').src = pokemonImagePath;
-}
-
-
-function loadSupereffectInfo(pokemonName, type1, type2){
-    url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(effectivenessTuples) {
-        // (Each element of effectivenessTuples is an array of the form [type, effectiveness], where type is something like
-        // "Fire" and effectivness is a positive real number).
-
-        // Load the "not very effective" table and its introductory text.
-        $("#undereffect_info > p").html(makePresentable(pokemonName) + " is not very effective against...");
-        $("#undereffect_info > div").html(effectTableBuilder(effectivenessTuples, false));
-
-        // Load the "supereffective" table and its introductory text.
-        $("#supereffect_info > p").html(makePresentable(pokemonName) + " is supereffective against...");
-        $("#supereffect_info > div").html(effectTableBuilder(effectivenessTuples, true));
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function effectTableBuilder(effectivenessTuples, isSupereffect){
-    color = (isSupereffect) ? "Red" : "Gray";
-    var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
-    var tableHTML = firstRow;
-    for (var i = 0; i < effectivenessTuples.length; i++){
-        //from api, the effectivenessTuples table is a sorted list
-        var defendType = effectivenessTuples[i][0];
-        var effect = effectivenessTuples[i][1];
-        var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
-        if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
-        if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
-    }
-    //if the table is empty
-    if (tableHTML == firstRow) tableHTML = '<tr class = "gridTable"> supereffect is 1 for all types </tr>';
-
-    tableHTML += '</table>';
-    return tableHTML;
-}
-
-/* archive because the api endpoint archived
-function getAbilityDescription(abilityName, htmlTag){
-    var url = getAPIBaseURL() + '/ability_description/' + abilityName;
-    fetch(url, {method: 'get'})
-    .then((response) => response.json())
-    .then(function(abilityDescription) {
-        abilityDescription = abilityDescription.replaceAll("_", " ");
-        document.getElementById(htmlTag).innerHTML = `Description: ${abilityDescription}`
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-*/
 function getAbilityDescriptions(abilityNames, htmlTags){
     var url = getAPIBaseURL() + '/abilities';
     fetch(url, {method: 'get'})
@@ -160,4 +104,43 @@ function getAbilityDescriptions(abilityNames, htmlTags){
     .catch(function(error) {
         console.log(error);
     });
+}
+
+function loadSupereffectInfo(pokemonName, type1, type2){
+    url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
+    fetch(url, {method: 'get'})
+    .then((response) => response.json())
+    .then(function(effectivenessTuples) { // See the comment effectTableBuilder() to understand the format of effectivenessTuples.
+        // Load the "not very effective" table and its introductory text.
+        $("#undereffect_info > p").html(makePresentable(pokemonName) + " is not very effective against...");
+        $("#undereffect_info > div").html(effectTableBuilder(effectivenessTuples, false));
+
+        // Load the "supereffective" table and its introductory text.
+        $("#supereffect_info > p").html(makePresentable(pokemonName) + " is supereffective against...");
+        $("#supereffect_info > div").html(effectTableBuilder(effectivenessTuples, true));
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function effectTableBuilder(effectivenessTuples, isSupereffect) {
+    color = (isSupereffect) ? "Red" : "Gray";
+    var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
+    var tableHTML = firstRow;
+    for (var i = 0; i < effectivenessTuples.length; i++) {
+        // Each element of effectivenessTuples is an array of the form [type, effectiveness], where type is something like
+        // "Fire" and effectivness is a positive real number. A Pokemon is considered to be "supereffective" against a type if the corresponding
+        // effectiveness is > 1 and "not very effective" against a type if the corresponding effectiveness is < 1.
+        var defendType = effectivenessTuples[i][0];
+        var effect = effectivenessTuples[i][1];
+        var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
+        if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
+        if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
+    }
+    // If the table is empty
+    if (tableHTML == firstRow) tableHTML = '<tr class = "gridTable"> supereffect is 1 for all types </tr>';
+
+    tableHTML += '</table>';
+    return tableHTML;
 }
