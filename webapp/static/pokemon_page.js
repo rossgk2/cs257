@@ -35,7 +35,7 @@ function loadPokemonData(pokemonName) {
         document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
 		document.getElementById("type2").innerHTML = makePresentable(dict["type2"]) + "&nbsp;"
         document.getElementById("type2_image").innerHTML = getTypeImageHTML(dict["type2"]);
-        loadSupereffectInfo(dict["type1"], dict["type2"]);
+        loadSupereffectInfo(pokemonName, dict["type1"], dict["type2"]);
 
 		// Stats
 		var stats = ['health', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'];
@@ -89,29 +89,35 @@ function loadPokemonImage(pokemonName) {
 }
 
 
-function loadSupereffectInfo(type1, type2){
+function loadSupereffectInfo(pokemonName, type1, type2){
     url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;
     fetch(url, {method: 'get'})
     .then((response) => response.json())
-    .then(function(nonOneEffects) {
-        var undereffectTable = effectTableBuilder(nonOneEffects, false)
-        var supereffectTable = effectTableBuilder(nonOneEffects, true)
-        document.getElementById("type_supereffect_table").innerHTML = supereffectTable;
-        document.getElementById("type_undereffect_table").innerHTML = undereffectTable;
+    .then(function(effectivenessTuples) {
+        // (Each element of effectivenessTuples is an array of the form [type, effectiveness], where type is something like
+        // "Fire" and effectivness is a positive real number).
+
+        // Load the "not very effective" table and its introductory text.
+        $("#undereffect_info > p").html(makePresentable(pokemonName) + " is not very effective against...");
+        $("#undereffect_info > div").html(effectTableBuilder(effectivenessTuples, false));
+
+        // Load the "supereffective" table and its introductory text.
+        $("#supereffect_info > p").html(makePresentable(pokemonName) + " is supereffective against...");
+        $("#supereffect_info > div").html(effectTableBuilder(effectivenessTuples, true));
     })
     .catch(function(error) {
         console.log(error);
     });
 }
 
-function effectTableBuilder(nonOneEffects, isSupereffect){
+function effectTableBuilder(effectivenessTuples, isSupereffect){
     color = (isSupereffect) ? "Red" : "Gray";
     var firstRow = `<table class = "gridTable"> <tr class = "gridTable${color}"> <td class = "gridTable">Type </td> <td class = "gridTable"> Effect</td></tr>`;
     var tableHTML = firstRow;
-    for (var i = 0; i < nonOneEffects.length; i++){
-        //from api, the nonOneEffects table is a sorted list
-        var defendType = nonOneEffects[i][0];
-        var effect = nonOneEffects[i][1];
+    for (var i = 0; i < effectivenessTuples.length; i++){
+        //from api, the effectivenessTuples table is a sorted list
+        var defendType = effectivenessTuples[i][0];
+        var effect = effectivenessTuples[i][1];
         var tableRowHTML = `<tr class = "gridTable"> <td class = "gridTable">${defendType} </td> <td class = "gridTable"> ${effect}</td></tr>`;
         if (effect > 1 && isSupereffect) tableHTML += tableRowHTML;
         if (effect < 1 && !isSupereffect) tableHTML += tableRowHTML;
