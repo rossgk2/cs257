@@ -110,7 +110,7 @@ function loadDropdowns() {
 
 	// Legendary status
 	loadDropdown("legendary_status_dropdown", "legendaries",
-		function(arr, i) { return arr[i].replace("null", "not legendary"); });
+		function(arr, i) { return arr[i].replace("NULL", "not legendary"); });
 	
 	// Types
 	loadDropdown("type1_dropdown", "types", null);
