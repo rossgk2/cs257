@@ -44,9 +44,9 @@ function loadPokemonData(pokemonName) {
         // Type 1 will be labeled as "Primary Type" if Type 2 is present, and just "Type" otherwise
         var type1Label = "#type1_outer td:first-child";
         if (hasType2)
-            $(type1Label).html("Primary Type: ");
+            $(type1Label).html("<b> Primary Type: </b>");
         else
-            $(type1Label).html("Type: ");
+            $(type1Label).html("<b> Type: </b>");
 
 		document.getElementById("type1").innerHTML = makePresentable(dict["type1"]) + "&nbsp;"
         document.getElementById("type1_image").innerHTML = getTypeImageHTML(dict["type1"]);
@@ -85,9 +85,9 @@ function loadPokemonData(pokemonName) {
         // Ability 1 will be called "Primary Ability" if either the hidden ability or ability 2 are present, and just "Ability" otherwise
         var ability1Label = "#ability1_outer > span";
         if (hasHiddenAbility || hasAbility2)
-            $(ability1Label).html("Primary Ability: ");
+            $(ability1Label).html("<b> Primary Ability: </b>");
         else { // "Metapod" is a Pokemon that only has a primary ability and triggers this else case
-            $(ability1Label).html("Ability: ");
+            $(ability1Label).html("<b> Ability: </b>");
             var abilityInnerHTML = document.getElementById("ability1_outer").innerHTML;
             var abilityDescInnerHTML = document.getElementById("ability1_description").innerHTML;
             var abilitiesList = document.getElementById("ability_ul");
@@ -99,26 +99,26 @@ function loadPokemonData(pokemonName) {
         // Legendary status
         legendaryStatus = dict["legendary_status"].toLowerCase();
 		if (legendaryStatus === "null")
-            legendaryStatus = `${pokemonName} is <b> not </b> a legendary pokemon`;
+            legendaryStatus = `${pokemonName} is not a legendary pokemon`;
         else
-            legendaryStatus = `${pokemonName} is a ${makePresentable(legendaryStatus)} pokemon`;
+            legendaryStatus = `${pokemonName} <b> is </b> a ${makePresentable(legendaryStatus)} pokemon`;
 
 		document.getElementById("legendary_status").innerHTML = legendaryStatus;
-		document.getElementById("region").innerHTML = `Region: <b>${makePresentable(dict["region"])}</b>`;
-		document.getElementById("catch_rate").innerHTML = `Catch rate: <b>${makePresentable(dict["catch_rate"])}%</b>`;
+		document.getElementById("region").innerHTML = `<b> Region </b>: ${makePresentable(dict["region"])}`;
+		document.getElementById("catch_rate").innerHTML = `<b> Catch rate </b>: ${makePresentable(dict["catch_rate"])}%`;
 
 		//Game
-		document.getElementById("game").innerHTML = `First appeared in: <b>${makePresentable(dict["game"])}</b> edition.`
+		document.getElementById("game").innerHTML = `<b> First appeared in: </b>${makePresentable(dict["game"])} edition.`
 
 		// The following fields coorrespond to HTML id's whose names don't exactly match up to the keys in dict (e.g. "sex_ratios" 
 		// is an HTML id but the coorresponding dict key is "male_percent").
 
 		// Sex ratios (some in-line computation is needed)
-		document.getElementById("sex_ratios").innerHTML = `<b>${dict["male_percent"]}%</b> of ${pokemonName} are male and 
-		<b>${100 - dict["male_percent"]}%</b> are female.`;
+		document.getElementById("sex_ratios").innerHTML = `${dict["male_percent"]}% of ${pokemonName} are <b> male </b> and 
+		${100 - dict["male_percent"]}% are <b> female </b>.`;
 
-		eggGroupString = `Egg group(s): <b>${makePresentable(dict["egg_group1"])}</b>`;
-		if (dict["egg_group2"].toLowerCase() !== "null") eggGroupString += ` and <b>${makePresentable(dict["egg_group2"])}</b>`
+		eggGroupString = `<b>Egg group(s)</b>: ${makePresentable(dict["egg_group1"])}`;
+		if (dict["egg_group2"].toLowerCase() !== "null") eggGroupString += ` and ${makePresentable(dict["egg_group2"])}`
 		document.getElementById("egg_groups").innerHTML = eggGroupString;
     })
     .catch(function(error) {
