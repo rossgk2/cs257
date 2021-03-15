@@ -100,7 +100,7 @@ function loadPokemonData(pokemonName) {
 
 		document.getElementById("legendary_status").innerHTML = legendaryStatus;
 		document.getElementById("region").innerHTML = `<b> Region: </b> ${makePresentable(dict["region"])}`;
-		document.getElementById("catch_rate").innerHTML = `<b> Catch rate: </b> ${makePresentable(dict["catch_rate"])}%`;
+		document.getElementById("catch_rate").innerHTML = `<b> Catch rate: </b> ${makePresentable(dict["catch_rate"])}/255`;
 
 		//Game
 		document.getElementById("game").innerHTML = `<b> First appeared in: </b>${makePresentable(dict["game"])} edition.`

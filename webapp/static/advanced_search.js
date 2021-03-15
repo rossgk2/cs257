@@ -129,14 +129,6 @@ function loadDropdowns() {
 	loadDropdown("game_dropdown", "games", null);
 
 	// Egg groups
-	/* eggGroupsPresentor in the place of accessor? 
-	This version does not work because we get api query like: /api/advanced_search/ASC?egg_group2=Amorphous
-	api query does not take in capitalized letters. "A"
-	eggGroupsPresentor = function(arr, i) { return makePresentable(arr[i]); }
-	loadDropdown("egg_group1_dropdown", "egg_groups", eggGroupsPresentor);
-	loadDropdown("egg_group2_dropdown", "egg_groups", eggGroupsPresentor);
-	*/
-
 	loadDropdown("egg_group1_dropdown", "egg_groups", null);
 	loadDropdown("egg_group2_dropdown", "egg_groups", null);
 }
