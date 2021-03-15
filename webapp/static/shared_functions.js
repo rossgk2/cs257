@@ -7,24 +7,17 @@ function getAPIBaseURL() {
     return baseURL;
 }
 
-function doesFileExist(urlToFile) {
-    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', urlToFile, false);
-    xhr.send();
-    if (xhr.status === "404") {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 function loadLinkToHomePage() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
     var image = "../static/pokemon_images/homePageSign.png";
     image = `<img src="${image}"  width="50" align = "left" alt="homePageSign"></img>`
     var htmlElement = `<a href="${baseURL}">${image}</a>`;
     document.getElementById('link_to_homepage').innerHTML = htmlElement;
+}
+
+function getPokemonPageURL(pokemon_name){
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
+    return baseURL;
 }
 
 /* ============================================================ */
@@ -52,9 +45,16 @@ function getPokemonImagePath(pokemonName) {
     return "../static/pokemon_images/pokemon_picture_missing.png";
 }
 
-function getPokemonPageURL(pokemon_name){
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/pokemon_page/' + pokemon_name;
-    return baseURL;
+function doesFileExist(urlToFile) {
+    // from https://www.kirupa.com/html5/checking_if_a_file_exists.htm
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+    if (xhr.status === "404") {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function getTypeImageHTML(type){
