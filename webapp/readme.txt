@@ -1,11 +1,12 @@
 AUTHORS: Ross Grogan-Kaylor and Jimmy Zhong
 
-DATA: a dataset of 500+ Pokemon and their attributes.
+DATA: a dataset of 500+ Pokemon and their attributes, such as types (e.g. water, fire, grass, electric, flying, etc.) and abilities (e.g. berserk, dazzling, fur coat, gluttony, etc.).
 
 Our dataset comes from https://www.kaggle.com/mrdew25/pokemon-database.
 
-STATUS: [a concise description of what works, what's not working
-yet, and any other information that might help me
-test and evaluate your work]
+STATUS:
 
-NOTES: [(Optional) anything else you'd like to add]
+- the home page works great.
+- 
+
+NOTES: a substantial amount of effort went into writing the InfinitePokemonCardScroller class. Jimmy got the infinite scrolling to work in the first place, and Ross did the abstraction. It's possible that Ross spent too much time on this class instead of on other features. (Ross wrote this, so no, Jimmy is not throwing Ross under the bus here!)

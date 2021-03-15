@@ -121,6 +121,11 @@ function loadPokemonData(pokemonName) {
     });
 }
 
+function loadPokemonImage(pokemonName) {
+    var pokemonImagePath = getPokemonImagePath(pokemonName.replaceAll("_", "-"));
+    document.getElementById('dynamic_pokemon_image').src = pokemonImagePath;
+}
+
 function clearOuterHTML(className) {
     var elements = document.getElementsByClassName(className);
     for (var i = 0; i < elements.length; i ++) {
@@ -128,12 +133,6 @@ function clearOuterHTML(className) {
         elements[i].innerHTML = "";
     }
 }
-
-function loadPokemonImage(pokemonName) {
-    var pokemonImagePath = getPokemonImagePath(pokemonName.replaceAll("_", "-"));
-    document.getElementById('dynamic_pokemon_image').src = pokemonImagePath;
-}
-
 
 function loadSupereffectInfo(pokemonName, type1, type2){
     url = getAPIBaseURL() + "/supereffect_cal/" + type1 + "/" + type2;

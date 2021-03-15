@@ -1,8 +1,3 @@
-/* The symbol $ is an alias for jQuery(). To be totally clear, this means that $ is used as the name of a function! In the below, $(document)
- is the function $ acting on the argument whose name is document.
-*/
-
-// The anonymous function inside $(document).ready() is called after the document has been loaded.
 window.onload = initialize;
 var numPokemonEachQuery = 6;
 var curNumPokemonOnPage = 0;
@@ -39,7 +34,6 @@ function loadInfinitePokemonCardScroller() {
 
 	getPokemonCard = function(pokemon) {
 		innerHTML = `<ul class = "row-parent">\n<li>${getPartOfPokemonCard(pokemon)}</li>`;
-		//var keyDisplayConversion = {"Ability1" : "ability1", "Ability2" : "ability2", "Hidden Abty" : "hidden_ability"}
 		innerHTML += `<li> ${dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemon)} </li>`; //second table
 		innerHTML += `<li> ${dualColTableBuilder(["ability1", "ability2", "hidden_ability"], pokemon)} </li>`; //first tabl
 		innerHTML += '</ul>';
@@ -110,7 +104,7 @@ function loadDropdowns() {
 
 	// Legendary status
 	loadDropdown("legendary_status_dropdown", "legendaries",
-		function(arr, i) { return arr[i].replace("null", "not legendary"); });
+		function(arr, i) { return arr[i].replace("NULL", "not legendary"); });
 	
 	// Types
 	loadDropdown("type1_dropdown", "types", null);
