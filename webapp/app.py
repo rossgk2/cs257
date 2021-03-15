@@ -20,7 +20,7 @@ def home():
 @app.route('/help')
 def show_help():
     '''route to help page, a list of api end-points'''
-    return flask.render_template('types.html')
+    return flask.render_template('help.html')
 
 @app.route('/advanced_search')
 def advanced_search():

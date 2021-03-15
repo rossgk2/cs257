@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon Database API Reference</title>
+</head>
+<body>
+    <pre>
+Pokemon Database: user facing pages:
+REQUEST: /
+RESPONSE: main page, landing page. 
+
+REQUEST: /help
+RESPONSE: this message
+
+REQUEST: /advance_search
+RESPONSE: interactive advance search page
+
+REQUEST: /pokemon/[name_pokemon]
+RESPONSE: a webpage that displays information about a pokemon
+
+
+Pokemon Database API: endpoint reference 
+All responses are in JSON
+
+REQUEST: api/types
+RESPONSE: an 18-element JSON list of strings representing all the types that Pokemon can have (e.g. "fire", "water", "electric", etc.)
+
+REQUEST: api/abilities
+RESPONSE: a JSON list of strings representing all the abilities that Pokemon can have (e.g. "berserk", "electric surge", etc.), as well as the description for that ability
+
+REQUEST: api/regions
+RESPONSE: a JSON list of strings representing regions that Pokemon can live in.
+
+REQUEST: api/legendaries
+RESPONSE: a JSON list of strings representing the legendary status that a pokemon can have.
+
+REQUEST: api/games
+RESPONSE: a JSON list of strings representing the pokemon game (version) that a pokemon can appear in.
+
+REQUEST: api/egg_groups
+RESPONSE: a JSON list of strings representing egg groups that Pokemon can belong to (e.g. "Water1", "Water2", "Grass").
+
+REQUEST: api/advance_search/
+Require: ASC | DESC, defines whether the return pokemon is returned in ascending or descending order (default sort by pokemon index, but user can define what to sort on)
+
+GET parameters (for this request, all GET parameters are treated as optional arguments):
+pokedex_lower - int
+pokedex_upper - int
+pokemon_name - string
+legendary_status - string
+type1 - string
+type2 - string
+composite_type - string => filter all pokemon with either type1 or type2 with string
+ability1 - string
+ability2 - string
+hidden_ability - string
+composite_ability - string => same idea as composite_type
+game - string
+egg_group_1 - string
+egg_group_2 - string
+region - string
+
+health - string of a range, separated by a minus sign: -100, 50-, or 50-100
+attack - string of a range
+defense - string of a range
+special_attack - string of a range
+special_defense - string of a range
+speed - string of a range
+catch_rate - string of a range
+male_percent - string of a range
+female_percent - string of a range
+
+order_by - one of the following strings: "id", "name", "type1", "type2", "ability1", "ability2", "hidden_ability", "health", "attack", "defense", "special_attack", "special_defense", "speed", "region", "catch_rate", "growth_type", "male_percent", "game", "egg_group1", "egg_group2"
+
+RESPONSE: a JSON list of Pokemon names of Pokemon such that the filters are satisfied. The arguments sort_field and sort_type determine how the returned JSON list is sorted. That is, if the variable represented by sort_field is a string, sorting is done alphabetically/reverse-alphabetically, and if the variable represented by sort_field is a number, sorting is done in increasing/decreasing order.
+	</pre>
+</body>
+</html>
+
