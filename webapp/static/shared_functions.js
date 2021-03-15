@@ -135,7 +135,12 @@ function dualColTableBuilder(firstColKeys, valueDict){
     for (var i = 0; i < firstColKeys.length; i++){
         infoTitle = makePresentable(firstColKeys[i]);
         infoValue = valueDict[firstColKeys[i]];
-        if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
+        if (typeof infoValue === "string") {
+            if (infoValue === "NULL")
+                infoValue = "N/A";
+            else
+                infoValue = makePresentable(infoValue);
+        }
         tableHTML += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
     }
     tableHTML += "</table>\n";
