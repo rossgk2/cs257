@@ -5,8 +5,8 @@ function initialize() {
     URLSplit = URL.split("/");
     var pokemonName = URLSplit[URLSplit.length - 1];
 
-    loadPokemonData(pokemonName);
     loadPokemonImage(pokemonName);
+    loadPokemonData(pokemonName);
     loadLinkToHomePage();
 }
 
@@ -104,8 +104,8 @@ function loadPokemonData(pokemonName) {
             legendaryStatus = `${pokemonName} <b> is </b> a ${makePresentable(legendaryStatus)} pokemon`;
 
 		document.getElementById("legendary_status").innerHTML = legendaryStatus;
-		document.getElementById("region").innerHTML = `<b> Region </b>: ${makePresentable(dict["region"])}`;
-		document.getElementById("catch_rate").innerHTML = `<b> Catch rate </b>: ${makePresentable(dict["catch_rate"])}%`;
+		document.getElementById("region").innerHTML = `<b> Region: </b> ${makePresentable(dict["region"])}`;
+		document.getElementById("catch_rate").innerHTML = `<b> Catch rate: </b> ${makePresentable(dict["catch_rate"])}%`;
 
 		//Game
 		document.getElementById("game").innerHTML = `<b> First appeared in: </b>${makePresentable(dict["game"])} edition.`
@@ -117,7 +117,7 @@ function loadPokemonData(pokemonName) {
 		document.getElementById("sex_ratios").innerHTML = `${dict["male_percent"]}% of ${pokemonName} are <b> male </b> and 
 		${100 - dict["male_percent"]}% are <b> female </b>.`;
 
-		eggGroupString = `<b>Egg group(s)</b>: ${makePresentable(dict["egg_group1"])}`;
+		eggGroupString = `<b>Egg group(s): </b> ${makePresentable(dict["egg_group1"])}`;
 		if (dict["egg_group2"].toLowerCase() !== "null") eggGroupString += ` and ${makePresentable(dict["egg_group2"])}`
 		document.getElementById("egg_groups").innerHTML = eggGroupString;
     })
