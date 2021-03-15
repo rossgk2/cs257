@@ -112,7 +112,7 @@ function getDropdownInnerHTML(arr, accessor, presentor) {
 /* Other functions */
 /* ============================================================ */
 
-// Prettifies strings. E.g., makePresentable("pokemon_name") === "Pokemon Name".
+// Prettifies strings. For example, makePresentable("pokemon_name") === "Pokemon Name".
 function makePresentable(txt) {
     // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
     // Replace underscores with spaces.
@@ -127,11 +127,14 @@ function makePresentable(txt) {
     return result;
 }
 
-function dualColTableBuilder(leftKey, valueDict){
+/* Returns the inner HTML for a table with two columns, where the "unprettified" versions
+of the names of the items in the first column come from firstColKeys, and where the items in
+the second column are obtained by using firstColKeys to access valueDict. */
+function dualColTableBuilder(firstColKeys, valueDict){
     var tableHTML = "<table>\n";
-    for (var i = 0; i < leftKey.length; i++){
-        infoTitle = makePresentable(leftKey[i]);
-        infoValue = valueDict[leftKey[i]];
+    for (var i = 0; i < firstColKeys.length; i++){
+        infoTitle = makePresentable(firstColKeys[i]);
+        infoValue = valueDict[firstColKeys[i]];
         if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
         tableHTML += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
     }

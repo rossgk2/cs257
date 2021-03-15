@@ -62,6 +62,12 @@ function loadPokemonData(pokemonName) {
 			document.getElementById(key).innerHTML = `${makePresentable(stats[i])}: <b>${dict[key]} </b> `;
 		}
 
+        // Ability descriptions
+        // It's important that this is done before ability 1 is loaded.
+        var abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
+        var htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
+        loadAbilityDescriptions(abilities, htmlTags);
+
         // Hidden ability (only display if it exists)
         var hasHiddenAbility = dict["hidden_ability"] !== "NULL"; 
         if (hasHiddenAbility)
@@ -81,15 +87,14 @@ function loadPokemonData(pokemonName) {
         var ability1Label = "#ability1_outer > span";
         if (hasHiddenAbility || hasAbility2)
             $(ability1Label).html("Primary Ability: ");
-        else
-            $(ability1Label).html("Type: ");
+        else { // "Metapod" is a Pokemon that only has a primary ability and triggers this else case
+            var abilityInnerHTML = document.getElementById("ability1_outer").innerHTML;
+            var abilityDescInnerHTML = document.getElementById("ability1_description").innerHTML;
+            var abilitiesList = document.getElementById("ability_ul");
+            abilitiesList.outerHTML = "<span> " + abilityInnerHTML + "</span>\n<span>" + abilityDescInnerHTML + "</span>\n";
+        }
         
 		document.getElementById("ability1").innerHTML = makePresentable(dict["ability1"]);
-
-        // Ability descriptions
-        var abilities = [dict["ability1"], dict["ability2"], dict["hidden_ability"]];
-        var htmlTags = ["ability1_description", "ability2_description", "hidden_ability_description"]
-        loadAbilityDescriptions(abilities, htmlTags);
 
         // Legendary status
         legendaryStatus = dict["legendary_status"].toLowerCase();
@@ -125,6 +130,7 @@ function clearOuterHTML(className) {
     var elements = document.getElementsByClassName(className);
     for (var i = 0; i < elements.length; i ++) {
         elements[i].outerHTML = "";
+        elements[i].innerHTML = "";
     }
 }
 
@@ -179,9 +185,9 @@ function loadAbilityDescriptions(abilityNames, htmlTags){
     fetch(url, {method: 'get'})
     .then((response) => response.json())
     .then(function(allAbilities) {
-        for (var i = 0; i < allAbilities.length; i++){
-            for (var j = 0; j < abilityNames.length; j++){
-                if (abilityNames[j] != "NULL" && allAbilities[i]["ability"] == abilityNames[j]){
+        for (var i = 0; i < allAbilities.length; i++) {
+            for (var j = 0; j < abilityNames.length; j++) {
+                if (abilityNames[j] != "NULL" && allAbilities[i]["ability"] == abilityNames[j]) {
                     abilityDescription = allAbilities[i]["ability_description"].replaceAll("_", " ");
                     document.getElementById(htmlTags[j]).innerHTML = `Description: ${abilityDescription}`;
                 }
