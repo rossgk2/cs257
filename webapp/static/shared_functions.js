@@ -37,8 +37,8 @@ function getPokemonImagePath(pokemonName) {
     var jpg_url = base_path + pokemonName + ".jpg";
     var png_url = base_path + pokemonName + ".png";
     if (doesFileExist(png_url)) return png_url;
-    if (doesFileExist(jpg_url)) return jpg_url;
-    return "../static/pokemon_images/pokemon_picture_missing.png";
+    //if (doesFileExist(jpg_url)) return jpg_url;
+    return `${base_path}pokemon_picture_missing.png`;
 }
 
 function getPokemonPageURL(pokemon_name){
