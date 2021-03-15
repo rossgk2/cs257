@@ -19,31 +19,39 @@
 
 <body>
     <h1><center>Pokemon Database</center></h1>
+    
     <div class = "container">
         <div class = "tool-bar">
             <div class = "left-align">
-                <h6>Filter Pokemon with:</h6>
-                <h6>Ability: <select id = "ability_list_selection" class = "search"><option value = " 1 "></option></select> </h6>
-                <h6>Type: <select id = "type_list_selection" class = "search"><option value = " 1 ">error</option></select>
-                    &nbsp; <input type= "button" value="Search!" id="search_button">
-                </h6>
+                <h6> Filter Pokemon with: </h6>
                 
+                <div id = "dropdown_menus">
+                	<div id = "type_dropdown_container"> 
+	                	<select id="type_dropdown" class = "search2"> </select>
+						<label for="type_dropdown"> Type </label>
+	                </div>
+
+	                <div id = "ability_dropdown_container"> 
+	                	<select id="ability_dropdown" class = "search2"> </select>
+						<label for="ability_dropdown"> Ability  </label>
+	                </div>  
+                </div>             
+
+                <input type= "button" value="Search!" id="search_button">
             </div>
-            
             <div class = "center-align">
                 <input type= "button" value="Show Help" id="information_sign_button">
             </div>
-
             <div class = "right-align">
-                <h5 id = "link_to_advanced_search">if you see this text, you got a problem</h5>
+                <h5 id = "link_to_advanced_search"> Link to advanced search goes here </h5>
             </div>
         </div>
         <div id="information_sign_content">
-            Write the help content here
+            Help info goes here
         </div>
     </div>
     <div id = "pokemon_landing_display">
-        <p>waiting for the javascript</p>
+        <p> Pokemon cards will be loaded here </p>
     </div>
 </body>
 </html>

@@ -7,11 +7,11 @@ window.onload = initialize;
 
 function initialize() {
     // Initialize the select2 JQuery plugin
-    $(".search").select2(); //".search" is a CSS selector string
+    $(".search2").select2(); //".search" is a CSS selector string
 
     // Set up searchable dropdown menus.
-    loadDropdown("type_list_selection", "types", null); // See shared_functions.js for definition of loadDropdown()
-    loadDropdown("ability_list_selection", "abilities", function(arr, i){ return arr[i]["ability"];});
+    loadDropdown("type_dropdown", "types", null); // See shared_functions.js for definition of loadDropdown()
+    loadDropdown("ability_dropdown", "abilities", function(arr, i){ return arr[i]["ability"];});
     
     // Set up the icon that leads to the advanced search page.
     loadAdvancedSearch();
@@ -29,8 +29,8 @@ function loadInfinitePokemonCardScroller() {
 
     getQueryURLOnUpdate = function() { 
         var url = `advanced_search/ASC?order_by=pokedex_number`;
-        var typeSelected = $("#type_list_selection").val();
-        var abilitySelected = $("#ability_list_selection").val();
+        var typeSelected = $("#type_dropdown").val();
+        var abilitySelected = $("#ability_dropdown").val();
         if (typeSelected != "any") url += "&composite_type=" + typeSelected;
         if (abilitySelected != "any") url += "&composite_ability=" + abilitySelected;
         return url;
