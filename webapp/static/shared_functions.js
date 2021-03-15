@@ -1,11 +1,6 @@
-function getTypeImageHTML(type){
-    type = type.toLowerCase();
-    var result = `<img src="../static/type_images/${type}.png" alt="something is wrong" class="img-thumbnail"`
-    result += ` title = "type: ${type}, click to see all type supereffects">`;
-    result = '<a href = "../static/type_chart_image.jpg" target = "_blank">' + result + '</a>';
-    result = '<div class = "highlight">' + result + '</div>';
-    return result;
-}
+/* ============================================================ */
+/* Functions for getting links */
+/* ============================================================ */
 
 function getAPIBaseURL() {
     var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api';
@@ -24,6 +19,18 @@ function doesFileExist(urlToFile) {
     }
 }
 
+function loadLinkToHomePage() {
+    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
+    var image = "../static/pokemon_images/homePageSign.png";
+    image = `<img src="${image}"  width="50" align = "left" alt="homePageSign"></img>`
+    var htmlElement = `<a href="${baseURL}">${image}</a>`;
+    document.getElementById('link_to_homepage').innerHTML = htmlElement;
+}
+
+/* ============================================================ */
+/* Functions for loading images */
+/* ============================================================ */
+
 function getPokemonImageWithLink(pokemonName, textBottom = false, pokedex_number = 0) {
     var pokemonImageHTML = `<img src="${getPokemonImagePath(pokemonName)}" alt="sorry, pokemon image missing" 
             class="img-thumbnail" title = "click to know more about this pokemon">\n`;
@@ -41,8 +48,8 @@ function getPokemonImagePath(pokemonName) {
     var jpg_url = base_path + pokemonName + ".jpg";
     var png_url = base_path + pokemonName + ".png";
     if (doesFileExist(png_url)) return png_url;
-    //if (doesFileExist(jpg_url)) return jpg_url;
-    return `${base_path}pokemon_picture_missing.png`;
+    if (doesFileExist(jpg_url)) return jpg_url;
+    return "../static/pokemon_images/pokemon_picture_missing.png";
 }
 
 function getPokemonPageURL(pokemon_name){
@@ -50,53 +57,18 @@ function getPokemonPageURL(pokemon_name){
     return baseURL;
 }
 
-function dualColTableBuilder(leftKey, valueDict){
-	var tableHTML = "<table>\n";
-	for (var i = 0; i < leftKey.length; i++){
-		infoTitle = makePresentable(leftKey[i]);
-		infoValue = valueDict[leftKey[i]];
-		if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
-		tableHTML += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
-	}
-	tableHTML += "</table>\n";
-	return tableHTML;
-}
-
-function loadLinkToHomePage() {
-    var baseURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/';
-    var image = "../static/pokemon_images/homePageSign.png";
-    image = `<img src="${image}"  width="50" align = "left" alt="homePageSign"></img>`
-    var htmlElement = `<a href="${baseURL}">${image}</a>`;
-    document.getElementById('link_to_homepage').innerHTML = htmlElement;
-}
-
-function informationSign(){
-    var b = document.getElementById("information_sign_button");
-    var c = document.getElementById("information_sign_content"); 
-    if (b.value == "Show Help") {
-        c.style.display = "block";
-        b.value = "Hide Help";
-    }else{
-        c.style.display = "none";
-        b.value = "Show Help";
-    }
-}
-
-// Prettifies strings. E.g., makePresentable("pokemon_name") === "Pokemon Name".
-function makePresentable(txt) {
-    // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
-    // Replace underscores with spaces.
-    var result = txt.replaceAll("_", " ") 
-
-    // Convert to Title Case.
-    result = result.replace(/\w\S*/g, function(x) { return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();}); 
-    
-    // Put a space between word and the number contained the word. (We assume only one number is contained in the word).
-    var firstDigitIndex = result.indexOf(result.match(/\d/));
-    result = result.substring(0, firstDigitIndex) + " " + result.substring(firstDigitIndex, result.length);
+function getTypeImageHTML(type){
+    type = type.toLowerCase();
+    var result = `<img src="../static/type_images/${type}.png" alt="something is wrong" class="img-thumbnail"`
+    result += ` title = "type: ${type}, click to see all type supereffects">`;
+    result = '<a href = "../static/type_chart_image.jpg" target = "_blank">' + result + '</a>';
+    result = '<div class = "highlight">' + result + '</div>';
     return result;
 }
 
+/* ============================================================ */
+/* Functions for loading dropdown menus */
+/* ============================================================ */
 
 /* Reads the contents of the JSON list at the specified API endpoint into the inner HTML of the element with HTML ID HTMLid. 
 
@@ -136,6 +108,45 @@ function getDropdownInnerHTML(arr, accessor, presentor) {
     return innerHTML;
 }
 
+/* ============================================================ */
+/* Other functions */
+/* ============================================================ */
 
+// Prettifies strings. E.g., makePresentable("pokemon_name") === "Pokemon Name".
+function makePresentable(txt) {
+    // from https://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript
+    // Replace underscores with spaces.
+    var result = txt.replaceAll("_", " ") 
 
+    // Convert to Title Case.
+    result = result.replace(/\w\S*/g, function(x) { return x.charAt(0).toUpperCase() + x.substr(1).toLowerCase();}); 
+    
+    // Put a space between word and the number contained the word. (We assume only one number is contained in the word).
+    var firstDigitIndex = result.indexOf(result.match(/\d/));
+    result = result.substring(0, firstDigitIndex) + " " + result.substring(firstDigitIndex, result.length);
+    return result;
+}
 
+function dualColTableBuilder(leftKey, valueDict){
+    var tableHTML = "<table>\n";
+    for (var i = 0; i < leftKey.length; i++){
+        infoTitle = makePresentable(leftKey[i]);
+        infoValue = valueDict[leftKey[i]];
+        if (typeof infoValue === "string") infoValue = makePresentable(infoValue);
+        tableHTML += `<tr><th>${infoTitle}</th><td>${infoValue}</td></tr>\n`;
+    }
+    tableHTML += "</table>\n";
+    return tableHTML;
+}
+
+function informationSign(){
+    var b = document.getElementById("information_sign_button");
+    var c = document.getElementById("information_sign_content"); 
+    if (b.value == "Show Help") {
+        c.style.display = "block";
+        b.value = "Hide Help";
+    }else{
+        c.style.display = "none";
+        b.value = "Show Help";
+    }
+}
