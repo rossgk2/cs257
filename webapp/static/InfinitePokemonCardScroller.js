@@ -104,4 +104,6 @@ function InfinitePokemonCardScroller(display, scrollContainer, searchButton, get
 	    var oldThis = this;
 	    this.scrollContainer.onscroll = function() { oldThis.infiniteUserScroll(); };
 	};	
+
+	this.initialize();
 }

@@ -39,23 +39,22 @@ function loadInfinitePokemonCardScroller() {
     getPokemonCard = function(pokemon) {
         var pokedexNum = pokemon['pokedex_number'];
         var name = pokemon['pokemon_name'];
-        var pokemonImageHtml = getPokemonImageWithLink(name);
+        var pokemonImageHTML = getPokemonImageWithLink(name);
         
         var firstLine = `<h6>(ID: ${pokedexNum}) ${makePresentable(name)}</h6>\n`;
         var secondLine = `<h6>${getTypeImageHTML(pokemon['type1'])}`
         if (pokemon['type2'] !== "NULL")
             secondLine += ` ${getTypeImageHTML(pokemon['type2'])}</h6>\n`;
         
-        return pokemonImageHtml + firstLine + secondLine;
+        return pokemonImageHTML + firstLine + secondLine;
     }
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, window, searchButton, getQueryURLOnUpdate, getPokemonCard, 24, 6);
-    infinitePokemonCardScroller.initialize();
 }
 
 function loadAdvancedSearch() {
     advancedSearchURL = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/advanced_search';
     linkElement = `<div class = "highlight"><a href ="${advancedSearchURL}"> 
-    <img src="../static/pokemon_images/searchSign.png" width="80" alt="searchSign">advance search</img></a></div>`;
+    <img src="../static/pokemon_images/searchSign.png" width="80" alt="searchSign">Advanced search</img></a></div>`;
     document.getElementById("link_to_advanced_search").innerHTML = linkElement;
 }

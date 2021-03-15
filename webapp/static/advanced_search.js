@@ -46,7 +46,6 @@ function loadInfinitePokemonCardScroller() {
 	}
 
     let infinitePokemonCardScroller = new InfinitePokemonCardScroller(display, scrollContainer, searchButton, getQueryURLOnUpdate, getPokemonCard, 6, 1);
-    infinitePokemonCardScroller.initialize();
 }
 
 function getQueryURLOnUpdate() {
@@ -205,28 +204,6 @@ function updateSexRatiosHelper(sexRatioField) {
 	 		return 100 - values;
 	 	}
 	 }
-}
-
-function pokemonStatsLoop(offset, numEachQuery, pokemonList){
-	addingHtml = '';
-	var stop = Math.min(pokemonList.length, offset + numEachQuery);
-	if (stop == offset) addingHtml = "end of query";
-	for (var i = offset; i < stop; i ++) {
-		addingHtml += '<div class = "row">\n' + buildPokemonStatsHTML(pokemonList[i]) + '\n</div>';
-	}
-	return addingHtml;
-}
-
-function buildPokemonStatsHTML(pokemonDict){
-	var rawName = pokemonDict["pokemon_name"];
-	innerHTML = getPokemonImageWithLink(rawName);
-	innerHTML += '<div class="invisible-vertical-line"></div>';
-
-	var keyDisplayConversion = {"Name" : "pokemon_name", "ID" : "pokedex_number", "Type1" : "type1", "Type2" : "type2"};
-	innerHTML += dualColTableBuilder(["Name", "ID", "Type1", "Type2"], pokemonDict, keyDisplayConversion); //first tabl
-	innerHTML += '<div class="invisible-vertical-line"></div>';
-	innerHTML += dualColTableBuilder(["attack", "special_attack", "defense", "special_defense", "health", "speed"], pokemonDict, null); //second table
-	return innerHTML;
 }
 
 function loadStatsButtonCallback() {
